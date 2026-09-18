@@ -213,16 +213,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full font-sans shadow-md">
       {/* ── 1. CLEAN WHITE UTILITY TOP BAR ── */}
-      <div className="bg-white border-b border-zinc-200 py-1.5 px-6">
+      <div className="bg-white bg-[#FBFCFE] border-b border-zinc-200 py-2 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="text-xs text-zinc-500 hidden md:flex items-center gap-2">
-            <span className="font-medium text-zinc-700">
-              Lubricon Specialities India
-            </span>
-            <span>•</span>
-            <span>Australian Technology</span>
-          </div>
-
           <div className="flex items-center gap-4 ml-auto text-xs">
             {/* Language Switcher */}
             <div className="flex items-center gap-1 font-semibold">
@@ -231,20 +223,20 @@ export default function Navbar() {
                 onClick={() => setLang("en")}
                 className={`transition-colors ${
                   lang === "en"
-                    ? "text-[#c85a17] font-bold"
-                    : "text-zinc-600 hover:text-zinc-900"
+                    ? "text-black font-extrabold underline decoration-[#ffe000] decoration-2"
+                    : "text-zinc-600 hover:text-black"
                 }`}
               >
                 English
               </button>
-              <span className="text-zinc-400">|</span>
+              <span className="text-zinc-300">|</span>
               <button
                 type="button"
                 onClick={() => setLang("hi")}
                 className={`transition-colors ${
                   lang === "hi"
-                    ? "text-[#c85a17] font-bold"
-                    : "text-zinc-600 hover:text-zinc-900"
+                    ? "text-black font-extrabold underline decoration-[#ffe000] decoration-2"
+                    : "text-zinc-600 hover:text-black"
                 }`}
               >
                 हिन्दी
@@ -259,12 +251,12 @@ export default function Navbar() {
                   placeholder="Search"
                   value={searchVal}
                   onChange={(e) => setSearchVal(e.target.value)}
-                  className="w-36 sm:w-48 h-7 px-2.5 text-xs bg-white text-zinc-800 border border-zinc-300 rounded-l-sm focus:outline-none focus:border-[#c85a17] placeholder:text-zinc-400"
+                  className="w-36 sm:w-48 h-7 px-2.5 text-xs bg-white text-black border border-zinc-300 rounded-l-sm focus:outline-none focus:border-black placeholder:text-zinc-400"
                 />
                 <button
                   type="submit"
                   aria-label="Search"
-                  className="bg-[#c85a17] hover:bg-[#b04d12] text-white px-2.5 flex items-center justify-center rounded-r-sm transition-colors"
+                  className="bg-[#ffe000] hover:bg-[#ebd000] text-black px-2.5 flex items-center justify-center rounded-r-sm transition-colors border border-l-0 border-[#ffe000]"
                 >
                   <Search size={13} strokeWidth={2.5} />
                 </button>
@@ -278,7 +270,7 @@ export default function Navbar() {
                 type="button"
                 onClick={() => adjustTextSize(5)}
                 title="Increase text size"
-                className="w-5 h-5 bg-[#0b2b52] hover:bg-[#081f3d] text-white rounded-sm flex items-center justify-center transition-colors"
+                className="w-5 h-5 bg-black hover:bg-zinc-800 text-white rounded-sm flex items-center justify-center transition-colors"
               >
                 <Plus size={11} strokeWidth={3} />
               </button>
@@ -286,7 +278,7 @@ export default function Navbar() {
                 type="button"
                 onClick={() => adjustTextSize(-5)}
                 title="Decrease text size"
-                className="w-5 h-5 bg-[#0b2b52] hover:bg-[#081f3d] text-white rounded-sm flex items-center justify-center transition-colors"
+                className="w-5 h-5 bg-black hover:bg-zinc-800 text-white rounded-sm flex items-center justify-center transition-colors"
               >
                 <Minus size={11} strokeWidth={3} />
               </button>
@@ -464,11 +456,11 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          {/* Right Action */}
+          {/* Right Action: Yellow with black text */}
           <div className="hidden lg:flex items-center gap-4">
             <Link
               href="/contact"
-              className="bg-[#c85a17] hover:bg-[#b04d12] text-white text-xs font-semibold px-4 py-2 rounded transition-all shadow-sm"
+              className="bg-[#ffe000] hover:bg-[#ffea4d] text-black text-xs font-bold px-4 py-2 rounded transition-all shadow-sm"
             >
               Get a Callback
             </Link>
@@ -518,9 +510,9 @@ export default function Navbar() {
               />
               <button
                 type="submit"
-                className="bg-[#c85a17] text-white px-4 rounded-r-md flex items-center justify-center"
+                className="bg-[#ffe000] text-black px-4 rounded-r-md flex items-center justify-center font-bold"
               >
-                <Search size={16} />
+                <Search size={16} strokeWidth={2.5} />
               </button>
             </form>
           </div>
