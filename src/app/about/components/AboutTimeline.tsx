@@ -1,39 +1,39 @@
 const milestones = [
   {
-    year: '2014',
-    title: 'Company Foundation',
+    year: "2014",
+    title: "Company Foundation",
     description:
-      'Lubricon Specialities India established with exclusive Australian formulation technology and licensing.',
+      "Lubricon Specialities India established with exclusive Australian formulation technology and licensing.",
   },
   {
-    year: '2016',
-    title: 'First Industrial Supply',
+    year: "2016",
+    title: "First Industrial Supply",
     description:
-      'Commenced commercial supply of heavy duty neat and soluble metalworking fluids to industrial manufacturers.',
+      "Commenced commercial supply of heavy duty neat and soluble metalworking fluids to industrial manufacturers.",
   },
   {
-    year: '2019',
-    title: 'Pan-India Distribution',
+    year: "2019",
+    title: "Pan-India Distribution",
     description:
-      'Expanded direct warehouse distribution network across 15+ states with dedicated technical field support.',
+      "Expanded direct warehouse distribution network across 15+ states with dedicated technical field support.",
   },
   {
-    year: '2022',
-    title: 'AdBlue DEF Compliance',
+    year: "2022",
+    title: "AdBlue DEF Compliance",
     description:
-      'Introduced ISO 22241-standard AdBlue AUS32 for India Euro 6 emission standards and clean transport.',
+      "Introduced ISO 22241-standard AdBlue AUS32 for India Euro 6 emission standards and clean transport.",
   },
   {
-    year: '2024',
-    title: '500+ Clients Milestone',
+    year: "2024",
+    title: "500+ Clients Milestone",
     description:
-      'Surpassed 500+ active enterprise clients across paper, steel, plastic injection, and fleet operations.',
+      "Surpassed 500+ active enterprise clients across paper, steel, plastic injection, and fleet operations.",
   },
   {
-    year: '2025',
-    title: 'Next-Gen CK-4 Range',
+    year: "2025",
+    title: "Next-Gen CK-4 Range",
     description:
-      'Rolled out latest API CK-4 and ACEA E9 low-SAPS high performance heavy diesel engine oils.',
+      "Rolled out latest API CK-4 and ACEA E9 low-SAPS high performance heavy diesel engine oils.",
   },
 ];
 
@@ -49,7 +49,8 @@ export default function AboutTimeline() {
             Over a Decade of Industrial Excellence
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 font-medium mt-2">
-            The key milestones that built Lubricon into one of India’s most trusted specialty lubrication brands.
+            The key milestones that built Lubricon into one of India’s most
+            trusted specialty lubrication brands.
           </p>
         </div>
 
@@ -64,7 +65,7 @@ export default function AboutTimeline() {
                 <div
                   key={i}
                   className={`relative flex flex-col sm:flex-row items-start ${
-                    isEven ? 'sm:flex-row-reverse' : ''
+                    isEven ? "sm:flex-row-reverse" : ""
                   }`}
                 >
                   {/* Center Marker Dot */}
@@ -76,7 +77,9 @@ export default function AboutTimeline() {
                   {/* Content Box */}
                   <div
                     className={`pl-12 sm:pl-0 sm:w-1/2 ${
-                      isEven ? 'sm:pr-10 text-left sm:text-right' : 'sm:pl-10 text-left'
+                      isEven
+                        ? "sm:pr-10 text-left sm:text-right"
+                        : "sm:pl-10 text-left"
                     }`}
                   >
                     <div className="bg-zinc-50 border border-zinc-200 hover:border-[#ffe000] p-5 rounded-2xl transition-all shadow-sm">

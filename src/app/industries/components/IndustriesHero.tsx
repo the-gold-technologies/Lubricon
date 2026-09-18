@@ -9,8 +9,9 @@ export default function IndustriesHero() {
           Industries We Serve
         </h1>
         <p className="text-gray-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-          From extreme heat in steel rolling mills to high-pressure precision plastic injection molding,
-          Lubricon lubricants are formulated with Australian technology for seamless uptime.
+          From extreme heat in steel rolling mills to high-pressure precision
+          plastic injection molding, Lubricon lubricants are formulated with
+          Australian technology for seamless uptime.
         </p>
       </div>
     </section>

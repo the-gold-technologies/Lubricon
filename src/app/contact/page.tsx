@@ -1,13 +1,13 @@
-import ContactHero from './components/ContactHero';
-import ContactFormAndCards from './components/ContactFormAndCards';
-import ContactFaq from './components/ContactFaq';
-import CallbackSection from '@/components/CallbackSection';
-import { Metadata } from 'next';
+import ContactHero from "./components/ContactHero";
+import ContactFormAndCards from "./components/ContactFormAndCards";
+import ContactFaq from "./components/ContactFaq";
+import CallbackSection from "@/components/CallbackSection";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Lubricon Specialities India',
+  title: "Contact Us | Lubricon Specialities India",
   description:
-    'Contact Lubricon Specialities India for industrial lubrication quotes, bulk orders, and technical support. Toll-free 1800 569 6363.',
+    "Contact Lubricon Specialities India for industrial lubrication quotes, bulk orders, and technical support. Toll-free 1800 569 6363.",
 };
 
 export default function ContactPage() {

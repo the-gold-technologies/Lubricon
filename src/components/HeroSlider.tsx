@@ -1,34 +1,34 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 const slides = [
   {
     id: 1,
-    title: 'Neat Cutting Oil',
-    subtitle: 'High Performance Metalworking Fluid for Heavy Duty Machining',
-    image: '/images/slider-1.png',
-    link: '/products?cat=industrial&search=cutting',
-    badge: 'Industrial Cutting Fluid',
+    title: "Neat Cutting Oil",
+    subtitle: "High Performance Metalworking Fluid for Heavy Duty Machining",
+    image: "/images/slider-1.png",
+    link: "/products?cat=industrial&search=cutting",
+    badge: "Industrial Cutting Fluid",
   },
   {
     id: 2,
-    title: 'Soluble Cutting Oil',
-    subtitle: 'Superior Cooling & Lubricity for Precision CNC & Grinding',
-    image: '/images/slider-2.png',
-    link: '/products?cat=industrial&search=soluble',
-    badge: 'Coolant & Emulsion',
+    title: "Soluble Cutting Oil",
+    subtitle: "Superior Cooling & Lubricity for Precision CNC & Grinding",
+    image: "/images/slider-2.png",
+    link: "/products?cat=industrial&search=soluble",
+    badge: "Coolant & Emulsion",
   },
   {
     id: 3,
-    title: 'Hydraulic Oil & Industrial Fluids',
-    subtitle: 'Anti-Wear EP Protection for Plastic Molding & Heavy Presses',
-    image: '/images/slider-3.png',
-    link: '/products?cat=industrial',
-    badge: 'High Pressure Anti-Wear',
+    title: "Hydraulic Oil & Industrial Fluids",
+    subtitle: "Anti-Wear EP Protection for Plastic Molding & Heavy Presses",
+    image: "/images/slider-3.png",
+    link: "/products?cat=industrial",
+    badge: "High Pressure Anti-Wear",
   },
 ];
 
@@ -60,7 +60,9 @@ export default function HeroSlider() {
             <div
               key={slide.id}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+                isActive
+                  ? "opacity-100 z-10"
+                  : "opacity-0 z-0 pointer-events-none"
               }`}
             >
               {/* Background Slide Image with subtle smooth scale effect */}
@@ -71,7 +73,7 @@ export default function HeroSlider() {
                   fill
                   priority={index === 0}
                   className={`object-cover object-center transition-transform duration-10000 ease-out ${
-                    isActive ? 'scale-105' : 'scale-100'
+                    isActive ? "scale-105" : "scale-100"
                   }`}
                 />
               </div>

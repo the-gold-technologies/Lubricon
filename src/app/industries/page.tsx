@@ -1,12 +1,12 @@
-import { Metadata } from 'next';
-import IndustriesHero from './components/IndustriesHero';
-import IndustriesList from './components/IndustriesList';
-import CallbackSection from '@/components/CallbackSection';
+import { Metadata } from "next";
+import IndustriesHero from "./components/IndustriesHero";
+import IndustriesList from "./components/IndustriesList";
+import CallbackSection from "@/components/CallbackSection";
 
 export const metadata: Metadata = {
-  title: 'Industries We Serve | Lubricon Specialities India',
+  title: "Industries We Serve | Lubricon Specialities India",
   description:
-    'Lubricon provides specialized lubrication solutions for plastic injection molding, paper mills, steel plants, automotive fleets, and precision engineering industries.',
+    "Lubricon provides specialized lubrication solutions for plastic injection molding, paper mills, steel plants, automotive fleets, and precision engineering industries.",
 };
 
 export default function IndustriesPage() {

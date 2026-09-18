@@ -1,10 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Product } from '@/types';
-import { X, ChevronRight, Package, Zap, Shield, Phone, Mail, ExternalLink } from 'lucide-react';
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Product } from "@/types";
+import {
+  X,
+  ChevronRight,
+  Package,
+  Zap,
+  Shield,
+  Phone,
+  Mail,
+  ExternalLink,
+} from "lucide-react";
 
 interface ProductModalProps {
   product: Product;
@@ -12,19 +21,26 @@ interface ProductModalProps {
 }
 
 const categoryImageMap: Record<string, string> = {
-  'engine-oil': '/images/prod-engine-oil.jpg',
-  'gear-oil': '/images/prod-gear-oil.jpg',
-  atf: '/images/prod-atf.jpg',
-  industrial: '/images/prod-industrial.jpg',
-  fluids: '/images/prod-industrial.jpg',
+  "engine-oil": "/images/prod-engine-oil.jpg",
+  "gear-oil": "/images/prod-gear-oil.jpg",
+  atf: "/images/prod-atf.jpg",
+  industrial: "/images/prod-industrial.jpg",
+  fluids: "/images/prod-industrial.jpg",
 };
 
 export default function ProductModal({ product, onClose }: ProductModalProps) {
   const [showQuoteForm, setShowQuoteForm] = useState(false);
-  const [formData, setFormData] = useState({ name: '', company: '', phone: '', email: '', qty: '' });
+  const [formData, setFormData] = useState({
+    name: "",
+    company: "",
+    phone: "",
+    email: "",
+    qty: "",
+  });
   const [submitted, setSubmitted] = useState(false);
 
-  const imgSrc = categoryImageMap[product.category] || '/images/prod-engine-oil.jpg';
+  const imgSrc =
+    categoryImageMap[product.category] || "/images/prod-engine-oil.jpg";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +48,10 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   };
 
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div
+      className="modal-overlay"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="modal-content">
         {/* Header with Product Render */}
         <div className="relative p-6 border-b border-zinc-800 flex items-start gap-5">
@@ -52,7 +71,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
               {product.name}
             </h2>
             {product.subcategory && (
-              <p className="text-[#ffe000] text-xs font-extrabold uppercase tracking-wider mt-1">{product.subcategory}</p>
+              <p className="text-[#ffe000] text-xs font-extrabold uppercase tracking-wider mt-1">
+                {product.subcategory}
+              </p>
             )}
           </div>
           <button
@@ -67,7 +88,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
         <div className="p-6 space-y-6">
           {/* Description */}
-          <p className="text-zinc-300 text-sm leading-relaxed">{product.description}</p>
+          <p className="text-zinc-300 text-sm leading-relaxed">
+            {product.description}
+          </p>
 
           {/* Specs */}
           {(product.specifications.viscosity ||
@@ -75,25 +98,38 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
             product.specifications.standard) && (
             <div className="bg-[#14151b] border border-zinc-800 rounded-2xl p-4">
               <h3 className="text-[#ffe000] font-black text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
-                <Zap size={14} className="text-[#ffe000]" /> Technical Specifications
+                <Zap size={14} className="text-[#ffe000]" /> Technical
+                Specifications
               </h3>
               <div className="grid grid-cols-2 gap-3">
                 {product.specifications.viscosity && (
                   <div>
-                    <p className="text-zinc-500 text-xs font-semibold mb-0.5">Viscosity Grade</p>
-                    <p className="text-white text-sm font-black">{product.specifications.viscosity}</p>
+                    <p className="text-zinc-500 text-xs font-semibold mb-0.5">
+                      Viscosity Grade
+                    </p>
+                    <p className="text-white text-sm font-black">
+                      {product.specifications.viscosity}
+                    </p>
                   </div>
                 )}
                 {product.specifications.grade && (
                   <div>
-                    <p className="text-zinc-500 text-xs font-semibold mb-0.5">Performance Grade</p>
-                    <p className="text-white text-sm font-black">{product.specifications.grade}</p>
+                    <p className="text-zinc-500 text-xs font-semibold mb-0.5">
+                      Performance Grade
+                    </p>
+                    <p className="text-white text-sm font-black">
+                      {product.specifications.grade}
+                    </p>
                   </div>
                 )}
                 {product.specifications.standard && (
                   <div className="col-span-2">
-                    <p className="text-zinc-500 text-xs font-semibold mb-0.5">Standard</p>
-                    <p className="text-white text-sm font-black">{product.specifications.standard}</p>
+                    <p className="text-zinc-500 text-xs font-semibold mb-0.5">
+                      Standard
+                    </p>
+                    <p className="text-white text-sm font-black">
+                      {product.specifications.standard}
+                    </p>
                   </div>
                 )}
               </div>
@@ -103,12 +139,19 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           {/* Features */}
           <div>
             <h3 className="text-white font-black text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Shield size={14} className="text-[#ffe000]" /> Key Engineering Features
+              <Shield size={14} className="text-[#ffe000]" /> Key Engineering
+              Features
             </h3>
             <ul className="space-y-2">
               {product.features.map((f, i) => (
-                <li key={i} className="flex items-start gap-2 text-zinc-300 text-sm font-medium">
-                  <ChevronRight size={14} className="text-[#ffe000] mt-0.5 flex-shrink-0" />
+                <li
+                  key={i}
+                  className="flex items-start gap-2 text-zinc-300 text-sm font-medium"
+                >
+                  <ChevronRight
+                    size={14}
+                    className="text-[#ffe000] mt-0.5 flex-shrink-0"
+                  />
                   {f}
                 </li>
               ))}
@@ -118,7 +161,8 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           {/* Applications */}
           <div>
             <h3 className="text-white font-black text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Zap size={14} className="text-[#ffe000]" /> Recommended Applications
+              <Zap size={14} className="text-[#ffe000]" /> Recommended
+              Applications
             </h3>
             <div className="flex flex-wrap gap-2">
               {product.applications.map((app, i) => (
@@ -136,7 +180,8 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           {product.specifications.packaging && (
             <div>
               <h3 className="text-white font-black text-xs uppercase tracking-wider mb-3 flex items-center gap-2">
-                <Package size={14} className="text-[#ffe000]" /> Available Pack Sizes
+                <Package size={14} className="text-[#ffe000]" /> Available Pack
+                Sizes
               </h3>
               <div className="flex flex-wrap gap-2">
                 {product.specifications.packaging.map((p, i) => (
@@ -184,8 +229,13 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
           {/* Quote form */}
           {showQuoteForm && !submitted && (
-            <form onSubmit={handleSubmit} className="space-y-3 pt-4 border-t border-zinc-800">
-              <h3 className="text-white font-black text-sm">Request Price & TDS Quote for {product.name}</h3>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-3 pt-4 border-t border-zinc-800"
+            >
+              <h3 className="text-white font-black text-sm">
+                Request Price & TDS Quote for {product.name}
+              </h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="form-label">Your Name *</label>
@@ -194,7 +244,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     required
                     placeholder="Full Name"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                   />
                 </div>
                 <div>
@@ -203,7 +255,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     className="form-input"
                     placeholder="Company Name"
                     value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, company: e.target.value })
+                    }
                   />
                 </div>
                 <div>
@@ -214,7 +268,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     type="tel"
                     placeholder="+91 XXXXX XXXXX"
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
                   />
                 </div>
                 <div>
@@ -224,7 +280,9 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     type="email"
                     placeholder="email@company.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                   />
                 </div>
               </div>
@@ -234,10 +292,15 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                   className="form-input"
                   placeholder="e.g. 210L Barrel / 500L monthly"
                   value={formData.qty}
-                  onChange={(e) => setFormData({ ...formData, qty: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, qty: e.target.value })
+                  }
                 />
               </div>
-              <button type="submit" className="btn-primary w-full justify-center py-3 text-xs">
+              <button
+                type="submit"
+                className="btn-primary w-full justify-center py-3 text-xs"
+              >
                 <Mail size={15} />
                 Submit Enquiry
               </button>
@@ -248,11 +311,17 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           {submitted && (
             <div className="text-center py-6 space-y-3 border-t border-zinc-800 pt-4 animate-scale-in">
               <div className="text-4xl">✅</div>
-              <h3 className="text-white font-black text-lg">Enquiry Received!</h3>
+              <h3 className="text-white font-black text-lg">
+                Enquiry Received!
+              </h3>
               <p className="text-zinc-400 text-xs font-medium">
-                Thank you, {formData.name}! A Lubricon Technical Support Engineer will contact you within 24 hours.
+                Thank you, {formData.name}! A Lubricon Technical Support
+                Engineer will contact you within 24 hours.
               </p>
-              <a href="tel:18005696363" className="btn-primary justify-center py-2.5 text-xs">
+              <a
+                href="tel:18005696363"
+                className="btn-primary justify-center py-2.5 text-xs"
+              >
                 <Phone size={14} /> Call 1800 569 6363
               </a>
             </div>

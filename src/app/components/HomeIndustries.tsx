@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export default function HomeIndustries() {
   return (
@@ -12,7 +12,8 @@ export default function HomeIndustries() {
           </h2>
           <div className="w-20 h-1 bg-[#ffe000] mx-auto mt-3 rounded-full" />
           <p className="text-zinc-600 text-sm mt-3 max-w-xl mx-auto">
-            Engineered lubrication solutions delivering extreme heat resistance, high-pressure stability, and continuous uptime.
+            Engineered lubrication solutions delivering extreme heat resistance,
+            high-pressure stability, and continuous uptime.
           </p>
         </div>
 
@@ -44,7 +45,8 @@ export default function HomeIndustries() {
                 Plastic Injection Molding
               </h3>
               <p className="text-zinc-200 text-xs sm:text-sm leading-relaxed mb-6 font-normal drop-shadow">
-                High-temperature hydraulic oils, anti-wear tie-bar greases, and non-staining mold protectants for uninterrupted cycle times.
+                High-temperature hydraulic oils, anti-wear tie-bar greases, and
+                non-staining mold protectants for uninterrupted cycle times.
               </p>
 
               <Link
@@ -84,7 +86,9 @@ export default function HomeIndustries() {
                 Paper Mills
               </h3>
               <p className="text-zinc-200 text-xs sm:text-sm leading-relaxed mb-6 font-normal drop-shadow">
-                Water-resistant EP gear oils, high-speed dryer bearing lubricants, and rust preventives engineered for 24/7 moisture environments.
+                Water-resistant EP gear oils, high-speed dryer bearing
+                lubricants, and rust preventives engineered for 24/7 moisture
+                environments.
               </p>
 
               <Link
@@ -124,7 +128,9 @@ export default function HomeIndustries() {
                 Steel Plants
               </h3>
               <p className="text-zinc-200 text-xs sm:text-sm leading-relaxed mb-6 font-normal drop-shadow">
-                Ultra-high load EP gear lubricants, fire-resistant hydraulic fluids, and heavy roll bearing greases surviving extreme furnace temperatures.
+                Ultra-high load EP gear lubricants, fire-resistant hydraulic
+                fluids, and heavy roll bearing greases surviving extreme furnace
+                temperatures.
               </p>
 
               <Link

@@ -1,6 +1,6 @@
-import ProductCard from '@/components/ProductCard';
-import { Product } from '@/types';
-import { productCategories } from '@/data/products';
+import ProductCard from "@/components/ProductCard";
+import { Product } from "@/types";
+import { productCategories } from "@/data/products";
 
 interface ProductsGridProps {
   products: Product[];
@@ -23,15 +23,31 @@ export default function ProductsGrid({
         {/* Results Header */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-200">
           <p className="text-zinc-600 text-sm">
-            Showing{' '}
-            <span className="text-black font-extrabold">{products.length}</span>{' '}
-            product{products.length !== 1 ? 's' : ''}
-            {activeCategory !== 'all' && (
-              <> in <span className="font-bold text-black">{productCategories.find((c) => c.id === activeCategory)?.label}</span></>
+            Showing{" "}
+            <span className="text-black font-extrabold">{products.length}</span>{" "}
+            product{products.length !== 1 ? "s" : ""}
+            {activeCategory !== "all" && (
+              <>
+                {" "}
+                in{" "}
+                <span className="font-bold text-black">
+                  {
+                    productCategories.find((c) => c.id === activeCategory)
+                      ?.label
+                  }
+                </span>
+              </>
             )}
-            {searchQuery && <> matching &quot;<span className="font-bold text-black">{searchQuery}</span>&quot;</>}
+            {searchQuery && (
+              <>
+                {" "}
+                matching &quot;
+                <span className="font-bold text-black">{searchQuery}</span>
+                &quot;
+              </>
+            )}
           </p>
-          {(activeCategory !== 'all' || searchQuery) && (
+          {(activeCategory !== "all" || searchQuery) && (
             <button
               onClick={onReset}
               className="text-xs font-bold text-black hover:text-[#d4af37] underline transition-colors"
@@ -45,9 +61,12 @@ export default function ProductsGrid({
         {products.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-zinc-200 p-8 shadow-sm">
             <div className="text-4xl mb-4">🔍</div>
-            <h3 className="text-lg font-black text-black mb-2">No lubricants found</h3>
+            <h3 className="text-lg font-black text-black mb-2">
+              No lubricants found
+            </h3>
             <p className="text-zinc-500 text-sm max-w-sm mx-auto mb-6">
-              We couldn&apos;t find any products matching your search criteria. Try another keyword or browse all categories.
+              We couldn&apos;t find any products matching your search criteria.
+              Try another keyword or browse all categories.
             </p>
             <button
               onClick={onReset}
@@ -59,10 +78,7 @@ export default function ProductsGrid({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-              />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}

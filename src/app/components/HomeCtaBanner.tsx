@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight, Phone, Award } from 'lucide-react';
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Phone, Award } from "lucide-react";
 
 export default function HomeCtaBanner() {
   return (
@@ -8,12 +8,10 @@ export default function HomeCtaBanner() {
       <div className="max-w-7xl mx-auto">
         {/* Rounded Banner Card with Warm Dull-White / Beige Tone */}
         <div className="relative rounded-[28px] sm:rounded-[36px] bg-[#f8f9fa] border border-zinc-200/80 p-6 sm:p-8 lg:p-10 shadow-lg overflow-hidden">
-          
           {/* Subtle Decorative Background Blob/Arc */}
           <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#ffe000]/15 blur-3xl pointer-events-none" />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center relative z-10">
-            
             {/* ── Left Column: Headline, Description & Dual Pill Buttons ── */}
             <div className="lg:col-span-7 flex flex-col justify-center">
               {/* Category Sub-Tag */}
@@ -29,7 +27,10 @@ export default function HomeCtaBanner() {
 
               {/* Subtitle Description */}
               <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed mb-5 max-w-xl">
-                Whether you operate heavy plastic injection presses, high-speed paper mills, or automotive fleets, Lubricon delivers precision Australian formulations designed to reduce friction and eliminate costly downtime.
+                Whether you operate heavy plastic injection presses, high-speed
+                paper mills, or automotive fleets, Lubricon delivers precision
+                Australian formulations designed to reduce friction and
+                eliminate costly downtime.
               </p>
 
               {/* Action Buttons: Dark Primary Pill + Yellow Secondary Pill */}
@@ -63,7 +64,6 @@ export default function HomeCtaBanner() {
 
             {/* ── Right Column: Rounded Organic Arch Visual & Floater Card ── */}
             <div className="lg:col-span-5 flex justify-center relative">
-              
               {/* Background Yellow Decorative Semi-Circle Arch */}
               <div className="absolute -top-4 left-4 w-44 h-44 rounded-full bg-[#ffe000] opacity-85 -z-0" />
 
@@ -91,9 +91,7 @@ export default function HomeCtaBanner() {
                   100% Quality
                 </div>
               </div>
-
             </div>
-
           </div>
         </div>
       </div>

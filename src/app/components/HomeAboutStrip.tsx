@@ -1,13 +1,12 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight, Phone, CheckCircle2 } from 'lucide-react';
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Phone, CheckCircle2 } from "lucide-react";
 
 export default function HomeAboutStrip() {
   return (
     <section className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-white border-b border-zinc-200">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
           {/* ── Left Column: Clean, Bold Typography & Key Narrative ── */}
           <div className="lg:col-span-7 flex flex-col justify-center">
             {/* Tag */}
@@ -18,35 +17,61 @@ export default function HomeAboutStrip() {
 
             {/* Main Headline */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight leading-[1.15] mb-6">
-              Redefining <span className="underline decoration-[#ffe000] decoration-4 underline-offset-4">Lubrication</span> for Indian Industry
+              Redefining{" "}
+              <span className="underline decoration-[#ffe000] decoration-4 underline-offset-4">
+                Lubrication
+              </span>{" "}
+              for Indian Industry
             </h2>
 
             {/* Primary Paragraph */}
             <p className="text-base sm:text-lg font-semibold text-zinc-900 leading-relaxed mb-4">
-              At Lubricon Specialities India, we are redefining performance, reliability, and innovation in lubrication solutions. Backed by advanced Australian technology, Lubricon brings to the Indian market a comprehensive range of speciality and conventional lubricants engineered for modern industrial and automotive demands.
+              At Lubricon Specialities India, we are redefining performance,
+              reliability, and innovation in lubrication solutions. Backed by
+              advanced Australian technology, Lubricon brings to the Indian
+              market a comprehensive range of speciality and conventional
+              lubricants engineered for modern industrial and automotive
+              demands.
             </p>
 
             {/* Secondary Paragraph */}
             <p className="text-sm sm:text-base text-zinc-600 leading-relaxed mb-6">
-              With exclusive rights to represent the Lubricon brand in India, Lubricon Specialities India operates independently, delivering international-quality products tailored for Indian operating conditions. Our formulations are driven by deep technical know-how, field-tested performance, and a commitment to operational efficiency.
+              With exclusive rights to represent the Lubricon brand in India,
+              Lubricon Specialities India operates independently, delivering
+              international-quality products tailored for Indian operating
+              conditions. Our formulations are driven by deep technical
+              know-how, field-tested performance, and a commitment to
+              operational efficiency.
             </p>
 
             {/* Key Bulleted Points */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
               <div className="flex items-center gap-2.5 text-sm text-zinc-800 font-medium">
-                <CheckCircle2 size={18} className="text-[#ffe000] fill-black flex-shrink-0" />
+                <CheckCircle2
+                  size={18}
+                  className="text-[#ffe000] fill-black flex-shrink-0"
+                />
                 <span>Australian Formulation Science</span>
               </div>
               <div className="flex items-center gap-2.5 text-sm text-zinc-800 font-medium">
-                <CheckCircle2 size={18} className="text-[#ffe000] fill-black flex-shrink-0" />
+                <CheckCircle2
+                  size={18}
+                  className="text-[#ffe000] fill-black flex-shrink-0"
+                />
                 <span>Engineered for Extreme Temperatures</span>
               </div>
               <div className="flex items-center gap-2.5 text-sm text-zinc-800 font-medium">
-                <CheckCircle2 size={18} className="text-[#ffe000] fill-black flex-shrink-0" />
+                <CheckCircle2
+                  size={18}
+                  className="text-[#ffe000] fill-black flex-shrink-0"
+                />
                 <span>Pan-India Industrial Distribution</span>
               </div>
               <div className="flex items-center gap-2.5 text-sm text-zinc-800 font-medium">
-                <CheckCircle2 size={18} className="text-[#ffe000] fill-black flex-shrink-0" />
+                <CheckCircle2
+                  size={18}
+                  className="text-[#ffe000] fill-black flex-shrink-0"
+                />
                 <span>API, ISO &amp; OEM Standards</span>
               </div>
             </div>
@@ -101,7 +126,6 @@ export default function HomeAboutStrip() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

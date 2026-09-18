@@ -1,15 +1,15 @@
-import { Metadata } from 'next';
-import AboutHero from './components/AboutHero';
-import AboutStats from './components/AboutStats';
-import AboutValues from './components/AboutValues';
-import AboutPortfolio from './components/AboutPortfolio';
-import AboutTimeline from './components/AboutTimeline';
-import CallbackSection from '@/components/CallbackSection';
+import { Metadata } from "next";
+import AboutHero from "./components/AboutHero";
+import AboutStats from "./components/AboutStats";
+import AboutValues from "./components/AboutValues";
+import AboutPortfolio from "./components/AboutPortfolio";
+import AboutTimeline from "./components/AboutTimeline";
+import AboutCtaBanner from "./components/AboutCtaBanner";
 
 export const metadata: Metadata = {
-  title: 'About Us | Lubricon Specialities India',
+  title: "About Us | Lubricon Specialities India",
   description:
-    'Learn about Lubricon Specialities India — our Australian technology roots, high-performance formulations, quality standards, and commitment to Indian industry.',
+    "Learn about Lubricon Specialities India — our Australian technology roots, high-performance formulations, quality standards, and commitment to Indian industry.",
 };
 
 export default function AboutPage() {
@@ -24,14 +24,14 @@ export default function AboutPage() {
       {/* 3. Core Values & Principles */}
       <AboutValues />
 
-      {/* 4. Complete Lubrication Portfolio Summary */}
+      {/* 4. Complete Lubrication Portfolio Summary (Dark Industrial Section) */}
       <AboutPortfolio />
 
       {/* 5. A Decade of Excellence Timeline */}
       <AboutTimeline />
 
-      {/* 6. Signature Callback Form */}
-      <CallbackSection />
+      {/* 6. High-Conversion CTA Banner */}
+      <AboutCtaBanner />
     </main>
   );
 }

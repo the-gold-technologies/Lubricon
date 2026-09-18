@@ -1,4 +1,4 @@
-import LubricantFinder from '@/components/LubricantFinder';
+import LubricantFinder from "@/components/LubricantFinder";
 
 export default function HomeLubricantFinderSection() {
   return (
@@ -14,7 +14,8 @@ export default function HomeLubricantFinderSection() {
             Find the Exact Lubricon Lubricant
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 font-medium mt-3 leading-relaxed">
-            Select your machinery type or vehicle fleet to receive tailored, field-tested Australian oil formulations in seconds.
+            Select your machinery type or vehicle fleet to receive tailored,
+            field-tested Australian oil formulations in seconds.
           </p>
         </div>
 

@@ -8,7 +8,8 @@ export default function HomeStats() {
             Our Stats
           </h2>
           <p className="text-xs sm:text-sm text-zinc-500 font-medium mt-2 leading-relaxed">
-            We help you to unleash the power within your machinery and industrial operations.
+            We help you to unleash the power within your machinery and
+            industrial operations.
           </p>
         </div>
 

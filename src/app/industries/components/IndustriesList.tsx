@@ -1,7 +1,7 @@
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight, CheckCircle } from 'lucide-react';
-import { industries } from '@/data/industries';
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, CheckCircle } from "lucide-react";
+import { industries } from "@/data/industries";
 
 export default function IndustriesList() {
   return (
@@ -30,9 +30,12 @@ export default function IndustriesList() {
               ) : (
                 <div className="w-full h-80 bg-zinc-900 rounded-xl flex flex-col items-center justify-center text-center p-6 border-2 border-[#ffe000]">
                   <span className="text-6xl mb-4">{industry.icon}</span>
-                  <h3 className="text-xl font-bold text-white mb-2">{industry.name}</h3>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    {industry.name}
+                  </h3>
                   <p className="text-xs text-zinc-400 max-w-xs">
-                    Heavy duty engineered fluids ensuring maximum uptime and component protection.
+                    Heavy duty engineered fluids ensuring maximum uptime and
+                    component protection.
                   </p>
                 </div>
               )}
@@ -69,7 +72,8 @@ export default function IndustriesList() {
                 {/* Solutions */}
                 <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
                   <h4 className="text-emerald-900 text-xs font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                    <CheckCircle size={14} className="text-emerald-600" /> Lubricon Solutions
+                    <CheckCircle size={14} className="text-emerald-600" />{" "}
+                    Lubricon Solutions
                   </h4>
                   <ul className="space-y-1.5 text-xs text-zinc-700">
                     {industry.solutions.map((s, i) => (

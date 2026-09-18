@@ -1,29 +1,29 @@
-import { Globe, Shield, Zap, Award } from 'lucide-react';
+import { Globe, Shield, Zap, Award } from "lucide-react";
 
 const values = [
   {
     icon: <Globe size={26} className="text-black" />,
-    title: 'Australian Technology',
+    title: "Australian Technology",
     description:
-      'Formulations rooted in Australian R&D, tailored and field-tested specifically for harsh Indian industrial environments.',
+      "Formulations rooted in Australian R&D, tailored and field-tested specifically for harsh Indian industrial environments.",
   },
   {
     icon: <Shield size={26} className="text-black" />,
-    title: 'Uncompromising Quality',
+    title: "Uncompromising Quality",
     description:
-      'Every batch undergoes rigorous quality testing adhering to international API, ISO 9001:2015, and OEM standards.',
+      "Every batch undergoes rigorous quality testing adhering to international API, ISO 9001:2015, and OEM standards.",
   },
   {
     icon: <Zap size={26} className="text-black" />,
-    title: 'Equipment Protection',
+    title: "Equipment Protection",
     description:
-      'Designed to reduce friction, minimize heat, resist oxidation, and deliver extended drain intervals for peak machine uptime.',
+      "Designed to reduce friction, minimize heat, resist oxidation, and deliver extended drain intervals for peak machine uptime.",
   },
   {
     icon: <Award size={26} className="text-black" />,
-    title: 'Application Excellence',
+    title: "Application Excellence",
     description:
-      'We do not just sell lubricants — our technical engineering team provides custom lubrication audits and expert consultation.',
+      "We do not just sell lubricants — our technical engineering team provides custom lubrication audits and expert consultation.",
   },
 ];
 
@@ -39,7 +39,8 @@ export default function AboutValues() {
             What We Stand For
           </h2>
           <p className="text-sm sm:text-base text-zinc-600 font-medium mt-3">
-            Core commitments driving every barrel of lubricant formulated under the Lubricon standard.
+            Core commitments driving every barrel of lubricant formulated under
+            the Lubricon standard.
           </p>
         </div>
 

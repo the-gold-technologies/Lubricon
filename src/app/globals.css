@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -15,7 +15,8 @@
   --color-slate-200: #e2e8f0;
   --color-slate-100: #f1f5f9;
 
-  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans:
+    "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
   --font-display: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
 
   --radius-xl: 1rem;
@@ -32,7 +33,9 @@
 
   html {
     scroll-behavior: smooth;
-    font-feature-settings: "kern" 1, "liga" 1;
+    font-feature-settings:
+      "kern" 1,
+      "liga" 1;
   }
 
   body {
@@ -94,11 +97,15 @@
     background: rgba(28, 37, 65, 0.8);
     border-color: rgba(245, 158, 11, 0.3);
     transform: translateY(-4px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 30px rgba(245, 158, 11, 0.1);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.4),
+      0 0 30px rgba(245, 158, 11, 0.1);
   }
 
   .amber-glow {
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.25), 0 0 60px rgba(245, 158, 11, 0.1);
+    box-shadow:
+      0 0 30px rgba(245, 158, 11, 0.25),
+      0 0 60px rgba(245, 158, 11, 0.1);
   }
 
   .amber-glow-sm {
@@ -297,7 +304,9 @@
   }
   50% {
     opacity: 1;
-    box-shadow: 0 0 40px rgba(245, 158, 11, 0.6), 0 0 80px rgba(245, 158, 11, 0.2);
+    box-shadow:
+      0 0 40px rgba(245, 158, 11, 0.6),
+      0 0 80px rgba(245, 158, 11, 0.2);
   }
 }
 
@@ -441,18 +450,22 @@
 /* Product card specific */
 .product-card {
   background: #ffffff;
-  border: 1px solid #e4e4e7;
+  border: 1px solid #e2e8f0;
   border-radius: 1.25rem;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.03),
+    0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .product-card:hover {
   border-color: #000000;
   transform: translateY(-5px);
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 20px 35px -5px rgba(0, 0, 0, 0.08),
+    0 10px 15px -5px rgba(0, 0, 0, 0.03);
 }
 
 /* Modal */
@@ -478,7 +491,9 @@
   max-height: 90vh;
   overflow-y: auto;
   animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 224, 0, 0.15);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(255, 224, 0, 0.15);
 }
 
 /* Navbar */

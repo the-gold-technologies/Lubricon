@@ -9,7 +9,9 @@ export default function ContactHero() {
           Contact Lubricon India
         </h1>
         <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-          Whether you need an industrial product recommendation, a custom bulk quote, or technical application support — our engineers are here to assist.
+          Whether you need an industrial product recommendation, a custom bulk
+          quote, or technical application support — our engineers are here to
+          assist.
         </p>
       </div>
     </section>
