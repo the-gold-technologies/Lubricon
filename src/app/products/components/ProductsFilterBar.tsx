@@ -21,7 +21,7 @@ export default function ProductsFilterBar({
   };
 
   return (
-    <section className="sticky top-[73px] z-30 bg-white/95 backdrop-blur-xl border-b border-zinc-200/90 py-3.5 sm:py-4 shadow-sm transition-all">
+    <section className="relative bg-white border-b border-zinc-200/90 py-3.5 sm:py-4 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-3.5 lg:gap-6 items-stretch lg:items-center justify-between">
           {/* Enhanced Search Input */}
@@ -47,9 +47,12 @@ export default function ProductsFilterBar({
             )}
           </div>
 
-          {/* Tactile Category Pills with Count Badges */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1.5 lg:pb-0 scrollbar-none scroll-smooth">
-            <div className="hidden xl:flex items-center gap-1.5 text-zinc-400 text-xs font-black uppercase tracking-wider pr-1 shrink-0">
+          {/* Category Filter Pills - Smooth Left-Right Scroll with Zero Vertical Wobble */}
+          <div
+            className="flex items-center gap-2 overflow-x-auto overflow-y-hidden flex-nowrap scrollbar-none scroll-smooth py-2.5"
+            style={{ overflowY: "hidden", overflowX: "auto" }}
+          >
+            <div className="flex items-center gap-1.5 text-zinc-400 text-xs font-black uppercase tracking-wider pr-1 shrink-0">
               <SlidersHorizontal size={13} className="text-black" />
               <span className="text-zinc-600">Filter:</span>
             </div>
@@ -63,9 +66,9 @@ export default function ProductsFilterBar({
                   key={cat.id}
                   id={`cat-${cat.id}`}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`group shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                  className={`group shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-wider transition-colors duration-150 cursor-pointer ${
                     isActive
-                      ? "bg-[#ffe000] text-black border-2 border-black shadow-md transform scale-[1.03]"
+                      ? "bg-[#ffe000] text-black border-2 border-black shadow-sm"
                       : "bg-white hover:bg-zinc-50 text-zinc-700 hover:text-black border-2 border-zinc-200 hover:border-zinc-400 shadow-xs"
                   }`}
                 >

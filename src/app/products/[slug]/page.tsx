@@ -12,6 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
+import ProductCtaButtons from "./components/ProductCtaButtons";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -78,7 +79,7 @@ export default async function ProductDetailPage({ params }: Props) {
 
           <Link
             href="/products"
-            className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-black hover:text-[#d4af37] transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-black hover:text-zinc-600 transition-colors"
           >
             <ArrowLeft size={14} />
             <span>Back to Catalog</span>
@@ -262,54 +263,30 @@ export default async function ProductDetailPage({ params }: Props) {
                 </p>
               </div>
 
-              {/* Card 3: Enquiry & CTA Box matching user reference */}
-              <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-5">
-                <div className="text-center sm:text-left">
-                  <div className="text-sm sm:text-base font-black text-black">
-                    Need pricing or technical data sheets?
-                  </div>
-                  <div className="text-xs text-zinc-500 mt-1">
-                    Get custom estimates and TDS spec sheets within 24 hours.
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto justify-center">
-                  <Link
-                    href={`/contact?subject=${encodeURIComponent(product.name)}`}
-                    className="bg-[#ffe000] hover:bg-black hover:text-[#ffe000] text-black font-black px-6 py-3 rounded-full text-xs uppercase tracking-wider transition-all shadow-md text-center flex-1 sm:flex-none"
-                  >
-                    Get Custom Quote
-                  </Link>
-
-                  <Link
-                    href={`/contact?subject=${encodeURIComponent(product.name + " Price List")}`}
-                    className="bg-white hover:bg-zinc-100 text-black border-2 border-zinc-200 hover:border-black font-extrabold px-5 py-3 rounded-full text-xs uppercase tracking-wider transition-all text-center flex-1 sm:flex-none"
-                  >
-                    Request Price List
-                  </Link>
-                </div>
-              </div>
+              {/* Card 3: Enquiry & CTA Box with Popup Modals */}
+              <ProductCtaButtons product={product} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── RELATED PRODUCTS SECTION ── */}
+      {/* ── RELATED PRODUCTS SECTION (DULL WHITE BACKGROUND) ── */}
       {relatedProducts.length > 0 && (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-black text-white border-t border-zinc-800">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#f8f9fa] text-zinc-900 border-t border-zinc-200">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-800">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-200">
               <div>
-                <span className="text-[#ffe000] text-xs font-black uppercase tracking-wider">
-                  Engineered Formulations
-                </span>
-                <h2 className="text-2xl font-black text-white mt-1">
+                <div className="inline-flex items-center gap-2 bg-[#ffe000] text-black text-xs font-black uppercase px-3 py-1 rounded-full shadow-xs tracking-wider mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-black" />
+                  <span>Engineered Formulations</span>
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
                   Related Lubricon Products
                 </h2>
               </div>
               <Link
                 href={`/products?cat=${product.category}`}
-                className="text-xs font-bold text-[#ffe000] hover:text-white uppercase tracking-wider transition flex items-center gap-1"
+                className="text-xs font-black text-black hover:text-zinc-600 uppercase tracking-wider transition flex items-center gap-1"
               >
                 <span>View All In Category</span>
                 <ChevronRight size={14} />

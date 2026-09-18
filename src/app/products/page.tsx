@@ -5,8 +5,6 @@ import { useSearchParams } from "next/navigation";
 import ProductsHero from "./components/ProductsHero";
 import ProductsFilterBar from "./components/ProductsFilterBar";
 import ProductsGrid from "./components/ProductsGrid";
-import ProductModal from "@/components/ProductModal";
-import CallbackSection from "@/components/CallbackSection";
 import { products } from "@/data/products";
 import { Product } from "@/types";
 
@@ -61,8 +59,6 @@ function ProductsContent() {
           setSearchQuery("");
         }}
       />
-
-      <CallbackSection />
     </>
   );
 }
