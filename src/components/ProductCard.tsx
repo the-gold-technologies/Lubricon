@@ -1,107 +1,127 @@
 'use client';
 
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Product } from '@/types';
 import { ChevronRight, Star } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
-  onClick: (product: Product) => void;
+  onClick?: (product: Product) => void;
 }
 
-const categoryIconMap: Record<string, string> = {
-  'engine-oil': '🛢️',
-  'gear-oil': '⚙️',
-  atf: '🔄',
-  industrial: '🏭',
-  fluids: '💧',
+const categoryImageMap: Record<string, string> = {
+  'engine-oil': '/images/prod-engine-oil.jpg',
+  'gear-oil': '/images/prod-gear-oil.jpg',
+  atf: '/images/prod-atf.jpg',
+  industrial: '/images/prod-industrial.jpg',
+  fluids: '/images/prod-industrial.jpg',
 };
 
 const badgeClassMap: Record<string | 'default', string> = {
   'Latest Grade': 'badge-amber',
-  'Best Seller': 'badge-orange',
+  'Best Seller': 'badge-amber',
   ATF: 'badge-blue',
-  Specialty: 'badge-green',
+  Specialty: 'badge-amber',
   'Corrosion Shield': 'badge-blue',
-  Precision: 'badge-green',
+  Precision: 'badge-amber',
   'Industrial Grade': 'badge-amber',
-  'Eco Compliance': 'badge-green',
+  'Eco Compliance': 'badge-amber',
   default: 'badge-amber',
 };
 
 export default function ProductCard({ product, onClick }: ProductCardProps) {
-  const icon = categoryIconMap[product.category] || '🔧';
+  const router = useRouter();
+  const imgSrc = categoryImageMap[product.category] || '/images/prod-engine-oil.jpg';
   const badgeClass = product.badge
     ? badgeClassMap[product.badge] || badgeClassMap.default
     : '';
+
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick(product);
+    } else {
+      router.push(`/products/${product.slug}`);
+    }
+  };
 
   return (
     <div
       role="button"
       tabIndex={0}
-      className="product-card card-shine group cursor-pointer"
-      onClick={() => onClick(product)}
-      onKeyDown={(e) => e.key === 'Enter' && onClick(product)}
+      className="product-card group cursor-pointer flex flex-col justify-between"
+      onClick={handleCardClick}
+      onKeyDown={(e) => e.key === 'Enter' && handleCardClick()}
       aria-label={`View details for ${product.name}`}
     >
-      {/* Icon header */}
-      <div className="h-28 bg-gradient-to-br from-navy-800/70 to-navy-700/40 flex items-center justify-center relative overflow-hidden">
-        <span className="text-5xl group-hover:scale-110 transition-transform duration-300">
-          {icon}
-        </span>
-        {product.featured && (
-          <div className="absolute top-3 left-3">
-            <Star size={12} className="text-amber-400 fill-amber-400" />
-          </div>
-        )}
-        {product.badge && (
-          <div className="absolute top-3 right-3">
-            <span className={`badge ${badgeClass}`}>{product.badge}</span>
-          </div>
-        )}
-        {/* Gradient overlay on hover */}
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div>
+        {/* Clean Studio Drum Header */}
+        <div className="relative h-48 w-full bg-[#f4f5f7] overflow-hidden border-b border-zinc-100 flex items-center justify-center">
+          <Image
+            src="/images/lubricon-drum-clean.jpg"
+            alt={product.name}
+            fill
+            className="object-contain p-3 group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          />
+
+          {product.featured && (
+            <div className="absolute top-3 left-3 z-10 bg-black text-[#ffe000] px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-sm">
+              <Star size={11} className="fill-[#ffe000]" />
+              <span className="text-[10px] font-black uppercase tracking-wider">Featured</span>
+            </div>
+          )}
+          {product.badge && (
+            <div className="absolute top-3 right-3 z-10">
+              <span className="bg-[#ffe000] text-black text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm">
+                {product.badge}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Content Details */}
+        <div className="p-5">
+          {product.subcategory && (
+            <p className="text-zinc-500 text-[11px] font-bold uppercase tracking-wider mb-1.5">
+              {product.subcategory}
+            </p>
+          )}
+          <h3 className="text-black font-extrabold text-base leading-snug mb-2 group-hover:text-zinc-700 transition-colors line-clamp-2">
+            {product.name}
+          </h3>
+          <p className="text-zinc-600 text-xs leading-relaxed line-clamp-2 mb-4 font-medium">
+            {product.description}
+          </p>
+
+          {/* Specs pills */}
+          {(product.specifications.viscosity || product.specifications.grade) && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {product.specifications.viscosity && (
+                <span className="text-[11px] font-bold bg-zinc-100 text-zinc-800 px-2.5 py-1 rounded-md border border-zinc-200">
+                  {product.specifications.viscosity}
+                </span>
+              )}
+              {product.specifications.grade && (
+                <span className="text-[11px] font-bold bg-zinc-100 text-zinc-800 px-2.5 py-1 rounded-md border border-zinc-200">
+                  {product.specifications.grade}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        {product.subcategory && (
-          <p className="text-amber-500 text-xs font-semibold uppercase tracking-wider mb-1">
-            {product.subcategory}
-          </p>
-        )}
-        <h3 className="text-white font-semibold text-sm leading-snug mb-2 group-hover:text-amber-200 transition-colors line-clamp-2">
-          {product.name}
-        </h3>
-        <p className="text-slate-500 text-xs leading-relaxed line-clamp-2 mb-3">
-          {product.description}
-        </p>
-
-        {/* Specs pills */}
-        {(product.specifications.viscosity || product.specifications.grade) && (
-          <div className="flex flex-wrap gap-1.5 mb-3">
-            {product.specifications.viscosity && (
-              <span className="text-xs bg-navy-700/60 text-slate-300 px-2 py-0.5 rounded-md border border-white/5">
-                {product.specifications.viscosity}
-              </span>
-            )}
-            {product.specifications.grade && (
-              <span className="text-xs bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded-md border border-amber-500/20">
-                {product.specifications.grade}
-              </span>
-            )}
-          </div>
-        )}
-
-        <div className="flex items-center justify-between">
-          <span className="text-slate-500 text-xs">
-            {product.specifications.packaging
-              ? `${product.specifications.packaging.length} pack sizes`
-              : 'Custom sizes'}
-          </span>
-          <span className="text-amber-400 text-xs font-semibold flex items-center gap-0.5 group-hover:gap-1.5 transition-all">
-            View Details <ChevronRight size={12} />
-          </span>
-        </div>
+      {/* Footer link */}
+      <div className="px-5 pb-5 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs">
+        <span className="text-zinc-400 font-semibold">
+          {product.specifications.packaging
+            ? `${product.specifications.packaging.length} pack sizes`
+            : 'Standard packs'}
+        </span>
+        <span className="text-black group-hover:text-[#d4af37] font-extrabold uppercase tracking-wider flex items-center gap-1.5 transition-colors">
+          View Details <ChevronRight size={14} className="text-black" />
+        </span>
       </div>
     </div>
   );

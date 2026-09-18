@@ -50,7 +50,7 @@ function ProductsContent() {
         products={filtered}
         activeCategory={activeCategory}
         searchQuery={searchQuery}
-        onSelectProduct={setSelectedProduct}
+        onSelectProduct={() => {}}
         onReset={() => {
           setActiveCategory('all');
           setSearchQuery('');
@@ -58,13 +58,6 @@ function ProductsContent() {
       />
 
       <CallbackSection />
-
-      {selectedProduct && (
-        <ProductModal
-          product={selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-        />
-      )}
     </>
   );
 }

@@ -1,193 +1,524 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronRight, Zap } from 'lucide-react';
+import Link from 'next/link';
+import { 
+  Factory, 
+  FlaskConical, 
+  Truck, 
+  Settings, 
+  Wind, 
+  Gauge, 
+  ShieldCheck, 
+  ArrowRight, 
+  RotateCcw, 
+  Phone, 
+  CheckCircle2, 
+  ChevronRight,
+  Sparkles,
+  type LucideIcon
+} from 'lucide-react';
 
-const steps = [
+interface CategoryOption {
+  id: 'automotive' | 'industrial' | 'special';
+  title: string;
+  subtitle: string;
+  icon: LucideIcon;
+}
+
+interface EquipmentOption {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: LucideIcon;
+}
+
+const categoriesList: CategoryOption[] = [
   {
-    id: 'use',
-    question: 'What is the primary use?',
-    options: [
-      { value: 'automotive', label: '🚗 Automotive / Vehicle' },
-      { value: 'industrial', label: '🏭 Industrial Machinery' },
-      { value: 'special', label: '🔬 Specialist Application' },
-    ],
+    id: 'automotive',
+    title: 'Automotive & Fleet',
+    subtitle: 'Commercial diesel trucks, light transport fleets, and transmissions',
+    icon: Truck,
   },
   {
-    id: 'type',
-    question: 'Select equipment type:',
-    options: {
-      automotive: [
-        { value: 'diesel-heavy', label: '🚛 Heavy Diesel (Truck/Bus)' },
-        { value: 'diesel-light', label: '🚐 Light Diesel Vehicle' },
-        { value: 'petrol', label: '🚗 Petrol Car' },
-        { value: 'transmission', label: '🔄 Automatic Gearbox / Steering' },
-        { value: 'axle', label: '⚙️ Differential / Axle' },
-      ],
-      industrial: [
-        { value: 'gearbox-light', label: '⚙️ Light Industrial Gearbox' },
-        { value: 'gearbox-heavy', label: '⚙️ Heavy Industrial Gearbox (Steel/Paper)' },
-        { value: 'compressor', label: '💨 Air Compressor' },
-        { value: 'vacuum', label: '🌀 Vacuum Pump' },
-      ],
-      special: [
-        { value: 'edm', label: '⚡ EDM / Spark Erosion Machine' },
-        { value: 'rust-prevent', label: '🛡️ Rust Prevention & Storage' },
-        { value: 'def', label: '🌿 SCR/AdBlue DEF (Emission Control)' },
-        { value: 'brake', label: '🛑 Brake / Clutch Hydraulic' },
-      ],
-    },
+    id: 'industrial',
+    title: 'Industrial Manufacturing',
+    subtitle: 'Injection molding presses, paper mills, CNC machining & gearboxes',
+    icon: Factory,
+  },
+  {
+    id: 'special',
+    title: 'Specialty Formulations',
+    subtitle: 'High dielectric EDM fluids, rust guard protectants & AdBlue DEF',
+    icon: FlaskConical,
   },
 ];
 
-const recommendations: Record<string, { name: string; grade: string; why: string }[]> = {
+const equipmentMap: Record<'automotive' | 'industrial' | 'special', EquipmentOption[]> = {
+  automotive: [
+    {
+      id: 'diesel-heavy',
+      title: 'Heavy Duty Diesel Engine',
+      subtitle: 'Euro 6 / BS6 haulage trucks, excavators, and passenger buses',
+      icon: Truck,
+    },
+    {
+      id: 'transmission',
+      title: 'Automatic Transmission & Steering',
+      subtitle: 'Smooth gear shift ATFs and hydraulic power steering units',
+      icon: Settings,
+    },
+    {
+      id: 'axle',
+      title: 'Differentials & Hypoid Axles',
+      subtitle: 'High extreme-pressure rear differentials and axle boxes',
+      icon: Settings,
+    },
+  ],
+  industrial: [
+    {
+      id: 'molding',
+      title: 'Plastic Injection Molding',
+      subtitle: 'Anti-wear hydraulic systems and high-temp tie-bar grease',
+      icon: Factory,
+    },
+    {
+      id: 'gearbox-heavy',
+      title: 'Heavy Industrial Gearboxes',
+      subtitle: 'Slow-speed, ultra-heavy shock loads in paper and steel mills',
+      icon: Gauge,
+    },
+    {
+      id: 'compressor',
+      title: 'Rotary Screw & Air Compressors',
+      subtitle: 'Continuous-run industrial air and refrigeration compressors',
+      icon: Wind,
+    },
+  ],
+  special: [
+    {
+      id: 'edm',
+      title: 'CNC EDM & Spark Erosion',
+      subtitle: 'High dielectric purity fluids for precision wire EDM tooling',
+      icon: Sparkles,
+    },
+    {
+      id: 'rust-prevent',
+      title: 'Anti-Rust Preservation',
+      subtitle: 'Long-term de-watering corrosion preventive films for metal parts',
+      icon: ShieldCheck,
+    },
+    {
+      id: 'def',
+      title: 'AdBlue DEF Emission Control',
+      subtitle: 'ISO 22241 compliant 32.5% aqueous urea solution (AUS32)',
+      icon: FlaskConical,
+    },
+  ],
+};
+
+const resultsData: Record<string, {
+  name: string;
+  grade: string;
+  badge: string;
+  benefits: string[];
+  link: string;
+}[]> = {
   'diesel-heavy': [
-    { name: 'Lubricon XtremeX CK-4 15W40', grade: 'API CK-4', why: 'Latest generation oil for Euro 6 and modern HDDE engines with DPF/EGR.' },
-    { name: 'Lubricon UltraX CI-4 Plus 15W40', grade: 'API CI-4+', why: 'Excellent for older turbocharged heavy diesels requiring CI-4 Plus spec.' },
-  ],
-  'diesel-light': [
-    { name: 'Lubricon TurboX CI-4 15W40', grade: 'API CI-4', why: 'Reliable protection for light commercial diesel vehicles and pickups.' },
-    { name: 'Lubricon MultiX 20W40', grade: 'API SJ/CF', why: 'Versatile and economical for older light diesel engines.' },
-  ],
-  petrol: [
-    { name: 'Lubricon MultiX 20W40', grade: 'API SJ/CF', why: 'Proven multigrade protection for petrol cars and passenger vehicles.' },
+    {
+      name: 'Lubricon XtremeX CK-4 15W40',
+      grade: 'API CK-4 / ACEA E9',
+      badge: 'Euro 6 & BS6 Ready',
+      benefits: ['Advanced soot dispersancy', 'DPF & SCR catalytic protection', 'Extended 60,000+ km drain intervals'],
+      link: '/products?cat=engine-oil&search=CK-4',
+    },
+    {
+      name: 'Lubricon UltraX CI-4 Plus 15W40',
+      grade: 'API CI-4 Plus / SL',
+      badge: 'High-Torque Turbo',
+      benefits: ['Unmatched piston deposit control', 'Thermal stability under severe loads', 'Proven fleet operating savings'],
+      link: '/products?cat=engine-oil&search=CI-4',
+    },
   ],
   transmission: [
-    { name: 'Lubricon DEX III ATF', grade: 'Dexron III', why: 'Proven ATF for automatic gearboxes and hydraulic power steering.' },
-    { name: 'Lubricon ATF Type A', grade: 'ATF Type A', why: 'Ideal for older vehicles requiring ATF Type A specification.' },
+    {
+      name: 'Lubricon DEX III ATF',
+      grade: 'General Motors Dexron IIIH',
+      badge: 'Smooth Shifting',
+      benefits: ['Superior anti-shudder performance', 'Extreme low-temperature fluidity', 'Complete seal compatibility'],
+      link: '/products?cat=atf',
+    },
   ],
   axle: [
-    { name: 'Lubricon GearShield Pro 80W90 GL-5', grade: 'GL-5', why: 'Superior EP protection for hypoid axles, differentials, and transfer boxes.' },
-    { name: 'Lubricon HeavyGear Pro 85W140 GL-5', grade: 'GL-5', why: 'For very high-load rear axles on heavy trucks and off-highway machines.' },
+    {
+      name: 'Lubricon HeavyGear Pro 85W140 GL-5',
+      grade: 'API GL-5 / MT-1',
+      badge: 'Extreme Pressure EP',
+      benefits: ['Prevents hypoid gear spalling', 'Thermal resilience under 120°C+', 'Resists shock-load tooth shearing'],
+      link: '/products?cat=gear-oil',
+    },
   ],
-  'gearbox-light': [
-    { name: 'Lubricon GearTuff 100/220/320', grade: 'ISO VG 100–320', why: 'CLP gear oil range for light to medium enclosed industrial gearboxes.' },
+  molding: [
+    {
+      name: 'Lubricon HydroShield AW-68',
+      grade: 'DIN 51524 Part 2 (HLP)',
+      badge: 'Zero Varnish Formula',
+      benefits: ['Zero-varnish valve operation', 'Superior hydrolytic stability', 'Protects high-cycle toggle pins'],
+      link: '/products?cat=industrial',
+    },
   ],
   'gearbox-heavy': [
-    { name: 'Lubricon GearTuff 460', grade: 'ISO VG 460', why: 'For high-load, slow-speed gearboxes in steel mills and paper plants.' },
-    { name: 'Lubricon GearTuff 680', grade: 'ISO VG 680', why: 'Ultra-heavy EP oil for the most demanding steel and cement gearboxes.' },
+    {
+      name: 'Lubricon GearTuff 460 / 680',
+      grade: 'ISO VG 460 / 680 CLP',
+      badge: 'Heavy Metallurgy Spec',
+      benefits: ['High micro-pitting resistance', 'Exceptional water separation', 'Engineered for 24/7 furnace proximity'],
+      link: '/products?cat=gear-oil',
+    },
   ],
   compressor: [
-    { name: 'Lubricon Compressor Oil', grade: 'ISO VG 32–150', why: 'Excellent for rotary screw, vane, and reciprocating air compressors.' },
-  ],
-  vacuum: [
-    { name: 'Lubricon VaccuSyn 100', grade: 'ISO VG 100', why: 'Deep vacuum-rated oil with very low vapor pressure for rotary vane pumps.' },
+    {
+      name: 'Lubricon SynAir Compressor Fluid',
+      grade: 'ISO VG 46 / 68',
+      badge: '8000 hr Service Life',
+      benefits: ['Ultra-low carbon deposit tendency', 'Fast air release & foam resistance', 'Reduces separator maintenance'],
+      link: '/products?cat=industrial',
+    },
   ],
   edm: [
-    { name: 'Lubricon EDM Oil', grade: 'ISO VG 3–5', why: 'High dielectric purity fluid for wire and die-sink EDM machining.' },
+    {
+      name: 'Lubricon SparkPure EDM Fluid',
+      grade: 'Dielectric Grade',
+      badge: 'Micro-Finishing Quality',
+      benefits: ['Rapid particle settling rate', 'High flash point & low odor', 'Mirror-like workpiece surface finish'],
+      link: '/products?cat=industrial',
+    },
   ],
   'rust-prevent': [
-    { name: 'Lubricon RustGuard Pro', grade: 'Rust Preventive', why: 'Transparent non-staining film for long-term metal component protection.' },
+    {
+      name: 'Lubricon RustGuard Pro',
+      grade: 'Dewatering Barrier Film',
+      badge: 'Up to 24 Months Storage',
+      benefits: ['Ultra-thin non-sticky film', 'Fingerprint neutralization', 'Easy removal with alkaline cleaner'],
+      link: '/products?cat=industrial',
+    },
   ],
   def: [
-    { name: 'Lubricon AdBlue / DEF', grade: 'ISO 22241', why: '32.5% pure urea solution for SCR emission control — Euro 4/5/6 compliant.' },
-  ],
-  brake: [
-    { name: 'Lubricon Brake Fluid DOT 3/4', grade: 'DOT 3 / DOT 4', why: 'High boiling point glycol-based fluid for all hydraulic braking systems.' },
+    {
+      name: 'Lubricon AdBlue AUS32',
+      grade: 'ISO 22241 / DIN 70070',
+      badge: 'Pure Automotive DEF',
+      benefits: ['99.9% catalytic SCR efficiency', 'Prevents injector crystallization', 'Certified urea concentration'],
+      link: '/products?cat=coolants',
+    },
   ],
 };
 
 export default function LubricantFinder() {
-  const [step, setStep] = useState(0);
-  const [selections, setSelections] = useState<string[]>([]);
-  const [result, setResult] = useState<string | null>(null);
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [selectedCategory, setSelectedCategory] = useState<'automotive' | 'industrial' | 'special' | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  const currentStep = steps[step];
-  const options = step === 0
-    ? (currentStep.options as { value: string; label: string }[])
-    : (currentStep.options as Record<string, { value: string; label: string }[]>)[selections[0]] || [];
-
-  const handleSelect = (value: string) => {
-    if (step === 0) {
-      setSelections([value]);
-      setStep(1);
-    } else {
-      setSelections([selections[0], value]);
-      setResult(value);
-      setStep(2);
-    }
+  const handleSelectCategory = (categoryId: 'automotive' | 'industrial' | 'special') => {
+    setSelectedCategory(categoryId);
+    setIsTransitioning(true);
+    // Smooth auto-transition with 280ms feedback highlight
+    setTimeout(() => {
+      setSelectedType(null);
+      setCurrentStep(2);
+      setIsTransitioning(false);
+    }, 280);
   };
 
-  const reset = () => {
-    setStep(0);
-    setSelections([]);
-    setResult(null);
+  const handleSelectType = (typeId: string) => {
+    setSelectedType(typeId);
+    setIsTransitioning(true);
+    // Smooth auto-transition to recommendations
+    setTimeout(() => {
+      setCurrentStep(3);
+      setIsTransitioning(false);
+    }, 280);
   };
 
-  const recs = result ? recommendations[result] || [] : [];
+  const handleReset = () => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentStep(1);
+      setSelectedCategory(null);
+      setSelectedType(null);
+      setIsTransitioning(false);
+    }, 180);
+  };
+
+  const currentOptions = selectedCategory ? equipmentMap[selectedCategory] : [];
+  const matchedProducts = selectedType ? resultsData[selectedType] || [] : [];
 
   return (
-    <div className="glass rounded-2xl p-6 md:p-8">
-      {/* Progress */}
-      <div className="flex items-center gap-2 mb-6">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-              step > i ? 'bg-amber-400' : step === i ? 'bg-amber-500/60' : 'bg-white/10'
-            }`}
-          />
-        ))}
+    <div className="w-full">
+      {/* ── STEP PROGRESS INDICATORS ── */}
+      <div className="flex items-center justify-between gap-3 mb-8 pb-6 border-b border-zinc-200">
+        {[
+          { num: 1, label: 'Application Category' },
+          { num: 2, label: 'Equipment Type' },
+          { num: 3, label: 'Recommended Formulation' },
+        ].map((item) => {
+          const isActive = currentStep === item.num;
+          const isDone = currentStep > item.num;
+
+          return (
+            <div key={item.num} className="flex-1 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (isDone) {
+                    if (item.num === 1) handleReset();
+                    else if (item.num === 2) setCurrentStep(2);
+                  }
+                }}
+                disabled={!isDone}
+                className={`w-9 h-9 rounded-full flex items-center justify-center font-black text-xs transition-all duration-300 ${
+                  isDone
+                    ? 'bg-black text-[#ffe000] cursor-pointer hover:scale-110'
+                    : isActive
+                    ? 'bg-[#ffe000] text-black ring-4 ring-[#ffe000]/30 shadow-md scale-105'
+                    : 'bg-zinc-100 text-zinc-400 border border-zinc-200 cursor-not-allowed'
+                }`}
+              >
+                {isDone ? '✓' : item.num}
+              </button>
+              <div className="hidden sm:block">
+                <div
+                  className={`text-xs font-bold uppercase tracking-wider transition-colors ${
+                    isActive || isDone ? 'text-black' : 'text-zinc-400'
+                  }`}
+                >
+                  {item.label}
+                </div>
+              </div>
+              {item.num < 3 && (
+                <div
+                  className={`h-1 flex-1 rounded-full hidden md:block transition-all duration-500 ${
+                    isDone ? 'bg-black' : 'bg-zinc-200'
+                  }`}
+                />
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {step < 2 ? (
-        <>
-          <div className="flex items-center gap-2 mb-5">
-            <Zap size={16} className="text-amber-400" />
-            <h3 className="text-white font-semibold">{currentStep.question}</h3>
+      {/* ── STEP 1: CATEGORY SELECTION ── */}
+      {currentStep === 1 && (
+        <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-40 scale-[0.98]' : 'opacity-100 scale-100'}`}>
+          <div className="mb-6">
+            <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
+              Select Application Category
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">
+              Choose your operating domain — we will automatically advance to specific equipment types.
+            </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => handleSelect(opt.value)}
-                className="flex items-center gap-3 p-4 bg-navy-800/50 border border-white/10 rounded-xl text-left text-slate-200 text-sm font-medium hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-200 transition-all group"
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {categoriesList.map((opt) => {
+              const Icon = opt.icon;
+              const isSelected = selectedCategory === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => handleSelectCategory(opt.id)}
+                  className={`p-6 rounded-2xl text-left transition-all duration-300 group shadow-sm hover:shadow-lg flex flex-col justify-between border-2 ${
+                    isSelected
+                      ? 'bg-[#ffe000] border-black scale-[1.02]'
+                      : 'bg-white hover:bg-[#fffde6] border-zinc-200 hover:border-[#ffe000]'
+                  }`}
+                >
+                  <div>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors shadow-sm ${
+                      isSelected
+                        ? 'bg-black text-[#ffe000]'
+                        : 'bg-black text-[#ffe000] group-hover:bg-[#ffe000] group-hover:text-black'
+                    }`}>
+                      <Icon size={24} />
+                    </div>
+                    <h4 className="text-base font-black text-black mb-1.5">
+                      {opt.title}
+                    </h4>
+                    <p className="text-xs text-zinc-600 leading-relaxed font-medium">
+                      {opt.subtitle}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-black uppercase tracking-wider text-black">
+                    <span>{isSelected ? 'Loading Equipment...' : 'Select & Continue'}</span>
+                    <ChevronRight size={16} className="transform group-hover:translate-x-1.5 transition-transform" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── STEP 2: EQUIPMENT SUB-TYPE SELECTION ── */}
+      {currentStep === 2 && (
+        <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-40 scale-[0.98]' : 'opacity-100 scale-100'}`}>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
+                Select Equipment / Machinery Type
+              </h3>
+              <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">
+                Click your mechanical component to immediately generate recommended formulations.
+              </p>
+            </div>
+            <button
+              onClick={handleReset}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-xs font-bold text-zinc-700 hover:text-black transition-colors"
+            >
+              <RotateCcw size={12} />
+              <span>← Back</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {currentOptions.map((opt) => {
+              const Icon = opt.icon;
+              const isSelected = selectedType === opt.id;
+              return (
+                <button
+                  key={opt.id}
+                  onClick={() => handleSelectType(opt.id)}
+                  className={`p-6 rounded-2xl text-left transition-all duration-300 group shadow-sm hover:shadow-lg flex flex-col justify-between border-2 ${
+                    isSelected
+                      ? 'bg-[#ffe000] border-black scale-[1.02]'
+                      : 'bg-white hover:bg-[#fffde6] border-zinc-200 hover:border-[#ffe000]'
+                  }`}
+                >
+                  <div>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors shadow-sm ${
+                      isSelected
+                        ? 'bg-black text-[#ffe000]'
+                        : 'bg-zinc-100 group-hover:bg-[#ffe000] text-black'
+                    }`}>
+                      <Icon size={24} />
+                    </div>
+                    <h4 className="text-base font-black text-black mb-1.5">
+                      {opt.title}
+                    </h4>
+                    <p className="text-xs text-zinc-600 leading-relaxed font-medium">
+                      {opt.subtitle}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-black uppercase tracking-wider text-black">
+                    <span>{isSelected ? 'Matching Formulation...' : 'View Formulations'}</span>
+                    <ArrowRight size={16} className="transform group-hover:translate-x-1.5 transition-transform text-black" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── STEP 3: MATCHED LUBRICON RECOMMENDATIONS ── */}
+      {currentStep === 3 && (
+        <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-40 scale-[0.98]' : 'opacity-100 scale-100'}`}>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-200">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-black text-black uppercase tracking-wider mb-1">
+                <CheckCircle2 size={16} className="text-[#ffe000] fill-black" />
+                <span>Formulations Match Found</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
+                Recommended Lubricon Formulations
+              </h3>
+            </div>
+
+            <button
+              onClick={handleReset}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-zinc-300 hover:border-black text-xs font-bold text-zinc-700 hover:text-black transition-all self-start sm:self-auto shadow-sm"
+            >
+              <RotateCcw size={13} />
+              <span>Change Criteria</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {matchedProducts.map((prod, idx) => (
+              <div
+                key={idx}
+                className="p-6 rounded-2xl bg-white border-2 border-[#ffe000] shadow-md hover:shadow-lg transition-all flex flex-col justify-between"
               >
-                <span className="text-xl">{opt.label.split(' ')[0]}</span>
-                <span>{opt.label.slice(opt.label.indexOf(' ') + 1)}</span>
-                <ChevronRight size={14} className="ml-auto text-slate-500 group-hover:text-amber-400 transition-colors" />
-              </button>
+                <div>
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <span className="bg-[#ffe000] text-black font-extrabold text-[11px] uppercase px-3 py-1 rounded-full shadow-sm">
+                      {prod.badge}
+                    </span>
+                    <span className="bg-black text-[#ffe000] font-black text-[11px] uppercase px-3 py-1 rounded-full">
+                      {prod.grade}
+                    </span>
+                  </div>
+
+                  <h4 className="text-lg font-black text-black mb-2">
+                    {prod.name}
+                  </h4>
+
+                  <ul className="space-y-2 mb-6">
+                    {prod.benefits.map((b, bIdx) => (
+                      <li key={bIdx} className="flex items-start gap-2 text-xs font-medium text-zinc-700">
+                        <CheckCircle2 size={14} className="text-black flex-shrink-0 mt-0.5" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="pt-4 border-t border-zinc-100 flex items-center gap-3">
+                  <Link
+                    href={prod.link}
+                    className="flex-1 py-2.5 bg-black hover:bg-zinc-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-full text-center transition shadow flex items-center justify-center gap-1.5"
+                  >
+                    <span>View Specs</span>
+                    <ArrowRight size={13} />
+                  </Link>
+
+                  <a
+                    href="tel:18005696363"
+                    className="py-2.5 px-4 bg-[#ffe000] hover:bg-[#fff04d] text-black font-extrabold text-xs uppercase rounded-full transition shadow flex items-center justify-center gap-1.5"
+                  >
+                    <Phone size={13} />
+                    <span className="hidden sm:inline">Quote</span>
+                  </a>
+                </div>
+              </div>
             ))}
           </div>
-          {step > 0 && (
-            <button onClick={reset} className="mt-4 text-slate-400 text-sm hover:text-amber-400 transition-colors">
-              ← Start over
-            </button>
-          )}
-        </>
-      ) : (
-        <div className="animate-slide-up">
-          <div className="flex items-center gap-2 mb-5">
-            <span className="text-2xl">✅</span>
-            <h3 className="text-white font-semibold">Recommended Lubricon Products</h3>
-          </div>
-          {recs.length === 0 ? (
-            <p className="text-slate-400 text-sm">
-              Please contact our technical team for a custom recommendation.
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {recs.map((rec, i) => (
-                <div
-                  key={i}
-                  className="bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 rounded-xl p-4"
-                >
-                  <div className="flex items-start justify-between gap-3 mb-2">
-                    <h4 className="text-amber-300 font-bold text-sm">{rec.name}</h4>
-                    <span className="badge badge-amber flex-shrink-0">{rec.grade}</span>
-                  </div>
-                  <p className="text-slate-400 text-xs leading-relaxed">{rec.why}</p>
+
+          {/* Expert Technical Support Callout */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-zinc-950 text-white flex flex-col sm:flex-row items-center justify-between gap-4 border-2 border-[#ffe000] shadow-lg">
+            <div className="flex items-center gap-3 text-center sm:text-left">
+              <div className="w-10 h-10 rounded-full bg-[#ffe000] text-black flex items-center justify-center font-bold flex-shrink-0 shadow">
+                <Phone size={18} />
+              </div>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-[#ffe000]">
+                  Need Custom OEM Formulations or Laboratory Oil Analysis?
                 </div>
-              ))}
+                <div className="text-xs text-zinc-300">
+                  Speak directly with our Indian field application engineers.
+                </div>
+              </div>
             </div>
-          )}
-          <div className="flex gap-3 mt-6">
-            <a href="tel:18005696363" className="btn-primary text-sm py-2.5 px-5">
-              Get a Quote
+
+            <a
+              href="tel:18005696363"
+              className="py-2.5 px-6 bg-[#ffe000] hover:bg-white text-black font-black text-xs uppercase tracking-wider rounded-full transition shadow-md whitespace-nowrap"
+            >
+              Call 1800 569 6363
             </a>
-            <button onClick={reset} className="btn-outline text-sm py-2.5 px-5">
-              Start Over
-            </button>
           </div>
         </div>
       )}

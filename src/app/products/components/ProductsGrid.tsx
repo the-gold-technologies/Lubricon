@@ -62,7 +62,6 @@ export default function ProductsGrid({
               <ProductCard
                 key={product.id}
                 product={product}
-                onClick={onSelectProduct}
               />
             ))}
           </div>

@@ -80,9 +80,9 @@ export default function HeroSlider() {
               <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/40" />
 
-              {/* Text content aligned at bottom */}
+              {/* Text content aligned at bottom, shifted 30px higher */}
               <div className="absolute inset-0 flex items-end">
-                <div className="max-w-7xl mx-auto px-6 sm:px-12 w-full pb-12 sm:pb-14 relative z-10">
+                <div className="max-w-7xl mx-auto px-6 sm:px-12 w-full pb-[78px] sm:pb-[86px] relative z-10">
                   <div className="max-w-xl">
                     {/* Badge: Light yellow background with bold black text & border */}
                     <div className="inline-flex items-center gap-2 bg-[#fffde6] text-black border border-[#ffe000] font-bold text-xs uppercase px-3.5 py-1 rounded-full mb-3.5 shadow-sm tracking-wide">

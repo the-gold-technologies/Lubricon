@@ -4,7 +4,7 @@ import HomeIndustries from './components/HomeIndustries';
 import HomeAboutStrip from './components/HomeAboutStrip';
 import HomeProductShowcase from './components/HomeProductShowcase';
 import HomeLubricantFinderSection from './components/HomeLubricantFinderSection';
-import CallbackSection from '@/components/CallbackSection';
+import HomeCtaBanner from './components/HomeCtaBanner';
 
 export default function HomePage() {
   return (
@@ -27,8 +27,8 @@ export default function HomePage() {
       {/* 6. Lubricant Finder Advisor */}
       <HomeLubricantFinderSection />
 
-      {/* 7. Signature Callback Form */}
-      <CallbackSection />
+      {/* 7. Modern Arch CTA Banner (Replacing the callback form) */}
+      <HomeCtaBanner />
     </div>
   );
 }

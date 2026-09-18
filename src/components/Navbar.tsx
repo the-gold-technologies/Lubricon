@@ -369,7 +369,7 @@ export default function Navbar() {
                             href={item.href}
                             className={`flex items-center justify-between px-4 py-2.5 text-[13px] border-b border-zinc-100 last:border-b-0 transition-none ${
                               isHovered
-                                ? "bg-[#ff9900] text-white font-semibold"
+                                ? "bg-[#ffe000] text-black font-extrabold"
                                 : "text-zinc-800 hover:bg-zinc-50"
                             }`}
                           >
@@ -377,7 +377,7 @@ export default function Navbar() {
                             {hasSub && (
                               <span
                                 className={`text-[11px] font-bold ${
-                                  isHovered ? "text-white" : "text-zinc-400"
+                                  isHovered ? "text-black" : "text-zinc-400"
                                 }`}
                               >
                                 ›
@@ -392,7 +392,7 @@ export default function Navbar() {
                                 <Link
                                   key={idx}
                                   href={sub.href}
-                                  className="block px-5 py-2.5 text-[13px] text-zinc-800 hover:bg-zinc-50 hover:text-[#ff9900] border-b border-zinc-100 last:border-b-0 transition-colors"
+                                  className="block px-5 py-2.5 text-[13px] text-zinc-800 hover:bg-[#ffe000] hover:text-black font-medium border-b border-zinc-100 last:border-b-0 transition-colors"
                                 >
                                   {sub.label}
                                 </Link>
@@ -435,7 +435,7 @@ export default function Navbar() {
                     <Link
                       key={item.label}
                       href={item.href}
-                      className="block px-4 py-2 text-[13px] text-zinc-700 hover:bg-zinc-50 hover:text-[#ff9900] transition-colors"
+                      className="block px-4 py-2 text-[13px] text-zinc-700 hover:bg-[#ffe000] hover:text-black font-medium transition-colors"
                     >
                       {item.label}
                     </Link>
