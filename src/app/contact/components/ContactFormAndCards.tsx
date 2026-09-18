@@ -1,22 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle2 } from "lucide-react";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  LinkedinIcon,
-  YoutubeIcon,
-} from "@/components/SocialIcons";
+import { Phone, Mail, MapPin, Send, CheckCircle2 } from "lucide-react";
 
 export default function ContactFormAndCards() {
   const [form, setForm] = useState({
     name: "",
-    company: "",
-    phone: "",
     email: "",
+    mobile: "",
+    location: "",
     message: "",
-    product: "",
   });
   const [sent, setSent] = useState(false);
 
@@ -26,281 +19,178 @@ export default function ContactFormAndCards() {
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-zinc-50 border-b border-zinc-200">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-5 gap-10">
-          {/* Info cards */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ffe000] text-black flex items-center justify-center flex-shrink-0 font-bold shadow-sm">
-                <Phone size={22} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-zinc-500 uppercase">
-                  Toll Free Support
-                </div>
-                <a
-                  href="tel:18005696363"
-                  className="text-lg font-black text-black hover:text-[#d4af37] transition"
-                >
-                  1800 569 6363
-                </a>
-                <div className="text-xs text-zinc-500 mt-0.5">
-                  Free calls from all Indian networks
-                </div>
-              </div>
-            </div>
+    <section className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white border-b border-zinc-100">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 
-            <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ffe000] text-black flex items-center justify-center flex-shrink-0 font-bold shadow-sm">
-                <Mail size={22} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-zinc-500 uppercase">
-                  Official Email
-                </div>
-                <a
-                  href="mailto:info@lubriconindia.com"
-                  className="text-base font-black text-black hover:text-[#d4af37] transition break-all"
-                >
-                  info@lubriconindia.com
-                </a>
-                <div className="text-xs text-zinc-500 mt-0.5">
-                  Quick response within 24 hours
-                </div>
-              </div>
-            </div>
+          {/* ── Left: Info ── */}
+          <div>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-black tracking-tight leading-tight mb-3">
+              Need more information?{" "}
+              <span className="text-[#d4af37]">Get in touch</span> with us
+            </h2>
+            <p className="text-zinc-500 text-sm leading-relaxed mb-10 max-w-sm">
+              A dedicated team of Australian lubrication engineers ready to
+              assist with product selection, bulk orders, and on-site support.
+            </p>
 
-            <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ffe000] text-black flex items-center justify-center flex-shrink-0 font-bold shadow-sm">
-                <MapPin size={22} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-zinc-500 uppercase">
-                  Corporate Presence
+            {/* Contact List */}
+            <div className="space-y-6">
+              <a
+                href="tel:18005696363"
+                className="flex items-start gap-4 group"
+              >
+                <div className="w-10 h-10 rounded-full border border-zinc-200 bg-white group-hover:bg-[#ffe000] group-hover:border-[#ffe000] flex items-center justify-center shrink-0 transition-all shadow-sm">
+                  <Phone size={16} className="text-zinc-500 group-hover:text-black transition-colors" />
                 </div>
-                <div className="text-base font-black text-black">
-                  New Delhi, India
+                <div>
+                  <div className="text-xs font-black text-zinc-400 uppercase tracking-wider mb-0.5">
+                    Phone Number
+                  </div>
+                  <div className="text-sm font-bold text-black group-hover:text-[#d4af37] transition-colors">
+                    1800 569 6363 (Toll Free)
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">Free from all Indian networks</div>
                 </div>
-                <div className="text-xs text-zinc-500 mt-0.5">
-                  Pan-India distribution & warehouse hubs
-                </div>
-              </div>
-            </div>
+              </a>
 
-            <div className="bg-white p-5 rounded-2xl border border-zinc-200 shadow-sm flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#ffe000] text-black flex items-center justify-center flex-shrink-0 font-bold shadow-sm">
-                <Clock size={22} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-zinc-500 uppercase">
-                  Operating Hours
+              <a
+                href="mailto:info@lubriconindia.com"
+                className="flex items-start gap-4 group"
+              >
+                <div className="w-10 h-10 rounded-full border border-zinc-200 bg-white group-hover:bg-[#ffe000] group-hover:border-[#ffe000] flex items-center justify-center shrink-0 transition-all shadow-sm">
+                  <Mail size={16} className="text-zinc-500 group-hover:text-black transition-colors" />
                 </div>
-                <div className="text-base font-black text-black">
-                  Mon – Sat: 9:00 AM – 6:00 PM
+                <div>
+                  <div className="text-xs font-black text-zinc-400 uppercase tracking-wider mb-0.5">
+                    Email
+                  </div>
+                  <div className="text-sm font-bold text-black group-hover:text-[#d4af37] transition-colors">
+                    info@lubriconindia.com
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">Response within 24 hours</div>
                 </div>
-                <div className="text-xs text-zinc-500 mt-0.5">
-                  Indian Standard Time (IST)
-                </div>
-              </div>
-            </div>
+              </a>
 
-            {/* Social Links */}
-            <div className="bg-black text-white p-5 rounded-2xl border-2 border-[#ffe000] flex items-center justify-between">
-              <div className="text-xs font-bold uppercase tracking-wider text-[#ffe000]">
-                Connect With Us
-              </div>
-              <div className="flex items-center gap-3">
-                <a
-                  href="https://m.facebook.com/LubriconIndia"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-[#ffe000] hover:text-black flex items-center justify-center transition"
-                  aria-label="Facebook"
-                >
-                  <FacebookIcon size={16} />
-                </a>
-                <a
-                  href="https://www.instagram.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-[#ffe000] hover:text-black flex items-center justify-center transition"
-                  aria-label="Instagram"
-                >
-                  <InstagramIcon size={16} />
-                </a>
-                <a
-                  href="https://www.linkedin.com/company/lubriconindia"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-[#ffe000] hover:text-black flex items-center justify-center transition"
-                  aria-label="LinkedIn"
-                >
-                  <LinkedinIcon size={16} />
-                </a>
-                <a
-                  href="https://www.youtube.com/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-8 h-8 rounded-full bg-zinc-800 hover:bg-[#ffe000] hover:text-black flex items-center justify-center transition"
-                  aria-label="YouTube"
-                >
-                  <YoutubeIcon size={16} />
-                </a>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-full border border-zinc-200 bg-white flex items-center justify-center shrink-0 shadow-sm">
+                  <MapPin size={16} className="text-zinc-500" />
+                </div>
+                <div>
+                  <div className="text-xs font-black text-zinc-400 uppercase tracking-wider mb-0.5">
+                    Address
+                  </div>
+                  <div className="text-sm font-bold text-black leading-snug">
+                    New Delhi, India
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">Pan-India distribution &amp; warehouse hubs</div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Form */}
-          <div className="lg:col-span-3">
-            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-zinc-200 shadow-xl">
-              <div className="mb-6">
-                <h2 className="text-2xl font-black text-black tracking-tight">
-                  Send an Inquiry
-                </h2>
-                <p className="text-zinc-600 text-xs sm:text-sm mt-1">
-                  Fill out the form below and an application engineer will
-                  review your machinery requirements.
-                </p>
-              </div>
-
-              {sent ? (
-                <div className="text-center py-12 bg-[#ffe000]/10 border-2 border-[#ffe000] rounded-xl p-8">
-                  <CheckCircle2 size={48} className="text-black mx-auto mb-3" />
-                  <h3 className="text-xl font-black text-black">
-                    Inquiry Submitted!
-                  </h3>
-                  <p className="text-zinc-700 text-sm mt-2 max-w-md mx-auto">
-                    Thank you,{" "}
-                    <strong className="text-black">{form.name}</strong>. Our
-                    technical lubrication team will contact you shortly.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSent(false);
-                      setForm({
-                        name: "",
-                        company: "",
-                        phone: "",
-                        email: "",
-                        message: "",
-                        product: "",
-                      });
-                    }}
-                    className="mt-6 bg-black text-[#ffe000] font-bold text-xs uppercase px-6 py-2.5 rounded-full hover:bg-zinc-800 transition"
-                  >
-                    Send Another Message
-                  </button>
+          {/* ── Right: Form ── */}
+          <div>
+            {sent ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 rounded-2xl bg-[#ffe000] text-black mx-auto flex items-center justify-center shadow-lg mb-4">
+                  <CheckCircle2 size={36} className="stroke-[2.5]" />
                 </div>
-              ) : (
+                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                  Ref: LUB-INQ-{Math.floor(10000 + Math.random() * 90000)}
+                </span>
+                <h3 className="text-2xl font-black text-black tracking-tight mt-1 mb-2">
+                  Message Sent!
+                </h3>
+                <p className="text-zinc-500 text-sm max-w-xs mx-auto leading-relaxed">
+                  Thank you,{" "}
+                  <strong className="text-black">{form.name}</strong>. Our
+                  team will get back to you shortly.
+                </p>
+                <button
+                  onClick={() => {
+                    setSent(false);
+                    setForm({ name: "", email: "", mobile: "", location: "", message: "" });
+                  }}
+                  className="mt-6 text-xs font-black uppercase tracking-wider text-zinc-500 hover:text-black border border-zinc-200 hover:border-black px-6 py-2.5 rounded-full transition cursor-pointer"
+                >
+                  Send Another
+                </button>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-2xl sm:text-3xl font-black text-black tracking-tight mb-1">
+                  Send Message
+                </h3>
+                <p className="text-zinc-400 text-sm mb-7 leading-relaxed">
+                  Please fill out the form below with your details and message
+                  to contact us.
+                </p>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1.5">
-                        Full Name *
-                      </label>
-                      <input
-                        required
-                        type="text"
-                        placeholder="John Doe"
-                        value={form.name}
-                        onChange={(e) =>
-                          setForm({ ...form, name: e.target.value })
-                        }
-                        className="w-full bg-zinc-50 border border-zinc-300 rounded-lg px-3.5 py-2.5 text-sm text-black focus:outline-none focus:border-[#ffe000] focus:ring-2 focus:ring-[#ffe000]/20 font-medium"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1.5">
-                        Company Name
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Precision Components Ltd"
-                        value={form.company}
-                        onChange={(e) =>
-                          setForm({ ...form, company: e.target.value })
-                        }
-                        className="w-full bg-zinc-50 border border-zinc-300 rounded-lg px-3.5 py-2.5 text-sm text-black focus:outline-none focus:border-[#ffe000] focus:ring-2 focus:ring-[#ffe000]/20 font-medium"
-                      />
-                    </div>
-                  </div>
+                  {/* Your Name */}
+                  <input
+                    required
+                    type="text"
+                    placeholder="Your Name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
+                  />
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1.5">
-                        Phone Number *
-                      </label>
-                      <input
-                        required
-                        type="tel"
-                        placeholder="+91 98765 43210"
-                        value={form.phone}
-                        onChange={(e) =>
-                          setForm({ ...form, phone: e.target.value })
-                        }
-                        className="w-full bg-zinc-50 border border-zinc-300 rounded-lg px-3.5 py-2.5 text-sm text-black focus:outline-none focus:border-[#ffe000] focus:ring-2 focus:ring-[#ffe000]/20 font-medium"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1.5">
-                        Email Address *
-                      </label>
-                      <input
-                        required
-                        type="email"
-                        placeholder="john@company.com"
-                        value={form.email}
-                        onChange={(e) =>
-                          setForm({ ...form, email: e.target.value })
-                        }
-                        className="w-full bg-zinc-50 border border-zinc-300 rounded-lg px-3.5 py-2.5 text-sm text-black focus:outline-none focus:border-[#ffe000] focus:ring-2 focus:ring-[#ffe000]/20 font-medium"
-                      />
-                    </div>
-                  </div>
+                  {/* Your Email */}
+                  <input
+                    required
+                    type="email"
+                    placeholder="Your Email"
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
+                  />
 
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1.5">
-                      Product / Application Interest
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Cutting Fluid for CNC, Heavy Gear Oil, AdBlue Bulk"
-                      value={form.product}
-                      onChange={(e) =>
-                        setForm({ ...form, product: e.target.value })
-                      }
-                      className="w-full bg-zinc-50 border border-zinc-300 rounded-lg px-3.5 py-2.5 text-sm text-black focus:outline-none focus:border-[#ffe000] focus:ring-2 focus:ring-[#ffe000]/20 font-medium"
-                    />
-                  </div>
+                  {/* Your Mobile Number */}
+                  <input
+                    required
+                    type="tel"
+                    placeholder="Your Mobile Number"
+                    value={form.mobile}
+                    onChange={(e) => setForm({ ...form, mobile: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
+                  />
 
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-black mb-1.5">
-                      Message / Requirements *
-                    </label>
-                    <textarea
-                      required
-                      rows={4}
-                      placeholder="Describe your equipment, required quantities, delivery location or questions..."
-                      value={form.message}
-                      onChange={(e) =>
-                        setForm({ ...form, message: e.target.value })
-                      }
-                      className="w-full bg-zinc-50 border border-zinc-300 rounded-lg px-3.5 py-2.5 text-sm text-black focus:outline-none focus:border-[#ffe000] focus:ring-2 focus:ring-[#ffe000]/20 font-medium resize-none"
-                    />
-                  </div>
+                  {/* Your Location */}
+                  <input
+                    required
+                    type="text"
+                    placeholder="Your Location"
+                    value={form.location}
+                    onChange={(e) => setForm({ ...form, location: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
+                  />
 
+                  {/* Message */}
+                  <textarea
+                    required
+                    rows={4}
+                    placeholder="Message"
+                    value={form.message}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition resize-none"
+                  />
+
+                  {/* Submit */}
                   <button
                     type="submit"
-                    className="w-full py-3 bg-[#ffe000] hover:bg-[#fff04d] text-black font-extrabold text-xs uppercase tracking-wider rounded-lg shadow transition flex items-center justify-center gap-2 transform hover:scale-[1.01]"
+                    className="w-full py-3.5 bg-black hover:bg-[#ffe000] hover:text-black text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>Send Message</span>
                     <Send size={14} />
                   </button>
                 </form>
-              )}
-            </div>
+              </>
+            )}
           </div>
+
         </div>
       </div>
     </section>
