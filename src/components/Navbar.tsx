@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, ChevronDown, Search, Plus, Minus } from "lucide-react";
+import { changeLanguage, useLanguage } from "@/components/GoogleTranslator";
 
 interface SubCategory {
   label: string;
@@ -153,8 +154,65 @@ export default function Navbar() {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [industriesOpen, setIndustriesOpen] = useState(false);
   const [searchVal, setSearchVal] = useState("");
-  const [lang, setLang] = useState<"en" | "hi">("en");
-  const [zoomLevel, setZoomLevel] = useState<number>(100);
+
+  const [currentFontSize, setCurrentFontSize] = useState<number>(16);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("lubricon_font_size");
+      if (saved) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed) && parsed >= 12 && parsed <= 26) {
+          setCurrentFontSize(parsed);
+          document.documentElement.style.fontSize = `${parsed}px`;
+          return;
+        }
+      }
+      const computed =
+        Math.round(
+          parseFloat(getComputedStyle(document.documentElement).fontSize),
+        ) || 16;
+      setCurrentFontSize(computed);
+    } catch {
+      setCurrentFontSize(16);
+    }
+  }, []);
+
+  const increaseFont = () => {
+    setCurrentFontSize((prev) => {
+      const next = Math.min(26, prev + 1);
+      document.documentElement.style.fontSize = `${next}px`;
+      try {
+        localStorage.setItem("lubricon_font_size", String(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  const decreaseFont = () => {
+    setCurrentFontSize((prev) => {
+      const next = Math.max(12, prev - 1);
+      document.documentElement.style.fontSize = `${next}px`;
+      try {
+        localStorage.setItem("lubricon_font_size", String(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  const detectedLanguage = useLanguage();
+  const [currentLanguage, setCurrentLanguage] = useState<"EN" | "HI">(
+    detectedLanguage || "EN",
+  );
+
+  useEffect(() => {
+    setCurrentLanguage(detectedLanguage);
+  }, [detectedLanguage]);
+
+  const handleLanguageChange = (lang: "EN" | "HI") => {
+    setCurrentLanguage(lang);
+    changeLanguage(lang);
+  };
 
   const pathname = usePathname();
   const router = useRouter();
@@ -188,12 +246,6 @@ export default function Navbar() {
     }
   };
 
-  const adjustTextSize = (delta: number) => {
-    const next = Math.min(130, Math.max(90, zoomLevel + delta));
-    setZoomLevel(next);
-    document.documentElement.style.fontSize = `${(next / 100) * 16}px`;
-  };
-
   const handleProductsMouseEnter = () => {
     if (flyoutTimerRef.current) clearTimeout(flyoutTimerRef.current);
     setProductsOpen(true);
@@ -213,50 +265,56 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full font-sans shadow-md">
       {/* ── 1. CLEAN WHITE UTILITY TOP BAR ── */}
-      <div className="bg-white bg-[#FBFCFE] border-b border-zinc-200 py-2 px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4 ml-auto text-xs">
+      <div className="bg-white bg-[#FBFCFE] border-b border-zinc-200 py-1.5 sm:py-2 px-3 sm:px-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 ml-auto text-xs">
             {/* Language Switcher */}
-            <div className="flex items-center gap-1 font-semibold">
+            <div className="flex items-center gap-1 font-semibold text-xs">
               <button
                 type="button"
-                onClick={() => setLang("en")}
-                className={`transition-colors ${
-                  lang === "en"
+                onClick={() => handleLanguageChange("EN")}
+                className={`cursor-pointer notranslate transition-colors ${
+                  currentLanguage === "EN"
                     ? "text-black font-extrabold underline decoration-[#ffe000] decoration-2"
                     : "text-zinc-600 hover:text-black"
                 }`}
+                translate="no"
+                title="Translate to English"
               >
                 English
               </button>
-              <span className="text-zinc-300">|</span>
+              <span className="text-zinc-300 notranslate" translate="no">
+                |
+              </span>
               <button
                 type="button"
-                onClick={() => setLang("hi")}
-                className={`transition-colors ${
-                  lang === "hi"
+                onClick={() => handleLanguageChange("HI")}
+                className={`cursor-pointer notranslate transition-colors ${
+                  currentLanguage === "HI"
                     ? "text-black font-extrabold underline decoration-[#ffe000] decoration-2"
                     : "text-zinc-600 hover:text-black"
                 }`}
+                translate="no"
+                title="Translate to Hindi (हिन्दी)"
               >
                 हिन्दी
               </button>
             </div>
 
             {/* Search Input */}
-            <form onSubmit={handleSearchSubmit} className="flex items-center">
+            <form onSubmit={handleSearchSubmit} className="flex items-center font-sans">
               <div className="relative flex items-stretch">
                 <input
                   type="text"
                   placeholder="Search"
                   value={searchVal}
                   onChange={(e) => setSearchVal(e.target.value)}
-                  className="w-36 sm:w-48 h-7 px-2.5 text-xs bg-white text-black border border-zinc-300 rounded-l-sm focus:outline-none focus:border-black placeholder:text-zinc-400"
+                  className="w-24 sm:w-48 h-7 px-2 text-xs bg-white text-black border border-zinc-300 rounded-l-sm focus:outline-none focus:border-black placeholder:text-zinc-400"
                 />
                 <button
                   type="submit"
                   aria-label="Search"
-                  className="bg-[#ffe000] hover:bg-[#ebd000] text-black px-2.5 flex items-center justify-center rounded-r-sm transition-colors border border-l-0 border-[#ffe000]"
+                  className="bg-[#ffe000] hover:bg-[#ebd000] text-black px-2 sm:px-2.5 flex items-center justify-center rounded-r-sm transition-colors border border-l-0 border-[#ffe000] cursor-pointer"
                 >
                   <Search size={13} strokeWidth={2.5} />
                 </button>
@@ -264,21 +322,28 @@ export default function Navbar() {
             </form>
 
             {/* Text Zoom */}
-            <div className="hidden sm:flex items-center gap-1 text-zinc-600 font-medium">
-              <span className="mr-0.5 text-[11px]">Text</span>
+            <div
+              className="flex items-center gap-1 text-zinc-600 font-medium"
+              title={`Text Size: ${currentFontSize}px`}
+            >
+              <span className="mr-0.5 text-[11px] select-none">Text</span>
               <button
                 type="button"
-                onClick={() => adjustTextSize(5)}
-                title="Increase text size"
-                className="w-5 h-5 bg-black hover:bg-zinc-800 text-white rounded-sm flex items-center justify-center transition-colors"
+                onClick={increaseFont}
+                disabled={currentFontSize >= 26}
+                title={`Increase Font Size (+1px) - Current: ${currentFontSize}px`}
+                aria-label="Increase font size"
+                className="w-5 h-5 bg-black hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-sm flex items-center justify-center transition-all active:scale-95 cursor-pointer"
               >
                 <Plus size={11} strokeWidth={3} />
               </button>
               <button
                 type="button"
-                onClick={() => adjustTextSize(-5)}
-                title="Decrease text size"
-                className="w-5 h-5 bg-black hover:bg-zinc-800 text-white rounded-sm flex items-center justify-center transition-colors"
+                onClick={decreaseFont}
+                disabled={currentFontSize <= 12}
+                title={`Decrease Font Size (-1px) - Current: ${currentFontSize}px`}
+                aria-label="Decrease font size"
+                className="w-5 h-5 bg-black hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-sm flex items-center justify-center transition-all active:scale-95 cursor-pointer"
               >
                 <Minus size={11} strokeWidth={3} />
               </button>
@@ -510,11 +575,73 @@ export default function Navbar() {
               />
               <button
                 type="submit"
-                className="bg-[#ffe000] text-black px-4 rounded-r-md flex items-center justify-center font-bold"
+                className="bg-[#ffe000] text-black px-4 rounded-r-md flex items-center justify-center font-bold cursor-pointer"
               >
                 <Search size={16} strokeWidth={2.5} />
               </button>
             </form>
+          </div>
+
+          {/* Mobile Language and Text Zoom Bar */}
+          <div className="px-4 py-2.5 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1.5 font-semibold">
+              <button
+                type="button"
+                onClick={() => handleLanguageChange("EN")}
+                className={`cursor-pointer notranslate transition-colors ${
+                  currentLanguage === "EN"
+                    ? "text-black font-extrabold underline decoration-[#ffe000] decoration-2"
+                    : "text-zinc-600 hover:text-black"
+                }`}
+                translate="no"
+                title="Translate to English"
+              >
+                English
+              </button>
+              <span className="text-zinc-300 notranslate" translate="no">
+                |
+              </span>
+              <button
+                type="button"
+                onClick={() => handleLanguageChange("HI")}
+                className={`cursor-pointer notranslate transition-colors ${
+                  currentLanguage === "HI"
+                    ? "text-black font-extrabold underline decoration-[#ffe000] decoration-2"
+                    : "text-zinc-600 hover:text-black"
+                }`}
+                translate="no"
+                title="Translate to Hindi (हिन्दी)"
+              >
+                हिन्दी
+              </button>
+            </div>
+
+            <div
+              className="flex items-center gap-1.5 text-zinc-600 font-medium"
+              title={`Text Size: ${currentFontSize}px`}
+            >
+              <span className="text-xs select-none">Text</span>
+              <button
+                type="button"
+                onClick={increaseFont}
+                disabled={currentFontSize >= 26}
+                title={`Increase Font Size (+1px) - Current: ${currentFontSize}px`}
+                aria-label="Increase font size"
+                className="w-6 h-6 bg-black hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded flex items-center justify-center transition-all active:scale-95 cursor-pointer"
+              >
+                <Plus size={12} strokeWidth={3} />
+              </button>
+              <button
+                type="button"
+                onClick={decreaseFont}
+                disabled={currentFontSize <= 12}
+                title={`Decrease Font Size (-1px) - Current: ${currentFontSize}px`}
+                aria-label="Decrease font size"
+                className="w-6 h-6 bg-black hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded flex items-center justify-center transition-all active:scale-95 cursor-pointer"
+              >
+                <Minus size={12} strokeWidth={3} />
+              </button>
+            </div>
           </div>
 
           <div className="p-5 flex flex-col gap-3 flex-1">
