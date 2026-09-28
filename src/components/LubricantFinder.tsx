@@ -143,7 +143,7 @@ const resultsData: Record<
         "DPF & SCR catalytic protection",
         "Extended 60,000+ km drain intervals",
       ],
-      link: "/products?cat=engine-oil&search=CK-4",
+      link: "/products/lubricon-xtremex-ck4-15w40",
     },
     {
       name: "Lubricon UltraX CI-4 Plus 15W40",
@@ -154,7 +154,7 @@ const resultsData: Record<
         "Thermal stability under severe loads",
         "Proven fleet operating savings",
       ],
-      link: "/products?cat=engine-oil&search=CI-4",
+      link: "/products/lubricon-ultrax-ci4-plus-15w40",
     },
   ],
   transmission: [

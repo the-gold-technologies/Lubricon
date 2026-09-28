@@ -8,10 +8,6 @@ import {
   Fuel,
   ArrowRight,
   PhoneCall,
-  ShieldCheck,
-  Clock,
-  TrendingUp,
-  Truck,
   Headphones,
 } from "lucide-react";
 import PlantAuditDrawer from "@/components/PlantAuditDrawer";
@@ -60,29 +56,6 @@ export default function IndustriesPlantSupport() {
       desc: "Turnkey supply of 1,000L IBCs, high-flow pneumatic dispensing stations, and contamination-free color-coded transfer systems for spotless plant maintenance.",
       tag: "Turnkey Setup",
       deliverable: "Turnkey Storage & Dispensing Blueprint",
-    },
-  ];
-
-  const stats = [
-    {
-      icon: <Clock size={20} className="text-[#ffe000]" />,
-      val: "99.8%",
-      label: "Operational Machine Uptime",
-    },
-    {
-      icon: <TrendingUp size={20} className="text-[#ffe000]" />,
-      val: "+35%",
-      label: "Extended Drain Intervals",
-    },
-    {
-      icon: <ShieldCheck size={20} className="text-[#ffe000]" />,
-      val: "30%",
-      label: "Lower Lubricant Inventory Cost",
-    },
-    {
-      icon: <Truck size={20} className="text-[#ffe000]" />,
-      val: "24h",
-      label: "Direct Industrial Dispatch",
     },
   ];
 
@@ -166,27 +139,6 @@ export default function IndustriesPlantSupport() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* ── Plant Metrics & Performance Strip ── */}
-        <div className="bg-black text-white rounded-3xl p-8 sm:p-10 mb-16 shadow-2xl border border-zinc-800">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((st, i) => (
-              <div key={i} className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 mt-1">
-                  {st.icon}
-                </div>
-                <div>
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
-                    {st.val}
-                  </div>
-                  <div className="text-xs font-medium text-zinc-400 mt-1">
-                    {st.label}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* ── High-Conversion Plant Engineering Consultation Banner ── */}

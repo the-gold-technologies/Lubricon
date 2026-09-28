@@ -229,10 +229,18 @@ export default function CallbackModal({
                     <Phone size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="tel"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={10}
                       required
-                      placeholder="+91 98765 43210"
+                      placeholder="Mobile Number (10 digits)"
                       value={formData.mobile}
-                      onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          mobile: e.target.value.replace(/\D/g, "").slice(0, 10),
+                        })
+                      }
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>

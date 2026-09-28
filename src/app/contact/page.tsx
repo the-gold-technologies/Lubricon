@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import ContactHero from "./components/ContactHero";
 import ContactFormAndCards from "./components/ContactFormAndCards";
 import ContactFaq from "./components/ContactFaq";
-import ContactMapSection from "./components/ContactMapSection";
 
 export const metadata: Metadata = {
   title: "Contact Us | Lubricon Specialities India",
@@ -21,9 +20,6 @@ export default function ContactPage() {
 
       {/* 3. FAQ */}
       <ContactFaq />
-
-      {/* 4. Full-width Map */}
-      <ContactMapSection />
     </main>
   );
 }

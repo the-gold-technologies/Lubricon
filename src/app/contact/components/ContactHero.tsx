@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Phone, Mail } from "lucide-react";
 
 export default function ContactHero() {
   return (
@@ -10,7 +10,6 @@ export default function ContactHero() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-
           {/* Left Column */}
           <div className="lg:col-span-6 flex flex-col justify-center">
             {/* Eyebrow Pill */}
@@ -41,8 +40,12 @@ export default function ContactHero() {
                   <Phone size={16} />
                 </div>
                 <div>
-                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Toll Free</div>
-                  <div className="text-sm font-black text-white group-hover:text-[#ffe000] transition-colors">1800 569 6363</div>
+                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                    Toll Free
+                  </div>
+                  <div className="text-sm font-black text-white group-hover:text-[#ffe000] transition-colors">
+                    1800 569 6363
+                  </div>
                 </div>
               </a>
 
@@ -54,30 +57,14 @@ export default function ContactHero() {
                   <Mail size={16} />
                 </div>
                 <div>
-                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Email</div>
-                  <div className="text-sm font-black text-white group-hover:text-[#ffe000] transition-colors">info@lubriconindia.com</div>
+                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                    Email
+                  </div>
+                  <div className="text-sm font-black text-white group-hover:text-[#ffe000] transition-colors">
+                    info@lubriconindia.com
+                  </div>
                 </div>
               </a>
-
-              <div className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-zinc-800 text-[#ffe000] flex items-center justify-center shrink-0">
-                  <MapPin size={16} />
-                </div>
-                <div>
-                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Location</div>
-                  <div className="text-sm font-black text-white">New Delhi, India</div>
-                </div>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800 flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-zinc-800 text-[#ffe000] flex items-center justify-center shrink-0">
-                  <Clock size={16} />
-                </div>
-                <div>
-                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Hours</div>
-                  <div className="text-sm font-black text-white">Mon – Sat, 9AM – 6PM IST</div>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -110,8 +97,12 @@ export default function ContactHero() {
                   <div className="flex items-center gap-2">
                     <span className="text-base">🇮🇳</span>
                     <div>
-                      <div className="font-extrabold text-white text-xs">Lubricon Specialities India</div>
-                      <div className="text-[10px] text-zinc-400">Australian Technology · Certified Engineers</div>
+                      <div className="font-extrabold text-white text-xs">
+                        Lubricon Specialities India
+                      </div>
+                      <div className="text-[10px] text-zinc-400">
+                        Australian Technology · Certified Engineers
+                      </div>
                     </div>
                   </div>
                   <a
@@ -124,7 +115,6 @@ export default function ContactHero() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

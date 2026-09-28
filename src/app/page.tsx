@@ -1,10 +1,11 @@
-import HeroSlider from '@/components/HeroSlider';
-import HomeStats from './components/HomeStats';
-import HomeIndustries from './components/HomeIndustries';
-import HomeAboutStrip from './components/HomeAboutStrip';
-import HomeProductShowcase from './components/HomeProductShowcase';
-import HomeLubricantFinderSection from './components/HomeLubricantFinderSection';
-import HomeCtaBanner from './components/HomeCtaBanner';
+import HeroSlider from "@/components/HeroSlider";
+import HomeStats from "./components/HomeStats";
+import HomeGovernmentProcurement from "./components/HomeGovernmentProcurement";
+import HomeIndustries from "./components/HomeIndustries";
+import HomeAboutStrip from "./components/HomeAboutStrip";
+import HomeProductShowcase from "./components/HomeProductShowcase";
+import HomeLubricantFinderSection from "./components/HomeLubricantFinderSection";
+import HomeCtaBanner from "./components/HomeCtaBanner";
 
 export default function HomePage() {
   return (
@@ -15,7 +16,10 @@ export default function HomePage() {
       {/* 2. Stats & Credibility Bar (Dull White Background) */}
       <HomeStats />
 
-      {/* 3. Industries We Serve (Authentic Images) */}
+      {/* 3. Government & Institutional Procurement (GeM & IREPS) */}
+      <HomeGovernmentProcurement />
+
+      {/* 4. Industries We Serve (Authentic Images) */}
       <HomeIndustries />
 
       {/* 4. About Lubricon Narrative & Framed Photo */}

@@ -11,7 +11,7 @@ const slides = [
     title: "Neat Cutting Oil",
     subtitle: "High Performance Metalworking Fluid for Heavy Duty Machining",
     image: "/images/slider-1.png",
-    link: "/products?cat=industrial&search=cutting",
+    link: "/products?cat=industrial",
     badge: "Industrial Cutting Fluid",
   },
   {
@@ -19,7 +19,7 @@ const slides = [
     title: "Soluble Cutting Oil",
     subtitle: "Superior Cooling & Lubricity for Precision CNC & Grinding",
     image: "/images/slider-2.png",
-    link: "/products?cat=industrial&search=soluble",
+    link: "/products?cat=industrial",
     badge: "Coolant & Emulsion",
   },
   {

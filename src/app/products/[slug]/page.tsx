@@ -19,9 +19,14 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return products.map((p) => ({
-    slug: p.slug,
-  }));
+  const params: { slug: string }[] = [];
+  products.forEach((p) => {
+    params.push({ slug: p.slug });
+    if (p.id !== p.slug) {
+      params.push({ slug: p.id });
+    }
+  });
+  return params;
 }
 
 const categoryImageMap: Record<string, string> = {
@@ -36,7 +41,7 @@ const categoryImageMap: Record<string, string> = {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug);
+  const product = products.find((p) => p.slug === slug || p.id === slug);
 
   if (!product) {
     notFound();

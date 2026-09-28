@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, ChevronDown, Search, Plus, Minus } from "lucide-react";
+import { Menu, X, ChevronDown, Search, Plus, Minus, Phone } from "lucide-react";
 import { changeLanguage, useLanguage } from "@/components/GoogleTranslator";
 
 interface SubCategory {
@@ -22,12 +22,16 @@ interface ProductCategoryItem {
 const productHierarchy: ProductCategoryItem[] = [
   {
     id: "atf",
-    label: "ATF",
+    label: "ATF (Steering Oil)",
     href: "/products?cat=atf",
     subcategories: [
       {
-        label: "ATF (Steering Oil)",
-        href: "/products?cat=atf&search=Steering",
+        label: "Lubricon DEX III (ATF)",
+        href: "/products/lubricon-dex-iii",
+      },
+      {
+        label: "Lubricon ATF Type A (Steering Oil)",
+        href: "/products/lubricon-atf-a",
       },
     ],
   },
@@ -38,27 +42,27 @@ const productHierarchy: ProductCategoryItem[] = [
     subcategories: [
       {
         label: "CF4 15w40 Engine Oils",
-        href: "/products?cat=engine-oil&search=CF-4",
+        href: "/products/lubricon-supremex-cf4-15w40",
       },
       {
         label: "CH4 15W40 Engine Oils",
-        href: "/products?cat=engine-oil&search=CH-4",
+        href: "/products/lubricon-hyperx-ch4-15w40",
       },
       {
         label: "CI4 15W40 Engine Oils",
-        href: "/products?cat=engine-oil&search=CI-4",
+        href: "/products/lubricon-turbox-ci4-15w40",
       },
       {
         label: "CI4 Plus 15W40 Engine Oils",
-        href: "/products?cat=engine-oil&search=CI-4+Plus",
+        href: "/products/lubricon-ultrax-ci4-plus-15w40",
       },
       {
         label: "CK4 15w40 Engine Oils",
-        href: "/products?cat=engine-oil&search=CK-4",
+        href: "/products/lubricon-xtremex-ck4-15w40",
       },
       {
         label: "Multigrade Engine Oil",
-        href: "/products?cat=engine-oil&search=Multigrade",
+        href: "/products/lubricon-multix-20w40",
       },
     ],
   },
@@ -69,70 +73,70 @@ const productHierarchy: ProductCategoryItem[] = [
     subcategories: [
       {
         label: "Automotive Gear Oils - 80W90",
-        href: "/products?cat=gear-oil&search=80W90",
+        href: "/products/lubricon-gearshield-pro-80w90-gl5",
       },
       {
         label: "Automotive Gear Oils - 85W140",
-        href: "/products?cat=gear-oil&search=85W140",
+        href: "/products/lubricon-heavygear-pro-85w140-gl5",
       },
       {
         label: "Automotive Gear Oils - VG 140",
-        href: "/products?cat=gear-oil&search=VG+140",
+        href: "/products/lubricon-geartuff-460",
       },
       {
         label: "Automotive Gear Oils - VG 90",
-        href: "/products?cat=gear-oil&search=VG+90",
+        href: "/products/lubricon-geartuff-100150220320",
       },
       {
         label: "Heavy Duty Gear Oils",
-        href: "/products?cat=gear-oil&search=Heavy+Duty",
+        href: "/products/lubricon-geartuff-680",
       },
     ],
   },
   {
     id: "adblue",
     label: "AdBlue/DEF",
-    href: "/products?cat=fluids&search=AdBlue",
+    href: "/products/adbluedef",
     // No subcategories
   },
   {
     id: "brake-fluid",
     label: "Brake Fluid",
-    href: "/products?cat=fluids&search=Brake",
+    href: "/products/brake-fluid",
     // No subcategories
   },
   {
     id: "compressor-oil",
     label: "Compressor Oil",
-    href: "/products?cat=industrial&search=Compressor",
+    href: "/products/compressor-oil",
     // No subcategories
   },
   {
     id: "vacuum-pump-oil",
     label: "Vacuum Pump Oil",
-    href: "/products?cat=industrial&search=Vacuum",
+    href: "/products/lubricon-vaccusyn-100",
     subcategories: [
       {
         label: "Lubricon VaccuSyn 100",
-        href: "/products?cat=industrial&search=VaccuSyn",
+        href: "/products/lubricon-vaccusyn-100",
       },
     ],
   },
   {
     id: "rust-preventive-oil",
     label: "Rust Preventive Oil",
-    href: "/products?cat=industrial&search=Rust",
+    href: "/products/lubricon-rustguard-pro",
     subcategories: [
       {
         label: "LUBRICON RUSTGUARD PRO",
-        href: "/products?cat=industrial&search=RustGuard",
+        href: "/products/lubricon-rustguard-pro",
       },
     ],
   },
   {
     id: "edm-oil",
     label: "EDM Oil",
-    href: "/products?cat=industrial&search=EDM",
+    href: "/products/edm-oil",
     // No subcategories
   },
 ];
@@ -266,8 +270,30 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full font-sans shadow-md">
       {/* ── 1. CLEAN WHITE UTILITY TOP BAR ── */}
       <div className="bg-white bg-[#FBFCFE] border-b border-zinc-200 py-1.5 sm:py-2 px-3 sm:px-6">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-4 ml-auto text-xs">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+          {/* Toll Free Number Aligned Above Logo */}
+          <a
+            href="tel:18005696363"
+            className="inline-flex items-center gap-2 text-xs text-zinc-700 hover:text-black transition-colors group shrink-0"
+            title="Call Lubricon Toll-Free Helpline"
+          >
+            <span className="w-5 h-5 rounded-full bg-[#ffe000] text-black flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+              <Phone size={11} className="stroke-[2.5]" />
+            </span>
+            <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider hidden sm:inline">
+              Toll Free:
+            </span>
+            <span className="text-xs font-black text-black tracking-tight group-hover:underline">
+              1800 569 6363
+            </span>
+            <span className="hidden md:inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Toll Free Helpline
+            </span>
+          </a>
+
+          {/* Right Utility Actions */}
+          <div className="flex items-center gap-2 sm:gap-4 text-xs">
             {/* Language Switcher */}
             <div className="flex items-center gap-1 font-semibold text-xs">
               <button
@@ -302,7 +328,10 @@ export default function Navbar() {
             </div>
 
             {/* Search Input */}
-            <form onSubmit={handleSearchSubmit} className="flex items-center font-sans">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex items-center font-sans"
+            >
               <div className="relative flex items-stretch">
                 <input
                   type="text"
@@ -452,7 +481,7 @@ export default function Navbar() {
 
                           {/* Subcategory Flyout Panel — Anchored beside this item with a subtle gap */}
                           {hasSub && isHovered && (
-                            <div className="absolute left-full top-0 ml-1.5 w-64 bg-white shadow-2xl rounded-md border border-zinc-200 z-50 animate-fade-in py-1 before:absolute before:-left-2 before:top-0 before:w-2 before:h-full before:content-['']">
+                            <div className="absolute left-full top-0 ml-1.5 w-72 bg-white shadow-2xl rounded-md border border-zinc-200 z-50 animate-fade-in py-1 before:absolute before:-left-2 before:top-0 before:w-2 before:h-full before:content-['']">
                               {item.subcategories!.map((sub, idx) => (
                                 <Link
                                   key={idx}
@@ -581,6 +610,20 @@ export default function Navbar() {
               </button>
             </form>
           </div>
+
+          {/* Mobile Toll-Free Call Bar */}
+          <a
+            href="tel:18005696363"
+            className="px-4 py-2 bg-[#ffe000]/15 border-b border-zinc-200 flex items-center justify-between text-xs text-black font-semibold hover:bg-[#ffe000]/25 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-[#ffe000] flex items-center justify-center text-black">
+                <Phone size={11} className="stroke-[2.5]" />
+              </span>
+              <span className="text-zinc-700">Toll-Free Helpline:</span>
+            </div>
+            <span className="font-extrabold text-black">1800 569 6363</span>
+          </a>
 
           {/* Mobile Language and Text Zoom Bar */}
           <div className="px-4 py-2.5 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between text-xs">

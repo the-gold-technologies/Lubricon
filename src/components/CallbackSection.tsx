@@ -196,12 +196,18 @@ export default function CallbackSection({
               <div>
                 <input
                   type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={10}
                   required
                   value={formData.mobile}
                   onChange={(e) =>
-                    setFormData({ ...formData, mobile: e.target.value })
+                    setFormData({
+                      ...formData,
+                      mobile: e.target.value.replace(/\D/g, "").slice(0, 10),
+                    })
                   }
-                  placeholder="Your Mobile Number *"
+                  placeholder="Your Mobile Number (10 digits) *"
                   className="w-full px-4 py-3 bg-white border border-zinc-300 rounded-lg text-sm text-zinc-900 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                 />
               </div>

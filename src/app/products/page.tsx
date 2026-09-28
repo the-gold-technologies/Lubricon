@@ -17,9 +17,14 @@ function ProductsContent() {
   useEffect(() => {
     const cat = searchParams.get("cat");
     const search = searchParams.get("search");
-    if (cat) setActiveCategory(cat);
-    if (search) setSearchQuery(search);
+    setActiveCategory(cat || "all");
+    setSearchQuery(search || "");
   }, [searchParams]);
+
+  const handleCategoryChange = (cat: string) => {
+    setActiveCategory(cat);
+    setSearchQuery("");
+  };
 
   const filtered = products.filter((p) => {
     const matchesCategory =
@@ -46,7 +51,7 @@ function ProductsContent() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         activeCategory={activeCategory}
-        setActiveCategory={setActiveCategory}
+        setActiveCategory={handleCategoryChange}
       />
 
       <ProductsGrid
