@@ -327,10 +327,10 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Search Input */}
+            {/* Search Input - Desktop & Tablet */}
             <form
               onSubmit={handleSearchSubmit}
-              className="flex items-center font-sans"
+              className="hidden sm:flex items-center font-sans"
             >
               <div className="relative flex items-stretch">
                 <input
@@ -338,7 +338,7 @@ export default function Navbar() {
                   placeholder="Search"
                   value={searchVal}
                   onChange={(e) => setSearchVal(e.target.value)}
-                  className="w-24 sm:w-48 h-7 px-2 text-xs bg-white text-black border border-zinc-300 rounded-l-sm focus:outline-none focus:border-black placeholder:text-zinc-400"
+                  className="w-28 md:w-48 h-7 px-2 text-xs bg-white text-black border border-zinc-300 rounded-l-sm focus:outline-none focus:border-black placeholder:text-zinc-400"
                 />
                 <button
                   type="submit"
@@ -350,9 +350,9 @@ export default function Navbar() {
               </div>
             </form>
 
-            {/* Text Zoom */}
+            {/* Text Zoom - Desktop & Tablet */}
             <div
-              className="flex items-center gap-1 text-zinc-600 font-medium"
+              className="hidden sm:flex items-center gap-1 text-zinc-600 font-medium"
               title={`Text Size: ${currentFontSize}px`}
             >
               <span className="mr-0.5 text-[11px] select-none">Text</span>
@@ -425,9 +425,9 @@ export default function Navbar() {
               onMouseEnter={handleProductsMouseEnter}
               onMouseLeave={handleProductsMouseLeave}
             >
-              <button
-                type="button"
-                onClick={() => setProductsOpen(!productsOpen)}
+              <Link
+                href="/products"
+                onClick={() => setProductsOpen(false)}
                 className={`text-[14px] font-medium transition-colors flex items-center gap-1 ${
                   pathname.startsWith("/products") || productsOpen
                     ? "text-zinc-950 font-semibold"
@@ -439,7 +439,7 @@ export default function Navbar() {
                   size={14}
                   className={`transition-transform duration-200 ${productsOpen ? "rotate-180" : ""}`}
                 />
-              </button>
+              </Link>
 
               {/* Dynamic Products Dropdown */}
               {productsOpen && (
@@ -507,9 +507,9 @@ export default function Navbar() {
               onMouseEnter={() => setIndustriesOpen(true)}
               onMouseLeave={() => setIndustriesOpen(false)}
             >
-              <button
-                type="button"
-                onClick={() => setIndustriesOpen(!industriesOpen)}
+              <Link
+                href="/industries"
+                onClick={() => setIndustriesOpen(false)}
                 className={`text-[14px] font-medium transition-colors flex items-center gap-1 ${
                   pathname.startsWith("/industries") || industriesOpen
                     ? "text-zinc-950 font-semibold"
@@ -521,7 +521,7 @@ export default function Navbar() {
                   size={14}
                   className={`transition-transform duration-200 ${industriesOpen ? "rotate-180" : ""}`}
                 />
-              </button>
+              </Link>
 
               {industriesOpen && (
                 <div className="absolute top-full left-0 mt-0 w-60 bg-white border border-zinc-200 rounded-sm shadow-xl py-1 z-50 animate-fade-in">
@@ -560,14 +560,25 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden p-2 rounded-lg text-zinc-700 hover:bg-zinc-100 transition"
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          {/* Mobile Right Controls */}
+          <div className="lg:hidden flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              className="p-2 rounded-lg text-zinc-700 hover:bg-zinc-100 transition cursor-pointer"
+              aria-label="Search products"
+            >
+              <Search size={20} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="p-2 rounded-lg text-zinc-700 hover:bg-zinc-100 transition cursor-pointer"
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -704,9 +715,13 @@ export default function Navbar() {
             </Link>
 
             <div className="border-b border-zinc-100 pb-2">
-              <div className="text-base font-semibold text-zinc-900 mb-1">
+              <Link
+                href="/products"
+                onClick={() => setMobileOpen(false)}
+                className="text-base font-semibold text-zinc-900 mb-1 block hover:text-black"
+              >
                 Products
-              </div>
+              </Link>
               <div className="pl-3 flex flex-col gap-1.5">
                 {productHierarchy.map((item) => (
                   <div key={item.id}>
