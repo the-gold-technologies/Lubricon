@@ -1,28 +1,48 @@
 import { Metadata } from "next";
 import HomeClientWrapper from "./components/HomeClientWrapper";
-import { getPageSEO, buildMetadata, sanitizeHeadingTag } from "@/lib/seo";
+import { getGlobalSEO, sanitizeHeadingTag } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await getPageSEO("home");
-  return buildMetadata(
-    seo,
-    "Lubricon Specialities India – Premium Industrial & Automotive Lubricants",
-    "Lubricon Specialities India delivers premium industrial and automotive lubricants powered by Australian technology. Engineered for Indian conditions."
-  );
+  const globalSeo = await getGlobalSEO();
+
+  const title = globalSeo?.siteTitle || "Lubricon Specialities India – Premium Industrial & Automotive Lubricants";
+  const description = globalSeo?.siteDescription || "Lubricon Specialities India delivers premium industrial and automotive lubricants powered by Australian technology. Engineered for Indian conditions.";
+  const icons = globalSeo?.favicon ? { icon: globalSeo.favicon } : undefined;
+
+  return {
+    title,
+    description,
+    icons,
+    openGraph: {
+      title,
+      description,
+      images: globalSeo?.logo ? [{ url: globalSeo.logo }] : undefined,
+    },
+  };
 }
 
 export default async function HomePage() {
-  const seo = await getPageSEO("home");
+  const globalSeo = await getGlobalSEO();
 
   return (
     <div className="bg-white text-zinc-900 min-h-screen">
-      {seo?.schema && (
+      {globalSeo?.schema && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: seo.schema }}
+          dangerouslySetInnerHTML={{ __html: globalSeo.schema }}
         />
       )}
-      <HomeClientWrapper headingTag={sanitizeHeadingTag(seo?.headingOptions, "h1")} />
+      {globalSeo?.customHeaderScripts && (
+        <div
+          dangerouslySetInnerHTML={{ __html: globalSeo.customHeaderScripts }}
+        />
+      )}
+      <HomeClientWrapper headingTag={sanitizeHeadingTag(globalSeo?.headingOptions, "h1")} />
+      {globalSeo?.customFooterScripts && (
+        <div
+          dangerouslySetInnerHTML={{ __html: globalSeo.customFooterScripts }}
+        />
+      )}
     </div>
   );
 }

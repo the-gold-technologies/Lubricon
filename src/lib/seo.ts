@@ -14,6 +14,29 @@ export interface PageSEO {
   schema?: string | null;
 }
 
+export interface GlobalSEO {
+  id?: string;
+  siteTitle?: string | null;
+  siteDescription?: string | null;
+  favicon?: string | null;
+  logo?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  googleAnalyticsId?: string | null;
+  gtmId?: string | null;
+  searchConsoleId?: string | null;
+  customHeaderScripts?: string | null;
+  customFooterScripts?: string | null;
+  socialLinks?: Record<string, string> | null;
+  canonicalOrdering?: string | null;
+  sitemapEnabled?: boolean;
+  sitemapCustomContent?: string | null;
+  robotsTxt?: string | null;
+  schema?: string | null;
+  headingOptions?: string | null;
+}
+
 export function sanitizeHeadingTag(
   tag?: string | null,
   fallback: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" = "h1"
@@ -22,6 +45,24 @@ export function sanitizeHeadingTag(
   const clean = String(tag).toLowerCase().trim();
   const valid = ["h1", "h2", "h3", "h4", "h5", "h6"];
   return (valid.includes(clean) ? clean : fallback) as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+}
+
+export async function getGlobalSEO(): Promise<GlobalSEO | null> {
+  try {
+    const baseUrl = getApiBaseUrl();
+    const res = await fetch(`${baseUrl}/api/seo`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        return json.data;
+      }
+    }
+  } catch (err) {
+    console.error("Failed to load Global SEO:", err);
+  }
+  return null;
 }
 
 export async function getPageSEO(slug: string): Promise<PageSEO | null> {

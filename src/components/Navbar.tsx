@@ -20,128 +20,6 @@ interface ProductCategoryItem {
   subcategories?: SubCategory[];
 }
 
-const productHierarchy: ProductCategoryItem[] = [
-  {
-    id: "atf",
-    label: "ATF (Steering Oil)",
-    href: "/products?cat=atf",
-    subcategories: [
-      {
-        label: "Lubricon DEX III (ATF)",
-        href: "/products/lubricon-dex-iii",
-      },
-      {
-        label: "Lubricon ATF Type A (Steering Oil)",
-        href: "/products/lubricon-atf-a",
-      },
-    ],
-  },
-  {
-    id: "engine-oil",
-    label: "Engine Oil",
-    href: "/products?cat=engine-oil",
-    subcategories: [
-      {
-        label: "CF4 15w40 Engine Oils",
-        href: "/products/lubricon-supremex-cf4-15w40",
-      },
-      {
-        label: "CH4 15W40 Engine Oils",
-        href: "/products/lubricon-hyperx-ch4-15w40",
-      },
-      {
-        label: "CI4 15W40 Engine Oils",
-        href: "/products/lubricon-turbox-ci4-15w40",
-      },
-      {
-        label: "CI4 Plus 15W40 Engine Oils",
-        href: "/products/lubricon-ultrax-ci4-plus-15w40",
-      },
-      {
-        label: "CK4 15w40 Engine Oils",
-        href: "/products/lubricon-xtremex-ck4-15w40",
-      },
-      {
-        label: "Multigrade Engine Oil",
-        href: "/products/lubricon-multix-20w40",
-      },
-    ],
-  },
-  {
-    id: "gear-oil",
-    label: "Gear Oil",
-    href: "/products?cat=gear-oil",
-    subcategories: [
-      {
-        label: "Automotive Gear Oils - 80W90",
-        href: "/products/lubricon-gearshield-pro-80w90-gl5",
-      },
-      {
-        label: "Automotive Gear Oils - 85W140",
-        href: "/products/lubricon-heavygear-pro-85w140-gl5",
-      },
-      {
-        label: "Automotive Gear Oils - VG 140",
-        href: "/products/lubricon-geartuff-460",
-      },
-      {
-        label: "Automotive Gear Oils - VG 90",
-        href: "/products/lubricon-geartuff-100150220320",
-      },
-      {
-        label: "Heavy Duty Gear Oils",
-        href: "/products/lubricon-geartuff-680",
-      },
-    ],
-  },
-  {
-    id: "adblue",
-    label: "AdBlue/DEF",
-    href: "/products/adbluedef",
-    // No subcategories
-  },
-  {
-    id: "brake-fluid",
-    label: "Brake Fluid",
-    href: "/products/brake-fluid",
-    // No subcategories
-  },
-  {
-    id: "compressor-oil",
-    label: "Compressor Oil",
-    href: "/products/compressor-oil",
-    // No subcategories
-  },
-  {
-    id: "vacuum-pump-oil",
-    label: "Vacuum Pump Oil",
-    href: "/products/lubricon-vaccusyn-100",
-    subcategories: [
-      {
-        label: "Lubricon VaccuSyn 100",
-        href: "/products/lubricon-vaccusyn-100",
-      },
-    ],
-  },
-  {
-    id: "rust-preventive-oil",
-    label: "Rust Preventive Oil",
-    href: "/products/lubricon-rustguard-pro",
-    subcategories: [
-      {
-        label: "LUBRICON RUSTGUARD PRO",
-        href: "/products/lubricon-rustguard-pro",
-      },
-    ],
-  },
-  {
-    id: "edm-oil",
-    label: "EDM Oil",
-    href: "/products/edm-oil",
-    // No subcategories
-  },
-];
-
 const industryLinks = [
   {
     href: "/industries#plastic-injection-molding",
@@ -228,7 +106,24 @@ export default function Navbar() {
   const searchDropdownRef = useRef<HTMLDivElement>(null);
   const mobileSearchDropdownRef = useRef<HTMLDivElement>(null);
 
-  const { globalConfig, fetchGlobalConfig, products, fetchProducts } = useCMSStore();
+  const { globalConfig, fetchGlobalConfig, products, fetchProducts, categories } = useCMSStore();
+
+  const productHierarchy: ProductCategoryItem[] = useMemo(() => {
+    return categories.map((cat) => {
+      const catProducts = products.filter(
+        (p) => p.category === cat.slug || p.raw?.categorySlug === cat.slug
+      );
+      return {
+        id: cat.slug,
+        label: cat.name,
+        href: `/products?cat=${cat.slug}`,
+        subcategories: catProducts.map((p) => ({
+          label: p.name,
+          href: `/products/${p.slug}`,
+        })),
+      };
+    });
+  }, [categories, products]);
 
   useEffect(() => {
     fetchGlobalConfig();

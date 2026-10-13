@@ -44,9 +44,11 @@ export default function IndustriesList() {
                     <h3 className="text-xl font-bold text-white mb-2">
                       {industry.name}
                     </h3>
-                    <p className="text-xs text-zinc-400 max-w-xs">
-                      Heavy duty engineered fluids ensuring maximum uptime and component protection.
-                    </p>
+                    {industry.description && (
+                      <p className="text-xs text-zinc-400 max-w-xs line-clamp-3">
+                        {industry.description}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>

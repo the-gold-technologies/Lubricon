@@ -12,23 +12,34 @@ const icons = [
 
 export default function AboutValues() {
   const { aboutData } = useCMSStore();
-  const values = aboutData?.AboutValues?.values;
+  const valuesSection = aboutData?.AboutValues;
+  const values = valuesSection?.values;
 
   if (!values || values.length === 0) return null;
+
+  const badge = valuesSection?.badge;
+  const title = valuesSection?.title;
+  const subtitle = valuesSection?.subtitle;
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white border-b border-zinc-200">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 bg-[#ffe000] text-black font-extrabold text-xs uppercase px-3.5 py-1 rounded-full mb-3 shadow-sm tracking-wider">
-            <span>Our Principles</span>
-          </div>
-          <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tight">
-            What We Stand For
-          </h2>
-          <p className="text-sm sm:text-base text-zinc-600 font-medium mt-3">
-            Core commitments driving every barrel of lubricant formulated under the Lubricon standard.
-          </p>
+          {badge && (
+            <div className="inline-flex items-center gap-2 bg-[#ffe000] text-black font-extrabold text-xs uppercase px-3.5 py-1 rounded-full mb-3 shadow-sm tracking-wider">
+              <span>{badge}</span>
+            </div>
+          )}
+          {title && (
+            <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tight">
+              {title}
+            </h2>
+          )}
+          {subtitle && (
+            <p className="text-sm sm:text-base text-zinc-600 font-medium mt-3">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -40,12 +51,16 @@ export default function AboutValues() {
               <div className="w-14 h-14 rounded-xl bg-[#ffe000] flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-sm">
                 {icons[i % icons.length]}
               </div>
-              <h3 className="text-lg font-black text-black mb-2 tracking-tight">
-                {v.title}
-              </h3>
-              <p className="text-zinc-600 text-xs sm:text-sm leading-relaxed">
-                {v.desc}
-              </p>
+              {v.title && (
+                <h3 className="text-lg font-black text-black mb-2 tracking-tight">
+                  {v.title}
+                </h3>
+              )}
+              {v.desc && (
+                <p className="text-zinc-600 text-xs sm:text-sm leading-relaxed">
+                  {v.desc}
+                </p>
+              )}
             </div>
           ))}
         </div>

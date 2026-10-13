@@ -10,6 +10,7 @@ export default function AboutPortfolio() {
 
   if (!portfolio) return null;
 
+  const badge = portfolio.badge;
   const title = portfolio.title;
   const subtitle = portfolio.subtitle;
   const portfolios = portfolio.portfolios;
@@ -18,9 +19,11 @@ export default function AboutPortfolio() {
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#0a0c10] text-white border-b border-zinc-800">
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 bg-[#ffe000] text-black font-extrabold text-xs uppercase px-3.5 py-1 rounded-full mb-3 shadow-sm tracking-wider">
-            <span>Comprehensive Range</span>
-          </div>
+          {badge && (
+            <div className="inline-flex items-center gap-2 bg-[#ffe000] text-black font-extrabold text-xs uppercase px-3.5 py-1 rounded-full mb-3 shadow-sm tracking-wider">
+              <span>{badge}</span>
+            </div>
+          )}
           {title && (
             <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
               {title}
@@ -66,7 +69,7 @@ export default function AboutPortfolio() {
                     href={p.link}
                     className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-[#ffe000] group-hover:text-white transition-colors pt-4 border-t border-zinc-800/80"
                   >
-                    <span>View Category Range</span>
+                    <span>{p.linkText}</span>
                     <ArrowRight size={13} />
                   </Link>
                 )}

@@ -206,6 +206,7 @@ export interface ContactData {
 }
 
 export interface ExtendedProduct extends Product {
+  containerImage?: string | null;
   propertiesTable?: any[];
   tableHeaders?: string[];
   pdfUrl?: string | null;
@@ -259,6 +260,7 @@ export function normalizeProduct(p: any): ExtendedProduct {
     specifications: specs,
     badge: p.badge,
     featured: Boolean(p.isFeatured),
+    containerImage: p.containerImage ?? null,
     propertiesTable: Array.isArray(p.propertiesTable) ? p.propertiesTable : [],
     tableHeaders: Array.isArray(p.tableHeaders) ? p.tableHeaders : [],
     pdfUrl: p.pdfUrl ?? null,

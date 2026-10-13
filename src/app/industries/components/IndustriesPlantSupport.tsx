@@ -168,14 +168,16 @@ export default function IndustriesPlantSupport() {
 
             {/* Right Action Buttons */}
             <div className="shrink-0 relative z-10 flex flex-wrap items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setIsCallbackOpen(true)}
-                className="inline-flex items-center gap-2 bg-black hover:bg-zinc-800 text-[#ffe000] border border-zinc-700 font-black px-7 py-3.5 rounded-full text-xs uppercase tracking-wider transition-all duration-300 shadow-xl cursor-pointer"
-              >
-                <Headphones size={14} />
-                <span>{callbackBtnText ?? "Get A Callback"}</span>
-              </button>
+              {callbackBtnText && (
+                <button
+                  type="button"
+                  onClick={() => setIsCallbackOpen(true)}
+                  className="inline-flex items-center gap-2 bg-black hover:bg-zinc-800 text-[#ffe000] border border-zinc-700 font-black px-7 py-3.5 rounded-full text-xs uppercase tracking-wider transition-all duration-300 shadow-xl cursor-pointer"
+                >
+                  <Headphones size={14} />
+                  <span>{callbackBtnText}</span>
+                </button>
+              )}
 
               {callNumber && (
                 <a

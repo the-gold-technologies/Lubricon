@@ -33,6 +33,7 @@ const badgeClassMap: Record<string | "default", string> = {
 export default function ProductCard({ product, onClick }: ProductCardProps) {
   const router = useRouter();
   const imgSrc =
+    (product as any).containerImage ??
     (product as any).raw?.containerImage ??
     categoryImageMap[product.category] ??
     "";
