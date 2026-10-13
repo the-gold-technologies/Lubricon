@@ -63,7 +63,10 @@ export default function HomeAboutStrip() {
             {keyBullets && keyBullets.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                 {keyBullets.map((bullet, idx) => (
-                  <div key={idx} className="flex items-center gap-2.5 text-sm text-zinc-800 font-medium">
+                  <div
+                    key={idx}
+                    className="flex items-center gap-2.5 text-sm text-zinc-800 font-medium"
+                  >
                     <CheckCircle2
                       size={18}
                       className="text-[#ffe000] fill-black flex-shrink-0"

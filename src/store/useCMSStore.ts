@@ -96,6 +96,17 @@ export interface HomeData {
     badgeText: string;
     title: string;
     subtitle: string;
+    step1Title?: string;
+    step1Subtitle?: string;
+    step2Title?: string;
+    step2Subtitle?: string;
+    step3Badge?: string;
+    step3Title?: string;
+    resetBtnText?: string;
+    helplinePrompt?: string;
+    helplineText?: string;
+    tollFree?: string;
+    categories?: any[];
   };
   HomeLubricantFinder?: any;
   HomeCtaBanner?: {
@@ -145,7 +156,12 @@ export interface AboutData {
     badge?: string;
     title?: string;
     subtitle?: string;
-    portfolios?: Array<{ category: string; desc: string; icon?: string; metric?: string }>;
+    portfolios?: Array<{
+      category: string;
+      desc: string;
+      icon?: string;
+      metric?: string;
+    }>;
     items?: Array<{ category: string; desc: string }>;
     [key: string]: any;
   };
@@ -366,12 +382,16 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>(
           const baseUrl = getApiBaseUrl();
           let endpoint = normalizedSlug;
           if (endpoint === "home") endpoint = "home";
-          else if (endpoint === "about" || endpoint === "about-us") endpoint = "about";
-          else if (endpoint === "contact" || endpoint === "contact-us") endpoint = "contact";
+          else if (endpoint === "about" || endpoint === "about-us")
+            endpoint = "about";
+          else if (endpoint === "contact" || endpoint === "contact-us")
+            endpoint = "contact";
           else if (endpoint === "industries") endpoint = "industries";
           else if (endpoint === "products") endpoint = "products";
 
-          const res = await fetch(`${baseUrl}/api/${endpoint}`, { cache: "no-store" });
+          const res = await fetch(`${baseUrl}/api/${endpoint}`, {
+            cache: "no-store",
+          });
           if (!res.ok) throw new Error(`Failed to fetch page ${slug} from CMS`);
           const json = await res.json();
           if (json.success && json.data) {
@@ -385,20 +405,41 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>(
             const seo = json.seo ?? pageData?.seo ?? null;
 
             if (normalizedSlug === "home") {
-              const rawProducts = Array.isArray(json.products) ? json.products : [];
+              const rawProducts = Array.isArray(json.products)
+                ? json.products
+                : [];
               const normalizedProducts = rawProducts.map(normalizeProduct);
-              const cats = Array.isArray(json.categories) ? json.categories : [];
+              const cats = Array.isArray(json.categories)
+                ? json.categories
+                : [];
               set({
                 homeData: { ...pageData, seo },
-                products: normalizedProducts.length > 0 ? normalizedProducts : get().products,
+                products:
+                  normalizedProducts.length > 0
+                    ? normalizedProducts
+                    : get().products,
                 categories: cats.length > 0 ? cats : get().categories,
               });
-            } else if (normalizedSlug === "about" || normalizedSlug === "about-us") {
+            } else if (
+              normalizedSlug === "about" ||
+              normalizedSlug === "about-us"
+            ) {
               set({ aboutData: { ...pageData, seo } });
-            } else if (normalizedSlug === "contact" || normalizedSlug === "contact-us") {
-              set({ contactData: { ...pageData, offices: json.offices ?? pageData.offices, seo } });
+            } else if (
+              normalizedSlug === "contact" ||
+              normalizedSlug === "contact-us"
+            ) {
+              set({
+                contactData: {
+                  ...pageData,
+                  offices: json.offices ?? pageData.offices,
+                  seo,
+                },
+              });
             } else if (normalizedSlug === "industries") {
-              const rawInd = Array.isArray(json.industries) ? json.industries : [];
+              const rawInd = Array.isArray(json.industries)
+                ? json.industries
+                : [];
               set({
                 industriesData: { ...pageData, seo },
                 industries:
@@ -410,7 +451,9 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>(
 
             set((state) => ({
               pages: { ...state.pages, [normalizedSlug]: pageData },
-              pageSEO: seo ? { ...state.pageSEO, [normalizedSlug]: seo } : state.pageSEO,
+              pageSEO: seo
+                ? { ...state.pageSEO, [normalizedSlug]: seo }
+                : state.pageSEO,
             }));
 
             return pageData;
@@ -482,7 +525,9 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>(
           const normalized = rawList.map(normalizeProduct);
           set({
             products: normalized,
-            categories: Array.isArray(json.data.categories) ? json.data.categories : [],
+            categories: Array.isArray(json.data.categories)
+              ? json.data.categories
+              : [],
             isProductsLoading: false,
           });
           return normalized;

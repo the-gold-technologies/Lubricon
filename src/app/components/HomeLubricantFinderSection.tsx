@@ -13,6 +13,19 @@ export default function HomeLubricantFinderSection() {
   const title = finder.title;
   const subtitle = finder.subtitle;
 
+  const helplinePrompt = finder.helplinePrompt;
+  const helplineText = finder.helplineText;
+  const tollFree = finder.tollFree;
+  const categories = finder.categories;
+
+  const step1Title = finder.step1Title;
+  const step1Subtitle = finder.step1Subtitle;
+  const step2Title = finder.step2Title;
+  const step2Subtitle = finder.step2Subtitle;
+  const step3Badge = finder.step3Badge;
+  const step3Title = finder.step3Title;
+  const resetBtnText = finder.resetBtnText;
+
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#f8f9fa] border-b border-zinc-200">
       <div className="max-w-6xl mx-auto">
@@ -38,7 +51,19 @@ export default function HomeLubricantFinderSection() {
 
         {/* Card Container */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 lg:p-12 shadow-xl border border-zinc-200">
-          <LubricantFinder />
+          <LubricantFinder
+            categories={categories}
+            step1Title={step1Title}
+            step1Subtitle={step1Subtitle}
+            step2Title={step2Title}
+            step2Subtitle={step2Subtitle}
+            step3Badge={step3Badge}
+            step3Title={step3Title}
+            resetBtnText={resetBtnText}
+            helplinePrompt={helplinePrompt}
+            helplineText={helplineText}
+            tollFree={tollFree}
+          />
         </div>
       </div>
     </section>

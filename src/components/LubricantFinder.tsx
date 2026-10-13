@@ -7,8 +7,8 @@ import {
   FlaskConical,
   Truck,
   Settings,
-  Wind,
   Gauge,
+  Wind,
   ShieldCheck,
   ArrowRight,
   RotateCcw,
@@ -19,261 +19,102 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-interface CategoryOption {
-  id: "automotive" | "industrial" | "special";
-  title: string;
-  subtitle: string;
-  icon: LucideIcon;
+export interface FinderRecommendation {
+  name: string;
+  grade?: string;
+  badge?: string;
+  benefits?: string[];
+  link?: string;
 }
 
-interface EquipmentOption {
+export interface FinderEquipment {
   id: string;
   title: string;
-  subtitle: string;
-  icon: LucideIcon;
+  subtitle?: string;
+  icon?: string;
+  recommendations?: FinderRecommendation[];
 }
 
-const categoriesList: CategoryOption[] = [
-  {
-    id: "automotive",
-    title: "Automotive & Fleet",
-    subtitle:
-      "Commercial diesel trucks, light transport fleets, and transmissions",
-    icon: Truck,
-  },
-  {
-    id: "industrial",
-    title: "Industrial Manufacturing",
-    subtitle:
-      "Injection molding presses, paper mills, CNC machining & gearboxes",
-    icon: Factory,
-  },
-  {
-    id: "special",
-    title: "Specialty Formulations",
-    subtitle: "High dielectric EDM fluids, rust guard protectants & AdBlue DEF",
-    icon: FlaskConical,
-  },
-];
+export interface FinderCategory {
+  id: string;
+  title: string;
+  subtitle?: string;
+  icon?: string;
+  equipment?: FinderEquipment[];
+}
 
-const equipmentMap: Record<
-  "automotive" | "industrial" | "special",
-  EquipmentOption[]
-> = {
-  automotive: [
-    {
-      id: "diesel-heavy",
-      title: "Heavy Duty Diesel Engine",
-      subtitle: "Euro 6 / BS6 haulage trucks, excavators, and passenger buses",
-      icon: Truck,
-    },
-    {
-      id: "transmission",
-      title: "Automatic Transmission & Steering",
-      subtitle: "Smooth gear shift ATFs and hydraulic power steering units",
-      icon: Settings,
-    },
-    {
-      id: "axle",
-      title: "Differentials & Hypoid Axles",
-      subtitle: "High extreme-pressure rear differentials and axle boxes",
-      icon: Settings,
-    },
-  ],
-  industrial: [
-    {
-      id: "molding",
-      title: "Plastic Injection Molding",
-      subtitle: "Anti-wear hydraulic systems and high-temp tie-bar grease",
-      icon: Factory,
-    },
-    {
-      id: "gearbox-heavy",
-      title: "Heavy Industrial Gearboxes",
-      subtitle: "Slow-speed, ultra-heavy shock loads in paper and steel mills",
-      icon: Gauge,
-    },
-    {
-      id: "compressor",
-      title: "Rotary Screw & Air Compressors",
-      subtitle: "Continuous-run industrial air and refrigeration compressors",
-      icon: Wind,
-    },
-  ],
-  special: [
-    {
-      id: "edm",
-      title: "CNC EDM & Spark Erosion",
-      subtitle: "High dielectric purity fluids for precision wire EDM tooling",
-      icon: Sparkles,
-    },
-    {
-      id: "rust-prevent",
-      title: "Anti-Rust Preservation",
-      subtitle:
-        "Long-term de-watering corrosion preventive films for metal parts",
-      icon: ShieldCheck,
-    },
-    {
-      id: "def",
-      title: "AdBlue DEF Emission Control",
-      subtitle: "ISO 22241 compliant 32.5% aqueous urea solution (AUS32)",
-      icon: FlaskConical,
-    },
-  ],
+export interface LubricantFinderProps {
+  categories?: FinderCategory[];
+  step1Title?: string;
+  step1Subtitle?: string;
+  step2Title?: string;
+  step2Subtitle?: string;
+  step3Badge?: string;
+  step3Title?: string;
+  resetBtnText?: string;
+  helplinePrompt?: string;
+  helplineText?: string;
+  tollFree?: string;
+}
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  Truck,
+  Factory,
+  FlaskConical,
+  Settings,
+  Gauge,
+  Wind,
+  Sparkles,
+  ShieldCheck,
 };
 
-const resultsData: Record<
-  string,
-  {
-    name: string;
-    grade: string;
-    badge: string;
-    benefits: string[];
-    link: string;
-  }[]
-> = {
-  "diesel-heavy": [
-    {
-      name: "Lubricon XtremeX CK-4 15W40",
-      grade: "API CK-4 / ACEA E9",
-      badge: "Euro 6 & BS6 Ready",
-      benefits: [
-        "Advanced soot dispersancy",
-        "DPF & SCR catalytic protection",
-        "Extended 60,000+ km drain intervals",
-      ],
-      link: "/products/lubricon-xtremex-ck4-15w40",
-    },
-    {
-      name: "Lubricon UltraX CI-4 Plus 15W40",
-      grade: "API CI-4 Plus / SL",
-      badge: "High-Torque Turbo",
-      benefits: [
-        "Unmatched piston deposit control",
-        "Thermal stability under severe loads",
-        "Proven fleet operating savings",
-      ],
-      link: "/products/lubricon-ultrax-ci4-plus-15w40",
-    },
-  ],
-  transmission: [
-    {
-      name: "Lubricon DEX III ATF",
-      grade: "General Motors Dexron IIIH",
-      badge: "Smooth Shifting",
-      benefits: [
-        "Superior anti-shudder performance",
-        "Extreme low-temperature fluidity",
-        "Complete seal compatibility",
-      ],
-      link: "/products?cat=atf",
-    },
-  ],
-  axle: [
-    {
-      name: "Lubricon HeavyGear Pro 85W140 GL-5",
-      grade: "API GL-5 / MT-1",
-      badge: "Extreme Pressure EP",
-      benefits: [
-        "Prevents hypoid gear spalling",
-        "Thermal resilience under 120°C+",
-        "Resists shock-load tooth shearing",
-      ],
-      link: "/products?cat=gear-oil",
-    },
-  ],
-  molding: [
-    {
-      name: "Lubricon HydroShield AW-68",
-      grade: "DIN 51524 Part 2 (HLP)",
-      badge: "Zero Varnish Formula",
-      benefits: [
-        "Zero-varnish valve operation",
-        "Superior hydrolytic stability",
-        "Protects high-cycle toggle pins",
-      ],
-      link: "/products?cat=industrial",
-    },
-  ],
-  "gearbox-heavy": [
-    {
-      name: "Lubricon GearTuff 460 / 680",
-      grade: "ISO VG 460 / 680 CLP",
-      badge: "Heavy Metallurgy Spec",
-      benefits: [
-        "High micro-pitting resistance",
-        "Exceptional water separation",
-        "Engineered for 24/7 furnace proximity",
-      ],
-      link: "/products?cat=gear-oil",
-    },
-  ],
-  compressor: [
-    {
-      name: "Lubricon SynAir Compressor Fluid",
-      grade: "ISO VG 46 / 68",
-      badge: "8000 hr Service Life",
-      benefits: [
-        "Ultra-low carbon deposit tendency",
-        "Fast air release & foam resistance",
-        "Reduces separator maintenance",
-      ],
-      link: "/products?cat=industrial",
-    },
-  ],
-  edm: [
-    {
-      name: "Lubricon SparkPure EDM Fluid",
-      grade: "Dielectric Grade",
-      badge: "Micro-Finishing Quality",
-      benefits: [
-        "Rapid particle settling rate",
-        "High flash point & low odor",
-        "Mirror-like workpiece surface finish",
-      ],
-      link: "/products?cat=industrial",
-    },
-  ],
-  "rust-prevent": [
-    {
-      name: "Lubricon RustGuard Pro",
-      grade: "Dewatering Barrier Film",
-      badge: "Up to 24 Months Storage",
-      benefits: [
-        "Ultra-thin non-sticky film",
-        "Fingerprint neutralization",
-        "Easy removal with alkaline cleaner",
-      ],
-      link: "/products?cat=industrial",
-    },
-  ],
-  def: [
-    {
-      name: "Lubricon AdBlue AUS32",
-      grade: "ISO 22241 / DIN 70070",
-      badge: "Pure Automotive DEF",
-      benefits: [
-        "99.9% catalytic SCR efficiency",
-        "Prevents injector crystallization",
-        "Certified urea concentration",
-      ],
-      link: "/products?cat=coolants",
-    },
-  ],
-};
-
-export default function LubricantFinder() {
+export default function LubricantFinder({
+  categories = [],
+  step1Title,
+  step1Subtitle,
+  step2Title,
+  step2Subtitle,
+  step3Badge,
+  step3Title,
+  resetBtnText,
+  helplinePrompt,
+  helplineText,
+  tollFree,
+}: LubricantFinderProps) {
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [selectedCategory, setSelectedCategory] = useState<
-    "automotive" | "industrial" | "special" | null
-  >(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
 
-  const handleSelectCategory = (
-    categoryId: "automotive" | "industrial" | "special",
-  ) => {
+  // Dynamic Categories from CMS
+  const categoriesList = categories.map((c) => ({
+    id: c.id,
+    title: c.title,
+    subtitle: c.subtitle,
+    icon: (c.icon && ICON_MAP[c.icon]) ? ICON_MAP[c.icon] : Settings,
+  }));
+
+  // Dynamic Equipment & Recommendations Map from CMS
+  const equipmentMap: Record<
+    string,
+    Array<{ id: string; title: string; subtitle?: string; icon: LucideIcon }>
+  > = {};
+  const resultsData: Record<string, FinderRecommendation[]> = {};
+
+  categories.forEach((cat) => {
+    equipmentMap[cat.id] = (cat.equipment || []).map((eq) => ({
+      id: eq.id,
+      title: eq.title,
+      subtitle: eq.subtitle,
+      icon: (eq.icon && ICON_MAP[eq.icon]) ? ICON_MAP[eq.icon] : Settings,
+    }));
+
+    (cat.equipment || []).forEach((eq) => {
+      resultsData[eq.id] = eq.recommendations || [];
+    });
+  });
+
+  const handleSelectCategory = (categoryId: string) => {
     setSelectedCategory(categoryId);
     setIsTransitioning(true);
     // Smooth auto-transition with 280ms feedback highlight
@@ -304,8 +145,14 @@ export default function LubricantFinder() {
     }, 180);
   };
 
-  const currentOptions = selectedCategory ? equipmentMap[selectedCategory] : [];
+  const currentOptions = selectedCategory
+    ? equipmentMap[selectedCategory] || []
+    : [];
   const matchedProducts = selectedType ? resultsData[selectedType] || [] : [];
+
+  if (!categories || categories.length === 0) {
+    return null;
+  }
 
   return (
     <div className="w-full">
@@ -367,13 +214,16 @@ export default function LubricantFinder() {
           className={`transition-all duration-300 ${isTransitioning ? "opacity-40 scale-[0.98]" : "opacity-100 scale-100"}`}
         >
           <div className="mb-6">
-            <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
-              Select Application Category
-            </h3>
-            <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">
-              Choose your operating domain — we will automatically advance to
-              specific equipment types.
-            </p>
+            {step1Title && (
+              <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
+                {step1Title}
+              </h3>
+            )}
+            {step1Subtitle && (
+              <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">
+                {step1Subtitle}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -403,9 +253,11 @@ export default function LubricantFinder() {
                     <h4 className="text-base font-black text-black mb-1.5">
                       {opt.title}
                     </h4>
-                    <p className="text-xs text-zinc-600 leading-relaxed font-medium">
-                      {opt.subtitle}
-                    </p>
+                    {opt.subtitle && (
+                      <p className="text-xs text-zinc-600 leading-relaxed font-medium">
+                        {opt.subtitle}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-5 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-black uppercase tracking-wider text-black">
@@ -433,21 +285,26 @@ export default function LubricantFinder() {
         >
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
-                Select Equipment / Machinery Type
-              </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">
-                Click your mechanical component to immediately generate
-                recommended formulations.
-              </p>
+              {step2Title && (
+                <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
+                  {step2Title}
+                </h3>
+              )}
+              {step2Subtitle && (
+                <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">
+                  {step2Subtitle}
+                </p>
+              )}
             </div>
-            <button
-              onClick={handleReset}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-xs font-bold text-zinc-700 hover:text-black transition-colors"
-            >
-              <RotateCcw size={12} />
-              <span>← Back</span>
-            </button>
+            {resetBtnText && (
+              <button
+                onClick={handleReset}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-xs font-bold text-zinc-700 hover:text-black transition-colors"
+              >
+                <RotateCcw size={12} />
+                <span>← Back</span>
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -477,9 +334,11 @@ export default function LubricantFinder() {
                     <h4 className="text-base font-black text-black mb-1.5">
                       {opt.title}
                     </h4>
-                    <p className="text-xs text-zinc-600 leading-relaxed font-medium">
-                      {opt.subtitle}
-                    </p>
+                    {opt.subtitle && (
+                      <p className="text-xs text-zinc-600 leading-relaxed font-medium">
+                        {opt.subtitle}
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-5 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-black uppercase tracking-wider text-black">
@@ -507,22 +366,28 @@ export default function LubricantFinder() {
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-zinc-200">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-black text-black uppercase tracking-wider mb-1">
-                <CheckCircle2 size={16} className="text-[#ffe000] fill-black" />
-                <span>Formulations Match Found</span>
-              </div>
-              <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
-                Recommended Lubricon Formulations
-              </h3>
+              {step3Badge && (
+                <div className="inline-flex items-center gap-1.5 text-xs font-black text-black uppercase tracking-wider mb-1">
+                  <CheckCircle2 size={16} className="text-[#ffe000] fill-black" />
+                  <span>{step3Badge}</span>
+                </div>
+              )}
+              {step3Title && (
+                <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">
+                  {step3Title}
+                </h3>
+              )}
             </div>
 
-            <button
-              onClick={handleReset}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-zinc-300 hover:border-black text-xs font-bold text-zinc-700 hover:text-black transition-all self-start sm:self-auto shadow-sm"
-            >
-              <RotateCcw size={13} />
-              <span>Change Criteria</span>
-            </button>
+            {resetBtnText && (
+              <button
+                onClick={handleReset}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-zinc-300 hover:border-black text-xs font-bold text-zinc-700 hover:text-black transition-all self-start sm:self-auto shadow-sm"
+              >
+                <RotateCcw size={13} />
+                <span>{resetBtnText}</span>
+              </button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -533,50 +398,60 @@ export default function LubricantFinder() {
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
-                    <span className="bg-[#ffe000] text-black font-extrabold text-[11px] uppercase px-3 py-1 rounded-full shadow-sm">
-                      {prod.badge}
-                    </span>
-                    <span className="bg-black text-[#ffe000] font-black text-[11px] uppercase px-3 py-1 rounded-full">
-                      {prod.grade}
-                    </span>
+                    {prod.badge && (
+                      <span className="bg-[#ffe000] text-black font-extrabold text-[11px] uppercase px-3 py-1 rounded-full shadow-sm">
+                        {prod.badge}
+                      </span>
+                    )}
+                    {prod.grade && (
+                      <span className="bg-black text-[#ffe000] font-black text-[11px] uppercase px-3 py-1 rounded-full">
+                        {prod.grade}
+                      </span>
+                    )}
                   </div>
 
                   <h4 className="text-lg font-black text-black mb-2">
                     {prod.name}
                   </h4>
 
-                  <ul className="space-y-2 mb-6">
-                    {prod.benefits.map((b, bIdx) => (
-                      <li
-                        key={bIdx}
-                        className="flex items-start gap-2 text-xs font-medium text-zinc-700"
-                      >
-                        <CheckCircle2
-                          size={14}
-                          className="text-black flex-shrink-0 mt-0.5"
-                        />
-                        <span>{b}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  {prod.benefits && prod.benefits.length > 0 && (
+                    <ul className="space-y-2 mb-6">
+                      {prod.benefits.map((b, bIdx) => (
+                        <li
+                          key={bIdx}
+                          className="flex items-start gap-2 text-xs font-medium text-zinc-700"
+                        >
+                          <CheckCircle2
+                            size={14}
+                            className="text-black flex-shrink-0 mt-0.5"
+                          />
+                          <span>{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t border-zinc-100 flex items-center gap-3">
-                  <Link
-                    href={prod.link}
-                    className="flex-1 py-2.5 bg-black hover:bg-zinc-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-full text-center transition shadow flex items-center justify-center gap-1.5"
-                  >
-                    <span>View Specs</span>
-                    <ArrowRight size={13} />
-                  </Link>
+                  {prod.link && (
+                    <Link
+                      href={prod.link}
+                      className="flex-1 py-2.5 bg-black hover:bg-zinc-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-full text-center transition shadow flex items-center justify-center gap-1.5"
+                    >
+                      <span>View Specs</span>
+                      <ArrowRight size={13} />
+                    </Link>
+                  )}
 
-                  <a
-                    href="tel:18005696363"
-                    className="py-2.5 px-4 bg-[#ffe000] hover:bg-[#fff04d] text-black font-extrabold text-xs uppercase rounded-full transition shadow flex items-center justify-center gap-1.5"
-                  >
-                    <Phone size={13} />
-                    <span className="hidden sm:inline">Quote</span>
-                  </a>
+                  {tollFree && (
+                    <a
+                      href={`tel:${tollFree.replace(/\s+/g, "")}`}
+                      className="py-2.5 px-4 bg-[#ffe000] hover:bg-[#fff04d] text-black font-extrabold text-xs uppercase rounded-full transition shadow flex items-center justify-center gap-1.5"
+                    >
+                      <Phone size={13} />
+                      <span className="hidden sm:inline">Quote</span>
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
@@ -589,21 +464,27 @@ export default function LubricantFinder() {
                 <Phone size={18} />
               </div>
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-[#ffe000]">
-                  Need Custom OEM Formulations or Laboratory Oil Analysis?
-                </div>
-                <div className="text-xs text-zinc-300">
-                  Speak directly with our Indian field application engineers.
-                </div>
+                {helplinePrompt && (
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#ffe000]">
+                    {helplinePrompt}
+                  </div>
+                )}
+                {helplineText && (
+                  <div className="text-xs text-zinc-300">
+                    {helplineText}
+                  </div>
+                )}
               </div>
             </div>
 
-            <a
-              href="tel:18005696363"
-              className="py-2.5 px-6 bg-[#ffe000] hover:bg-white text-black font-black text-xs uppercase tracking-wider rounded-full transition shadow-md whitespace-nowrap"
-            >
-              Call 1800 569 6363
-            </a>
+            {tollFree && (
+              <a
+                href={`tel:${tollFree.replace(/\s+/g, "")}`}
+                className="py-2.5 px-6 bg-[#ffe000] hover:bg-white text-black font-black text-xs uppercase tracking-wider rounded-full transition shadow-md whitespace-nowrap"
+              >
+                Call {tollFree}
+              </a>
+            )}
           </div>
         </div>
       )}

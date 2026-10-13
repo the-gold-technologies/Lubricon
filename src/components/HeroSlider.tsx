@@ -65,7 +65,8 @@ export default function HeroSlider({ headingTag }: HeroSliderProps) {
                     alt={title ?? ""}
                     fill
                     priority={index === 0}
-                    className={`object-cover object-center transition-transform duration-10000 ease-out ${
+                    unoptimized
+                    className={`object-cover object-center transition-transform duration-1000 ease-out ${
                       isActive ? "scale-105" : "scale-100"
                     }`}
                   />
@@ -85,17 +86,28 @@ export default function HeroSlider({ headingTag }: HeroSliderProps) {
                       </div>
                     )}
 
-                    {title && (() => {
-                      const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
-                      const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
-                      const safeTag = validTags.includes(clean) ? clean : "h1";
-                      const Tag = (index === 0 ? safeTag : "h2") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-                      return (
-                        <Tag className="text-2xl sm:text-4xl lg:text-5xl font-black text-white drop-shadow-md tracking-tight leading-tight mb-2.5">
-                          {title}
-                        </Tag>
-                      );
-                    })()}
+                    {title &&
+                      (() => {
+                        const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+                        const clean = headingTag
+                          ? headingTag.toLowerCase().trim()
+                          : "h1";
+                        const safeTag = validTags.includes(clean)
+                          ? clean
+                          : "h1";
+                        const Tag = (index === 0 ? safeTag : "h2") as
+                          | "h1"
+                          | "h2"
+                          | "h3"
+                          | "h4"
+                          | "h5"
+                          | "h6";
+                        return (
+                          <Tag className="text-2xl sm:text-4xl lg:text-5xl font-black text-white drop-shadow-md tracking-tight leading-tight mb-2.5">
+                            {title}
+                          </Tag>
+                        );
+                      })()}
 
                     {subtitle && (
                       <p className="text-white/90 text-sm sm:text-base font-normal drop-shadow mb-6 max-w-lg line-clamp-2">
