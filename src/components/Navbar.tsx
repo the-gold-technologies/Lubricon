@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, ChevronDown, Search, Plus, Minus, Phone } from "lucide-react";
 import { changeLanguage, useLanguage } from "@/components/GoogleTranslator";
+import { useCMSStore } from "@/store/useCMSStore";
 
 interface SubCategory {
   label: string;
@@ -223,12 +224,69 @@ export default function Navbar() {
   const navRef = useRef<HTMLDivElement>(null);
   const flyoutTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const searchDropdownRef = useRef<HTMLDivElement>(null);
+  const mobileSearchDropdownRef = useRef<HTMLDivElement>(null);
+
+  const { globalConfig, fetchGlobalConfig, products, fetchProducts } = useCMSStore();
+
+  useEffect(() => {
+    fetchGlobalConfig();
+    fetchProducts();
+  }, [fetchGlobalConfig, fetchProducts]);
+
+  const helpline = globalConfig?.socialLinks?.tollFree ?? globalConfig?.phone;
+  const logo = globalConfig?.logo;
+
   useEffect(() => {
     setMobileOpen(false);
     setProductsOpen(false);
     setHoveredCategory(null);
     setIndustriesOpen(false);
+    setIsSearchDropdownOpen(false);
   }, [pathname]);
+
+  // Click outside search dropdown listener
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      const isOutsideDesktop =
+        !searchDropdownRef.current || !searchDropdownRef.current.contains(target);
+      const isOutsideMobile =
+        !mobileSearchDropdownRef.current || !mobileSearchDropdownRef.current.contains(target);
+      if (isOutsideDesktop && isOutsideMobile) {
+        setIsSearchDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Consolidate live filtered products from CMS Store
+  const liveSearchResults = useMemo(() => {
+    if (!searchVal.trim()) return [];
+    const q = searchVal.toLowerCase().trim();
+    return products
+      .filter((p) => {
+        const name = (p.name || "").toLowerCase();
+        const desc = (p.description || "").toLowerCase();
+        const sub = (p.subcategory || "").toLowerCase();
+        const grade = (p.specifications?.grade || "").toLowerCase();
+        const viscosity = (p.specifications?.viscosity || "").toLowerCase();
+        const features = (p.features || []).join(" ").toLowerCase();
+        return (
+          name.includes(q) ||
+          desc.includes(q) ||
+          sub.includes(q) ||
+          grade.includes(q) ||
+          viscosity.includes(q) ||
+          features.includes(q)
+        );
+      })
+      .slice(0, 6);
+  }, [products, searchVal]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -245,8 +303,9 @@ export default function Navbar() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchVal.trim()) {
+      setIsSearchDropdownOpen(false);
       router.push(`/products?search=${encodeURIComponent(searchVal.trim())}`);
-      setSearchVal("");
+      setMobileOpen(false);
     }
   };
 
@@ -272,25 +331,27 @@ export default function Navbar() {
       <div className="bg-white bg-[#FBFCFE] border-b border-zinc-200 py-1.5 sm:py-2 px-3 sm:px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           {/* Toll Free Number Aligned Above Logo */}
-          <a
-            href="tel:18005696363"
-            className="inline-flex items-center gap-2 text-xs text-zinc-700 hover:text-black transition-colors group shrink-0"
-            title="Call Lubricon Toll-Free Helpline"
-          >
-            <span className="w-5 h-5 rounded-full bg-[#ffe000] text-black flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
-              <Phone size={11} className="stroke-[2.5]" />
-            </span>
-            <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider hidden sm:inline">
-              Toll Free:
-            </span>
-            <span className="text-xs font-black text-black tracking-tight group-hover:underline">
-              1800 569 6363
-            </span>
-            <span className="hidden md:inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              Toll Free Helpline
-            </span>
-          </a>
+          {helpline && (
+            <a
+              href={`tel:${helpline.replace(/\s+/g, "")}`}
+              className="inline-flex items-center gap-2 text-xs text-zinc-700 hover:text-black transition-colors group shrink-0"
+              title="Call Lubricon Toll-Free Helpline"
+            >
+              <span className="w-5 h-5 rounded-full bg-[#ffe000] text-black flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <Phone size={11} className="stroke-[2.5]" />
+              </span>
+              <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider hidden sm:inline">
+                Toll Free:
+              </span>
+              <span className="text-xs font-black text-black tracking-tight group-hover:underline">
+                {helpline}
+              </span>
+              <span className="hidden md:inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Toll Free Helpline
+              </span>
+            </a>
+          )}
 
           {/* Right Utility Actions */}
           <div className="flex items-center gap-2 sm:gap-4 text-xs">
@@ -328,27 +389,79 @@ export default function Navbar() {
             </div>
 
             {/* Search Input - Desktop & Tablet */}
-            <form
-              onSubmit={handleSearchSubmit}
-              className="hidden sm:flex items-center font-sans"
-            >
-              <div className="relative flex items-stretch">
-                <input
-                  type="text"
-                  placeholder="Search"
-                  value={searchVal}
-                  onChange={(e) => setSearchVal(e.target.value)}
-                  className="w-28 md:w-48 h-7 px-2 text-xs bg-white text-black border border-zinc-300 rounded-l-sm focus:outline-none focus:border-black placeholder:text-zinc-400"
-                />
-                <button
-                  type="submit"
-                  aria-label="Search"
-                  className="bg-[#ffe000] hover:bg-[#ebd000] text-black px-2 sm:px-2.5 flex items-center justify-center rounded-r-sm transition-colors border border-l-0 border-[#ffe000] cursor-pointer"
-                >
-                  <Search size={13} strokeWidth={2.5} />
-                </button>
-              </div>
-            </form>
+            <div className="relative hidden sm:block font-sans" ref={searchDropdownRef}>
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex items-center font-sans"
+              >
+                <div className="relative flex items-stretch">
+                  <input
+                    type="text"
+                    placeholder="Search lubricants..."
+                    value={searchVal}
+                    onChange={(e) => {
+                      setSearchVal(e.target.value);
+                      setIsSearchDropdownOpen(true);
+                    }}
+                    onFocus={() => setIsSearchDropdownOpen(true)}
+                    className="w-28 md:w-48 h-7 px-2 text-xs bg-white text-black border border-zinc-300 rounded-l-sm focus:outline-none focus:border-black placeholder:text-zinc-400"
+                  />
+                  <button
+                    type="submit"
+                    aria-label="Search"
+                    disabled={!searchVal.trim()}
+                    className="bg-[#ffe000] hover:bg-[#ebd000] text-black px-2 sm:px-2.5 flex items-center justify-center rounded-r-sm transition-colors border border-l-0 border-[#ffe000] cursor-pointer disabled:opacity-70"
+                  >
+                    <Search size={13} strokeWidth={2.5} />
+                  </button>
+                </div>
+              </form>
+
+              {/* Instant Search Results Dropdown */}
+              {isSearchDropdownOpen && searchVal.trim().length >= 1 && (
+                <div className="absolute right-0 top-full mt-1.5 w-72 sm:w-80 bg-white rounded-xl shadow-2xl border border-zinc-200 overflow-hidden z-50 text-left">
+                  <div className="px-3 py-2 bg-zinc-50 border-b border-zinc-100 flex items-center justify-between text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                    <span>Matching Products ({liveSearchResults.length})</span>
+                    <span className="text-black font-extrabold truncate max-w-[120px]">
+                      &ldquo;{searchVal}&rdquo;
+                    </span>
+                  </div>
+                  {liveSearchResults.length > 0 ? (
+                    <div className="max-h-64 overflow-y-auto divide-y divide-zinc-100">
+                      {liveSearchResults.map((p) => (
+                        <Link
+                          key={p.slug}
+                          href={`/products/${p.slug}`}
+                          onClick={() => {
+                            setIsSearchDropdownOpen(false);
+                            setSearchVal("");
+                          }}
+                          className="p-2.5 hover:bg-amber-50/70 flex flex-col transition-colors group/item block text-left"
+                        >
+                          <span className="text-xs font-bold text-zinc-900 group-hover/item:text-black leading-snug">
+                            {p.name}
+                          </span>
+                          <span className="text-[10px] text-zinc-400 uppercase mt-0.5 font-semibold">
+                            {p.subcategory || p.category}
+                          </span>
+                        </Link>
+                      ))}
+                      <button
+                        type="button"
+                        onClick={handleSearchSubmit}
+                        className="w-full p-2.5 bg-zinc-50 hover:bg-[#ffe000] hover:text-black text-xs font-bold text-center text-zinc-800 transition-colors uppercase tracking-wider cursor-pointer block border-t border-zinc-100"
+                      >
+                        View All Search Results →
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="p-4 text-center text-xs text-zinc-400">
+                      No products found for &ldquo;{searchVal}&rdquo;
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Text Zoom - Desktop & Tablet */}
             <div
@@ -385,14 +498,25 @@ export default function Navbar() {
       <div className="w-full bg-white border-b border-zinc-200 py-3.5 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center flex-shrink-0">
-            <Image
-              src="/images/logo.png"
-              alt="Lubricon Specialities India"
-              width={220}
-              height={44}
-              className="h-10 w-auto object-contain"
-              priority
-            />
+            {logo ? (
+              <Image
+                src={logo}
+                alt="Lubricon Specialities India"
+                width={220}
+                height={44}
+                className="h-10 w-auto object-contain"
+                priority
+              />
+            ) : (
+              <Image
+                src="/images/logo.png"
+                alt="Lubricon Specialities India"
+                width={220}
+                height={44}
+                className="h-10 w-auto object-contain"
+                priority
+              />
+            )}
           </Link>
 
           {/* Desktop Navigation */}
@@ -604,37 +728,90 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className="p-4 border-b border-zinc-100">
+          <div className="p-4 border-b border-zinc-100 relative" ref={mobileSearchDropdownRef}>
             <form onSubmit={handleSearchSubmit} className="flex items-stretch">
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchVal}
-                onChange={(e) => setSearchVal(e.target.value)}
+                onChange={(e) => {
+                  setSearchVal(e.target.value);
+                  setIsSearchDropdownOpen(true);
+                }}
+                onFocus={() => setIsSearchDropdownOpen(true)}
                 className="flex-1 px-3 py-2 text-sm border border-zinc-300 rounded-l-md focus:outline-none"
               />
               <button
                 type="submit"
-                className="bg-[#ffe000] text-black px-4 rounded-r-md flex items-center justify-center font-bold cursor-pointer"
+                disabled={!searchVal.trim()}
+                className="bg-[#ffe000] text-black px-4 rounded-r-md flex items-center justify-center font-bold cursor-pointer disabled:opacity-70"
               >
                 <Search size={16} strokeWidth={2.5} />
               </button>
             </form>
+
+            {/* Instant Mobile Search Results Dropdown */}
+            {isSearchDropdownOpen && searchVal.trim().length >= 1 && (
+              <div className="mt-2 w-full bg-white rounded-xl shadow-2xl border border-zinc-200 overflow-hidden z-50 text-left">
+                <div className="px-3 py-2 bg-zinc-50 border-b border-zinc-100 flex items-center justify-between text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                  <span>Matching Products ({liveSearchResults.length})</span>
+                  <span className="text-black font-extrabold truncate max-w-[120px]">
+                    &ldquo;{searchVal}&rdquo;
+                  </span>
+                </div>
+                {liveSearchResults.length > 0 ? (
+                  <div className="max-h-60 overflow-y-auto divide-y divide-zinc-100">
+                    {liveSearchResults.map((p) => (
+                      <Link
+                        key={p.slug}
+                        href={`/products/${p.slug}`}
+                        onClick={() => {
+                          setIsSearchDropdownOpen(false);
+                          setSearchVal("");
+                          setMobileOpen(false);
+                        }}
+                        className="p-2.5 hover:bg-amber-50/70 flex flex-col transition-colors group/item block text-left"
+                      >
+                        <span className="text-xs font-bold text-zinc-900 group-hover/item:text-black leading-snug">
+                          {p.name}
+                        </span>
+                        <span className="text-[10px] text-zinc-400 uppercase mt-0.5 font-semibold">
+                          {p.subcategory || p.category}
+                        </span>
+                      </Link>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={handleSearchSubmit}
+                      className="w-full p-2.5 bg-zinc-50 hover:bg-[#ffe000] hover:text-black text-xs font-bold text-center text-zinc-800 transition-colors uppercase tracking-wider cursor-pointer block border-t border-zinc-100"
+                    >
+                      View All Search Results →
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-xs text-zinc-400">
+                    No products found for &ldquo;{searchVal}&rdquo;
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Mobile Toll-Free Call Bar */}
-          <a
-            href="tel:18005696363"
-            className="px-4 py-2 bg-[#ffe000]/15 border-b border-zinc-200 flex items-center justify-between text-xs text-black font-semibold hover:bg-[#ffe000]/25 transition-colors"
-          >
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-[#ffe000] flex items-center justify-center text-black">
-                <Phone size={11} className="stroke-[2.5]" />
-              </span>
-              <span className="text-zinc-700">Toll-Free Helpline:</span>
-            </div>
-            <span className="font-extrabold text-black">1800 569 6363</span>
-          </a>
+          {helpline && (
+            <a
+              href={`tel:${helpline.replace(/\s+/g, "")}`}
+              className="px-4 py-2 bg-[#ffe000]/15 border-b border-zinc-200 flex items-center justify-between text-xs text-black font-semibold hover:bg-[#ffe000]/25 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-[#ffe000] flex items-center justify-center text-black">
+                  <Phone size={11} className="stroke-[2.5]" />
+                </span>
+                <span className="text-zinc-700">Toll-Free Helpline:</span>
+              </div>
+              <span className="font-extrabold text-black">{helpline}</span>
+            </a>
+          )}
 
           {/* Mobile Language and Text Zoom Bar */}
           <div className="px-4 py-2.5 bg-zinc-50 border-b border-zinc-200 flex items-center justify-between text-xs">

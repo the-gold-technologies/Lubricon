@@ -1,25 +1,28 @@
 import { Metadata } from "next";
-import ContactHero from "./components/ContactHero";
-import ContactFormAndCards from "./components/ContactFormAndCards";
-import ContactFaq from "./components/ContactFaq";
+import ContactClientWrapper from "./components/ContactClientWrapper";
+import { getPageSEO, buildMetadata, sanitizeHeadingTag } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Contact Us | Lubricon Specialities India",
-  description:
-    "Contact Lubricon Specialities India for industrial lubrication quotes, bulk orders, and technical support. Toll-free 1800 569 6363.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getPageSEO("contact");
+  return buildMetadata(
+    seo,
+    "Contact Us | Lubricon Specialities India",
+    "Contact Lubricon Specialities India for industrial lubrication quotes, bulk orders, and technical support. Toll-free 1800 569 6363."
+  );
+}
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const seo = await getPageSEO("contact");
+
   return (
     <main className="bg-white text-zinc-900 min-h-screen">
-      {/* 1. Hero */}
-      <ContactHero />
-
-      {/* 2. Contact Form & Info */}
-      <ContactFormAndCards />
-
-      {/* 3. FAQ */}
-      <ContactFaq />
+      {seo?.schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: seo.schema }}
+        />
+      )}
+      <ContactClientWrapper headingTag={sanitizeHeadingTag(seo?.headingOptions, "h1")} />
     </main>
   );
 }

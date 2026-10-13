@@ -33,9 +33,11 @@ const badgeClassMap: Record<string | "default", string> = {
 export default function ProductCard({ product, onClick }: ProductCardProps) {
   const router = useRouter();
   const imgSrc =
-    categoryImageMap[product.category] || "/images/prod-engine-oil.jpg";
+    (product as any).raw?.containerImage ??
+    categoryImageMap[product.category] ??
+    "";
   const badgeClass = product.badge
-    ? badgeClassMap[product.badge] || badgeClassMap.default
+    ? (badgeClassMap[product.badge] ?? badgeClassMap.default)
     : "";
 
   const handleCardClick = () => {

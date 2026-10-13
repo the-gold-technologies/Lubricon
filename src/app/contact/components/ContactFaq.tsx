@@ -2,39 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Plus, Minus } from "lucide-react";
-
-const faqs = [
-  {
-    q: "What product grades do you offer for heavy diesel engines?",
-    a: "We offer the full range from API CF-4 through to the latest API CK-4 (ACEA E9) specification. For modern Euro 6 engines with DPF and SCR, we recommend our Lubricon XtremeX CK-4 15W40.",
-    tag: "Engine Oils",
-  },
-  {
-    q: "Do you supply AdBlue / DEF for Euro 6 compliance?",
-    a: "Yes! Lubricon AdBlue is ISO 22241-compliant 32.5% urea solution (AUS32/DEF), available in 10L, 20L, and 1000L IBC. It is fully compatible with all SCR emission control systems.",
-    tag: "AdBlue / DEF",
-  },
-  {
-    q: "Can you supply lubricants for plastic injection molding machines?",
-    a: "Absolutely. We provide non-staining hydraulic oils, tie-bar greases, gear oils, and rust preventives specifically suited to the high-pressure, high-temperature demands of injection molding.",
-    tag: "Industrial",
-  },
-  {
-    q: "Do you offer technical support for lubrication selection?",
-    a: "Yes — our technical team provides free lubrication audits and product recommendations. Call our toll-free number or use the callback form and we will connect you with an expert.",
-    tag: "Support",
-  },
-  {
-    q: "What are your minimum order quantities?",
-    a: "We have flexible ordering from retail sizes (500ml, 1L) to bulk industrial supplies (210L drums, 1000L IBCs). Contact us for bulk pricing and custom packing.",
-    tag: "Orders",
-  },
-  {
-    q: "Are your products compatible with major OEM equipment?",
-    a: "Yes, our products meet or exceed the API, ACEA, and DIN specifications required by major OEM equipment manufacturers. Specific OEM approval lists are available on request.",
-    tag: "Compatibility",
-  },
-];
+import { useCMSStore } from "@/store/useCMSStore";
 
 function FaqItem({
   q,
@@ -82,26 +50,24 @@ function FaqItem({
           >
             {String(index + 1).padStart(2, "0")}
           </span>
-          <span
-            className={`text-sm sm:text-base font-black tracking-tight leading-snug transition-colors ${
-              isOpen ? "text-black" : "text-black"
-            }`}
-          >
+          <span className="text-sm sm:text-base font-black tracking-tight leading-snug text-black">
             {q}
           </span>
         </div>
 
         {/* Right: Tag + Icon */}
         <div className="flex items-center gap-3 shrink-0 ml-2">
-          <span
-            className={`hidden sm:inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full transition-all ${
-              isOpen
-                ? "bg-[#ffe000] text-black"
-                : "bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200"
-            }`}
-          >
-            {tag}
-          </span>
+          {tag && (
+            <span
+              className={`hidden sm:inline-block text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full transition-all ${
+                isOpen
+                  ? "bg-[#ffe000] text-black"
+                  : "bg-zinc-100 text-zinc-500 group-hover:bg-zinc-200"
+              }`}
+            >
+              {tag}
+            </span>
+          )}
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 ${
               isOpen
@@ -132,35 +98,47 @@ function FaqItem({
 }
 
 export default function ContactFaq() {
+  const { contactData } = useCMSStore();
+  const faqSection = contactData?.ContactFaq;
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  if (!faqSection) return null;
+
+  const badge = faqSection.badge;
+  const heading = faqSection.heading;
+  const subtitle = faqSection.subtitle;
+  const faqs = faqSection.faqs;
+
+  if (!faqs || !Array.isArray(faqs) || faqs.length === 0) return null;
 
   const toggle = (i: number) => setOpenIndex(openIndex === i ? null : i);
 
   return (
     <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-zinc-50 border-b border-zinc-200">
       <div className="max-w-4xl mx-auto">
-
         {/* Section Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-black text-[#ffe000] text-xs font-black uppercase px-4 py-1.5 rounded-full mb-4 tracking-wider shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#ffe000] animate-pulse" />
-            <span>Help Center</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-black tracking-tight leading-tight mb-3">
-            Frequently Asked{" "}
-            <span className="underline decoration-[#ffe000] decoration-[5px] underline-offset-[6px]">
-              Questions
-            </span>
-          </h2>
-          <p className="text-zinc-500 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Answers to common questions regarding technical specs, delivery
-            logistics, and commercial supply.
-          </p>
+          {badge && (
+            <div className="inline-flex items-center gap-2 bg-black text-[#ffe000] text-xs font-black uppercase px-4 py-1.5 rounded-full mb-4 tracking-wider shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#ffe000] animate-pulse" />
+              <span>{badge}</span>
+            </div>
+          )}
+          {heading && (
+            <h2 className="text-3xl sm:text-4xl font-black text-black tracking-tight leading-tight mb-3">
+              {heading}
+            </h2>
+          )}
+          {subtitle && (
+            <p className="text-zinc-500 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         {/* FAQ Accordion */}
         <div className="space-y-3">
-          {faqs.map((faq, i) => (
+          {faqs.map((faq: any, i: number) => (
             <FaqItem
               key={i}
               index={i}
@@ -172,7 +150,6 @@ export default function ContactFaq() {
             />
           ))}
         </div>
-
       </div>
     </section>
   );

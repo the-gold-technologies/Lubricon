@@ -1,25 +1,28 @@
 import { Metadata } from "next";
-import IndustriesHero from "./components/IndustriesHero";
-import IndustriesList from "./components/IndustriesList";
-import IndustriesPlantSupport from "./components/IndustriesPlantSupport";
+import IndustriesClientWrapper from "./components/IndustriesClientWrapper";
+import { getPageSEO, buildMetadata, sanitizeHeadingTag } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Industries We Serve | Lubricon Specialities India",
-  description:
-    "Lubricon provides specialized lubrication solutions for plastic injection molding, paper mills, and steel plants. Australian technology for maximum uptime.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getPageSEO("industries");
+  return buildMetadata(
+    seo,
+    "Industries We Serve | Lubricon Specialities India",
+    "Lubricon provides specialized lubrication solutions for plastic injection molding, paper mills, and steel plants. Australian technology for maximum uptime."
+  );
+}
 
-export default function IndustriesPage() {
+export default async function IndustriesPage() {
+  const seo = await getPageSEO("industries");
+
   return (
     <main className="bg-white text-zinc-900 min-h-screen font-sans">
-      {/* 1. Hero Section */}
-      <IndustriesHero />
-
-      {/* 2. Industries Breakdown with Authentic Assets */}
-      <IndustriesList />
-
-      {/* 3. Plant Engineering Services, Audit & Callback Section */}
-      <IndustriesPlantSupport />
+      {seo?.schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: seo.schema }}
+        />
+      )}
+      <IndustriesClientWrapper headingTag={sanitizeHeadingTag(seo?.headingOptions, "h1")} />
     </main>
   );
 }

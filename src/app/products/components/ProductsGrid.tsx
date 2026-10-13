@@ -1,6 +1,6 @@
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types";
-import { productCategories } from "@/data/products";
+import { useCMSStore } from "@/store/useCMSStore";
 
 interface ProductsGridProps {
   products: Product[];
@@ -17,6 +17,10 @@ export default function ProductsGrid({
   onSelectProduct,
   onReset,
 }: ProductsGridProps) {
+  const { categories } = useCMSStore();
+  const activeCategoryLabel =
+    categories.find((c) => c.slug === activeCategory)?.name ?? activeCategory;
+
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-zinc-50 min-h-[500px]">
       <div className="max-w-7xl mx-auto">
@@ -31,10 +35,7 @@ export default function ProductsGrid({
                 {" "}
                 in{" "}
                 <span className="font-bold text-black">
-                  {
-                    productCategories.find((c) => c.id === activeCategory)
-                      ?.label
-                  }
+                  {activeCategoryLabel}
                 </span>
               </>
             )}

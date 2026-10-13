@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { products } from "@/data/products";
 import {
   ChevronRight,
   Zap,
@@ -13,20 +12,27 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductCtaButtons from "./components/ProductCtaButtons";
+import { normalizeProduct, ExtendedProduct, getApiBaseUrl } from "@/store/useCMSStore";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const params: { slug: string }[] = [];
-  products.forEach((p) => {
-    params.push({ slug: p.slug });
-    if (p.id !== p.slug) {
-      params.push({ slug: p.id });
+  try {
+    const baseUrl = getApiBaseUrl();
+    const res = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
+    if (res.ok) {
+      const json = await res.json();
+      const list = json.data?.products;
+      if (Array.isArray(list)) {
+        return list.map((p: any) => ({ slug: p.slug }));
+      }
     }
-  });
-  return params;
+  } catch {
+    // ignore
+  }
+  return [];
 }
 
 const categoryImageMap: Record<string, string> = {
@@ -39,75 +45,152 @@ const categoryImageMap: Record<string, string> = {
   greases: "/images/lubricon-pail-20l.jpg",
 };
 
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const baseUrl = getApiBaseUrl();
+  try {
+    const res = await fetch(`${baseUrl}/api/products?slug=${encodeURIComponent(slug)}`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        const p = json.data;
+        const title = p.metaTitle ? p.metaTitle : `${p.name} | Lubricon Specialities India`;
+        const description = p.metaDescription ? p.metaDescription : p.description;
+        return {
+          title,
+          description,
+          keywords: p.targetKeywords
+            ? p.targetKeywords.split(",").map((s: string) => s.trim())
+            : undefined,
+          alternates: p.canonicalUrl ? { canonical: p.canonicalUrl } : undefined,
+          openGraph: {
+            title,
+            description,
+            images: p.containerImage ? [{ url: p.containerImage }] : undefined,
+          },
+        };
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return {
+    title: "Product Detail | Lubricon Specialities India",
+  };
+}
+
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
-  const product = products.find((p) => p.slug === slug || p.id === slug);
+  const baseUrl = getApiBaseUrl();
+
+  let product: ExtendedProduct | null = null;
+  let relatedProducts: ExtendedProduct[] = [];
+
+  try {
+    const res = await fetch(`${baseUrl}/api/products?slug=${encodeURIComponent(slug)}`, {
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        product = normalizeProduct(json.data);
+      }
+    }
+  } catch (err) {
+    console.error("Error loading product detail from CMS:", err);
+  }
 
   if (!product) {
     notFound();
   }
 
-  const imgSrc =
-    categoryImageMap[product.category] || "/images/lubricon-drum-clean.jpg";
-  const relatedProducts = products
-    .filter((p) => p.category === product.category && p.slug !== product.slug)
-    .slice(0, 4);
+  try {
+    const relRes = await fetch(
+      `${baseUrl}/api/products?category=${encodeURIComponent(product.category)}`,
+      { cache: "no-store" }
+    );
+    if (relRes.ok) {
+      const relJson = await relRes.json();
+      const rawList = relJson.data?.products;
+      if (Array.isArray(rawList)) {
+        relatedProducts = rawList
+          .map(normalizeProduct)
+          .filter((p: ExtendedProduct) => p.slug !== product!.slug)
+          .slice(0, 4);
+      }
+    }
+  } catch (err) {
+    console.error("Error loading related products from CMS:", err);
+  }
+
+  const imgSrc = product.raw?.containerImage
+    ? product.raw.containerImage
+    : categoryImageMap[product.category];
 
   return (
     <main className="bg-[#f8f9fa] text-zinc-900 min-h-screen">
+      {product.raw?.schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: product.raw.schema }}
+        />
+      )}
       {/* ── BREADCRUMB & BACK LINK ── */}
       <div className="bg-white border-b border-zinc-200 py-3.5 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-xs text-zinc-500 font-medium">
+          <nav className="flex items-center gap-2 text-xs text-zinc-500 font-medium">
             <Link href="/" className="hover:text-black transition-colors">
               Home
             </Link>
-            <ChevronRight size={12} className="text-zinc-400" />
-            <Link
-              href="/products"
-              className="hover:text-black transition-colors"
-            >
+            <ChevronRight size={13} className="text-zinc-400" />
+            <Link href="/products" className="hover:text-black transition-colors">
               Products
             </Link>
-            <ChevronRight size={12} className="text-zinc-400" />
+            <ChevronRight size={13} className="text-zinc-400" />
             <Link
               href={`/products?cat=${product.category}`}
-              className="hover:text-black transition-colors capitalize"
+              className="capitalize hover:text-black transition-colors"
             >
-              {product.category.replace("-", " ")}
+              {product.subcategory}
             </Link>
-            <ChevronRight size={12} className="text-zinc-400" />
-            <span className="text-black font-extrabold truncate max-w-[200px] sm:max-w-xs">
+            <ChevronRight size={13} className="text-zinc-400" />
+            <span className="text-black font-extrabold truncate max-w-[200px]">
               {product.name}
             </span>
-          </div>
+          </nav>
 
           <Link
             href="/products"
-            className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-black hover:text-zinc-600 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-600 hover:text-black transition-colors bg-zinc-100 hover:bg-zinc-200 px-3 py-1.5 rounded-full"
           >
-            <ArrowLeft size={14} />
-            <span>Back to Catalog</span>
+            <ArrowLeft size={13} />
+            <span>Back to Products</span>
           </Link>
         </div>
       </div>
 
-      {/* ── 2-COLUMN ARCHITECTURAL PRODUCT DETAIL SECTION ── */}
-      <section className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
+      {/* ── HERO BANNER: PRODUCT SPOTLIGHT ── */}
+      <div className="py-10 sm:py-14 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-            {/* ════════ LEFT COLUMN: Product Image & Engineering Standards Table (5 cols) ════════ */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            {/* ── LEFT COLUMN: IMAGERY & CERTIFICATIONS ── */}
             <div className="lg:col-span-5 space-y-6">
               {/* Top Card: Product Image Stage */}
               <div className="relative rounded-[28px] overflow-hidden bg-white border border-zinc-200/90 shadow-sm p-4 sm:p-6 group">
                 <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#fafafa] flex items-center justify-center p-4">
-                  <Image
-                    src={imgSrc}
-                    alt={product.name}
-                    fill
-                    priority
-                    className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
-                  />
+                  {imgSrc && (
+                    <Image
+                      src={imgSrc}
+                      alt={product.name}
+                      fill
+                      priority
+                      className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+                    />
+                  )}
 
                   {/* Top-Left: Australian Tech Badge */}
                   <div className="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow">
@@ -126,18 +209,18 @@ export default async function ProductDetailPage({ params }: Props) {
                     </div>
                   )}
 
-                  {/* Bottom-Left Pill Tag matching user reference */}
-                  <div className="absolute bottom-3 left-3">
-                    <span className="inline-block bg-black text-[#ffe000] text-[10px] font-black uppercase px-3 py-1 rounded-md tracking-wider shadow">
-                      {product.specifications.viscosity ||
-                        product.specifications.grade ||
-                        "COMMERCIAL GRADE"}
-                    </span>
-                  </div>
+                  {/* Bottom-Left Pill Tag */}
+                  {product.specifications?.viscosity && (
+                    <div className="absolute bottom-3 left-3">
+                      <span className="inline-block bg-black text-[#ffe000] text-[10px] font-black uppercase px-3 py-1 rounded-md tracking-wider shadow">
+                        {product.specifications.viscosity}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Bottom Card: Engineering Standards Table matching user reference */}
+              {/* Bottom Card: Engineering Standards */}
               <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7">
                 <div className="flex items-center gap-2 text-sm font-black text-black mb-5 pb-3 border-b border-zinc-100">
                   <Zap size={16} className="text-[#ffe000] fill-black" />
@@ -145,30 +228,27 @@ export default async function ProductDetailPage({ params }: Props) {
                 </div>
 
                 <div className="divide-y divide-zinc-100 text-xs sm:text-sm">
-                  <div className="py-3 flex items-center justify-between">
-                    <span className="text-zinc-500 font-medium">
-                      Performance Grade
-                    </span>
-                    <span className="text-black font-extrabold text-right">
-                      {product.specifications.grade || "API Certified"}
-                    </span>
-                  </div>
-
-                  <div className="py-3 flex items-center justify-between">
-                    <span className="text-zinc-500 font-medium">
-                      Viscosity Rating
-                    </span>
-                    <span className="text-black font-extrabold text-right">
-                      {product.specifications.viscosity ||
-                        "ISO Multi-Viscosity"}
-                    </span>
-                  </div>
-
-                  {product.specifications.standard && (
+                  {product.specifications?.grade && (
                     <div className="py-3 flex items-center justify-between">
-                      <span className="text-zinc-500 font-medium">
-                        Testing Standard
+                      <span className="text-zinc-500 font-medium">Performance Grade</span>
+                      <span className="text-black font-extrabold text-right">
+                        {product.specifications.grade}
                       </span>
+                    </div>
+                  )}
+
+                  {product.specifications?.viscosity && (
+                    <div className="py-3 flex items-center justify-between">
+                      <span className="text-zinc-500 font-medium">Viscosity Rating</span>
+                      <span className="text-black font-extrabold text-right">
+                        {product.specifications.viscosity}
+                      </span>
+                    </div>
+                  )}
+
+                  {product.specifications?.standard && (
+                    <div className="py-3 flex items-center justify-between">
+                      <span className="text-zinc-500 font-medium">Testing Standard</span>
                       <span className="text-black font-extrabold text-right">
                         {product.specifications.standard}
                       </span>
@@ -176,9 +256,7 @@ export default async function ProductDetailPage({ params }: Props) {
                   )}
 
                   <div className="py-3 flex items-center justify-between">
-                    <span className="text-zinc-500 font-medium">
-                      Australian Chemistry
-                    </span>
+                    <span className="text-zinc-500 font-medium">Australian Chemistry</span>
                     <span className="text-emerald-700 font-extrabold flex items-center gap-1">
                       <Check size={14} className="stroke-[3]" />
                       <span>Certified Formulation</span>
@@ -186,121 +264,179 @@ export default async function ProductDetailPage({ params }: Props) {
                   </div>
 
                   <div className="py-3 flex items-center justify-between">
-                    <span className="text-zinc-500 font-medium">
-                      Thermal Stability
-                    </span>
+                    <span className="text-zinc-500 font-medium">Thermal Stability</span>
                     <span className="text-black font-extrabold text-right">
                       High Viscosity Index (HVI)
                     </span>
                   </div>
 
-                  <div className="py-3 flex items-center justify-between">
-                    <span className="text-zinc-500 font-medium">
-                      Standard Packaging
-                    </span>
-                    <span className="text-black font-extrabold text-right">
-                      {product.specifications.packaging?.join(", ") ||
-                        "5L, 20L, 210L Drum"}
-                    </span>
-                  </div>
-
-                  <div className="py-3 flex items-center justify-between">
-                    <span className="text-zinc-500 font-medium">
-                      Quality Assurance
-                    </span>
-                    <span className="text-black font-extrabold text-right">
-                      100% Batch Tested
-                    </span>
-                  </div>
+                  {product.specifications?.packaging && product.specifications.packaging.length > 0 && (
+                    <div className="py-3 flex items-center justify-between">
+                      <span className="text-zinc-500 font-medium">Standard Packaging</span>
+                      <span className="text-black font-extrabold text-right">
+                        {product.specifications.packaging.join(", ")}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* ════════ RIGHT COLUMN: Content, Features, Applications & Quote Box (7 cols) ════════ */}
+            {/* ── RIGHT COLUMN: OVERVIEW, BENEFITS & ACTIONS ── */}
             <div className="lg:col-span-7 space-y-6">
-              {/* Header Info Block */}
-              <div>
-                <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-zinc-800 mb-2">
-                  <Cpu size={14} className="text-[#ffe000] fill-black" />
-                  <span>
-                    Lubricon{" "}
-                    {product.subcategory || product.category.replace("-", " ")}
+              {/* Product Header Card */}
+              <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-9">
+                <div className="flex flex-wrap items-center gap-2 mb-3">
+                  {product.subcategory && (
+                    <span className="bg-[#ffe000] text-black text-[11px] font-black uppercase px-3 py-1 rounded-full tracking-wider shadow-xs">
+                      {product.subcategory}
+                    </span>
+                  )}
+                  <span className="bg-zinc-100 text-zinc-700 text-[11px] font-bold px-3 py-1 rounded-full uppercase">
+                    Commercial Supply
                   </span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight leading-[1.15] mb-3">
-                  {product.name}
-                </h1>
-                <p className="text-sm sm:text-base text-zinc-600 font-normal leading-relaxed">
+
+                {(() => {
+                  const headingTag = product.raw?.headingOptions ? product.raw.headingOptions : "h1";
+                  const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+                  const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
+                  const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+                  return (
+                    <Tag className="text-2xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight leading-[1.15] mb-4">
+                      {product.name}
+                    </Tag>
+                  );
+                })()}
+
+                <p className="text-zinc-600 text-sm sm:text-base leading-relaxed mb-6 font-normal">
                   {product.description}
                 </p>
+
+                {/* Interactive Action Buttons */}
+                <ProductCtaButtons product={product as any} />
               </div>
 
-              {/* Card 1: Performance Features (2-column bullet checklist) */}
-              <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7">
-                <h2 className="text-base sm:text-lg font-black text-black tracking-tight mb-5">
-                  Performance Features
-                </h2>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3.5 gap-x-6">
-                  {product.features.map((feature, i) => (
-                    <div key={i} className="flex items-start gap-2.5">
-                      <div className="w-4 h-4 rounded-full bg-[#ffe000] flex items-center justify-center shrink-0 mt-0.5">
-                        <Check size={11} className="text-black stroke-[3]" />
-                      </div>
-                      <span className="text-xs sm:text-sm font-medium text-zinc-700 leading-snug">
-                        {feature}
-                      </span>
+              {/* Performance Benefits Card */}
+              {product.features && product.features.length > 0 && (
+                <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-9">
+                  <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-zinc-100">
+                    <div className="w-8 h-8 rounded-lg bg-[#ffe000] text-black flex items-center justify-center font-bold text-xs">
+                      <CheckCircle2 size={16} />
                     </div>
-                  ))}
-                </div>
-              </div>
+                    <h2 className="text-lg font-black text-black">
+                      Key Performance Features &amp; Benefits
+                    </h2>
+                  </div>
 
-              {/* Card 2: Typical Applications */}
-              <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7">
-                <div className="flex items-center gap-2 text-base font-black text-black mb-3">
-                  <Wrench size={16} className="text-zinc-800" />
-                  <span>Typical Applications</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {product.features.map((feature, i) => (
+                      <div
+                        key={i}
+                        className="flex items-start gap-3 p-3.5 rounded-xl bg-[#f8f9fa] border border-zinc-200/70"
+                      >
+                        <CheckCircle2
+                          size={16}
+                          className="text-[#ffe000] fill-black shrink-0 mt-0.5"
+                        />
+                        <span className="text-xs sm:text-sm font-semibold text-zinc-800 leading-snug">
+                          {feature}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-normal">
-                  {product.applications.join(", ")}. Designed for continuous
-                  operation in severe Indian industrial and automotive
-                  environments.
-                </p>
-              </div>
+              )}
 
-              {/* Card 3: Enquiry & CTA Box with Popup Modals */}
-              <ProductCtaButtons product={product} />
+              {/* Recommended Applications Card */}
+              {product.applications && product.applications.length > 0 && (
+                <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-9">
+                  <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-zinc-100">
+                    <div className="w-8 h-8 rounded-lg bg-black text-[#ffe000] flex items-center justify-center font-bold text-xs">
+                      <Wrench size={16} />
+                    </div>
+                    <h2 className="text-lg font-black text-black">
+                      Recommended Application Areas
+                    </h2>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    {product.applications.map((app, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2.5 p-3 rounded-xl bg-zinc-50 border border-zinc-200 text-xs font-bold text-zinc-900"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-[#ffe000]" />
+                        <span>{app}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Physico-Chemical Properties Table (from CMS) */}
+              {product.propertiesTable && product.propertiesTable.length > 0 && (
+                <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-9 overflow-x-auto">
+                  <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-zinc-100">
+                    <div className="w-8 h-8 rounded-lg bg-[#ffe000] text-black flex items-center justify-center font-bold text-xs">
+                      <Cpu size={16} />
+                    </div>
+                    <h2 className="text-lg font-black text-black">
+                      Physico-Chemical Properties
+                    </h2>
+                  </div>
+
+                  <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                    <thead>
+                      <tr className="border-b border-zinc-200 text-zinc-500 font-extrabold uppercase text-[11px]">
+                        <th className="py-2.5 px-3">Property</th>
+                        <th className="py-2.5 px-3">Test Method</th>
+                        <th className="py-2.5 px-3">Unit</th>
+                        <th className="py-2.5 px-3">Typical Value</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-100 font-medium">
+                      {product.propertiesTable.map((row: any, rIdx: number) => (
+                        <tr key={rIdx} className="hover:bg-zinc-50 transition-colors">
+                          <td className="py-2.5 px-3 font-bold text-black">{row.property}</td>
+                          <td className="py-2.5 px-3 text-zinc-500">{row.testMethod}</td>
+                          <td className="py-2.5 px-3 text-zinc-500">{row.unit}</td>
+                          <td className="py-2.5 px-3 font-extrabold text-black">{row.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ── RELATED PRODUCTS SECTION (DULL WHITE BACKGROUND) ── */}
+      {/* ── RELATED PRODUCTS SECTION ── */}
       {relatedProducts.length > 0 && (
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#f8f9fa] text-zinc-900 border-t border-zinc-200">
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white border-t border-zinc-200">
           <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-200">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
               <div>
-                <div className="inline-flex items-center gap-2 bg-[#ffe000] text-black text-xs font-black uppercase px-3 py-1 rounded-full shadow-xs tracking-wider mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-black" />
-                  <span>Engineered Formulations</span>
-                </div>
-                <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
-                  Related Lubricon Products
+                <span className="text-xs font-black uppercase text-[#d4af37] tracking-wider">
+                  Similar Formulations
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight mt-1">
+                  Related Lubricants
                 </h2>
               </div>
               <Link
                 href={`/products?cat=${product.category}`}
-                className="text-xs font-black text-black hover:text-zinc-600 uppercase tracking-wider transition flex items-center gap-1"
+                className="text-xs font-black uppercase tracking-wider text-black hover:text-[#d4af37] transition-colors"
               >
-                <span>View All In Category</span>
-                <ChevronRight size={14} />
+                View all in this category →
               </Link>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((rel) => (
-                <ProductCard key={rel.id} product={rel} />
+              {relatedProducts.map((relProduct) => (
+                <ProductCard key={relProduct.id} product={relProduct} />
               ))}
             </div>
           </div>

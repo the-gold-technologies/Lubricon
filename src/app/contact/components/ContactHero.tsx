@@ -1,7 +1,25 @@
+"use client";
+
+import { useEffect } from "react";
 import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
+import { useCMSStore } from "@/store/useCMSStore";
 
-export default function ContactHero() {
+interface ContactHeroProps {
+  headingTag?: string | null;
+}
+
+export default function ContactHero({ headingTag }: ContactHeroProps) {
+  const { contactData } = useCMSStore();
+
+  const hero = contactData?.ContactHero;
+  const badge = hero?.badge;
+  const heading = hero?.heading;
+  const description = hero?.description;
+  const helpline = hero?.helpline;
+  const email = hero?.email;
+  const image = hero?.image ?? "/images/contact-hero.jpg";
+
   return (
     <section className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-black via-[#0c0d12] to-black text-white border-b-4 border-[#ffe000] overflow-hidden">
       {/* Ambient background glows */}
@@ -13,58 +31,77 @@ export default function ContactHero() {
           {/* Left Column */}
           <div className="lg:col-span-6 flex flex-col justify-center">
             {/* Eyebrow Pill */}
-            <div className="inline-flex items-center gap-2 bg-[#ffe000] text-black font-black text-xs uppercase px-3.5 py-1.5 rounded-full mb-4 w-fit tracking-wider shadow-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-black" />
-              <span>Get In Touch</span>
-            </div>
+            {badge && (
+              <div className="inline-flex items-center gap-2 bg-[#ffe000] text-black font-black text-xs uppercase px-3.5 py-1.5 rounded-full mb-4 w-fit tracking-wider shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-black" />
+                <span>{badge}</span>
+              </div>
+            )}
 
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-4">
-              Contact <span className="text-[#ffe000]">Lubricon</span> India
-            </h1>
+            {(() => {
+              const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+              const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
+              const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+              return (
+                <Tag className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-4">
+                  {heading ? (
+                    heading
+                  ) : (
+                    <>
+                      Contact <span className="text-[#ffe000]">Lubricon</span> India
+                    </>
+                  )}
+                </Tag>
+              );
+            })()}
 
             {/* Description */}
-            <p className="text-zinc-300 text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed mb-8">
-              Whether you need an industrial product recommendation, a custom
-              bulk quote, or technical application support — our Australian
-              lubrication engineers are ready to assist you.
-            </p>
+            {description && (
+              <p className="text-zinc-300 text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed mb-8">
+                {description}
+              </p>
+            )}
 
             {/* Quick Contact Tiles */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a
-                href="tel:18005696363"
-                className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-[#ffe000]/60 transition-colors group flex items-center gap-3"
-              >
-                <div className="w-9 h-9 rounded-lg bg-[#ffe000] text-black flex items-center justify-center shrink-0">
-                  <Phone size={16} />
-                </div>
-                <div>
-                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                    Toll Free
+              {helpline && (
+                <a
+                  href={`tel:${helpline.replace(/\s+/g, "")}`}
+                  className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-[#ffe000]/60 transition-colors group flex items-center gap-3"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-[#ffe000] text-black flex items-center justify-center shrink-0">
+                    <Phone size={16} />
                   </div>
-                  <div className="text-sm font-black text-white group-hover:text-[#ffe000] transition-colors">
-                    1800 569 6363
+                  <div>
+                    <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                      Toll Free
+                    </div>
+                    <div className="text-sm font-black text-white group-hover:text-[#ffe000] transition-colors">
+                      {helpline}
+                    </div>
                   </div>
-                </div>
-              </a>
+                </a>
+              )}
 
-              <a
-                href="mailto:info@lubriconindia.com"
-                className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-[#ffe000]/60 transition-colors group flex items-center gap-3"
-              >
-                <div className="w-9 h-9 rounded-lg bg-zinc-800 text-[#ffe000] flex items-center justify-center shrink-0">
-                  <Mail size={16} />
-                </div>
-                <div>
-                  <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
-                    Email
+              {email && (
+                <a
+                  href={`mailto:${email}`}
+                  className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800 hover:border-[#ffe000]/60 transition-colors group flex items-center gap-3"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-zinc-800 text-[#ffe000] flex items-center justify-center shrink-0">
+                    <Mail size={16} />
                   </div>
-                  <div className="text-sm font-black text-white group-hover:text-[#ffe000] transition-colors">
-                    info@lubriconindia.com
+                  <div>
+                    <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                      Email
+                    </div>
+                    <div className="text-sm font-black text-white group-hover:text-[#ffe000] transition-colors">
+                      {email}
+                    </div>
                   </div>
-                </div>
-              </a>
+                </a>
+              )}
             </div>
           </div>
 
@@ -77,8 +114,8 @@ export default function ContactHero() {
             <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-zinc-700 shadow-2xl bg-zinc-950 group">
               <div className="relative w-full aspect-[16/11]">
                 <Image
-                  src="/images/contact-hero.jpg"
-                  alt="Lubricon Technical Support Engineer"
+                  src={image}
+                  alt={heading ?? "Lubricon Technical Support"}
                   fill
                   priority
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"

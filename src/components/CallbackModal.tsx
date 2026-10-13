@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useCMSStore } from "@/store/useCMSStore";
 import {
   X,
   User,
@@ -82,13 +83,18 @@ export default function CallbackModal({
     };
   }, [isOpen, onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 500);
+    await useCMSStore.getState().submitEnquiry({
+      type: "Callback Request",
+      name: formData.username,
+      email: formData.email,
+      phone: formData.mobile,
+      message: `Location: ${formData.location}, Industry: ${formData.industry}, Requirement: ${formData.requirement}`,
+    });
+    setIsSubmitting(false);
+    setSubmitted(true);
   };
 
   const handleReset = () => {

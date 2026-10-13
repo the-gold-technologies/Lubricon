@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useCMSStore } from "@/store/useCMSStore";
 import {
   Phone,
   Mail,
@@ -98,6 +99,15 @@ const generateCaptcha = (): CaptchaItem => {
 };
 
 export default function ContactFormAndCards() {
+  const { globalConfig, fetchGlobalConfig } = useCMSStore();
+
+  useEffect(() => {
+    fetchGlobalConfig();
+  }, [fetchGlobalConfig]);
+
+  const phone = globalConfig?.socialLinks?.tollFree ?? globalConfig?.phone;
+  const email = globalConfig?.email;
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -110,6 +120,7 @@ export default function ContactFormAndCards() {
   const [captchaInput, setCaptchaInput] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const [isSpinning, setIsSpinning] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
@@ -124,7 +135,7 @@ export default function ContactFormAndCards() {
     setTimeout(() => setIsSpinning(false), 500);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (
       !captchaData ||
@@ -135,6 +146,16 @@ export default function ContactFormAndCards() {
       return;
     }
     setCaptchaError("");
+    setIsSubmitting(true);
+    await useCMSStore.getState().submitEnquiry({
+      type: "Contact Form",
+      name: form.name,
+      email: form.email,
+      phone: form.mobile,
+      company: form.company,
+      message: `Address: ${form.address}, Message: ${form.message}`,
+    });
+    setIsSubmitting(false);
     setSent(true);
   };
 
@@ -155,51 +176,55 @@ export default function ContactFormAndCards() {
 
             {/* Contact List */}
             <div className="space-y-6">
-              <a
-                href="tel:18005696363"
-                className="flex items-start gap-4 group"
-              >
-                <div className="w-10 h-10 rounded-full border border-zinc-200 bg-white group-hover:bg-[#ffe000] group-hover:border-[#ffe000] flex items-center justify-center shrink-0 transition-all shadow-sm">
-                  <Phone
-                    size={16}
-                    className="text-zinc-500 group-hover:text-black transition-colors"
-                  />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-zinc-400 uppercase tracking-wider mb-0.5">
-                    Phone Number
+              {phone && (
+                <a
+                  href={`tel:${phone.replace(/\s+/g, "")}`}
+                  className="flex items-start gap-4 group"
+                >
+                  <div className="w-10 h-10 rounded-full border border-zinc-200 bg-white group-hover:bg-[#ffe000] group-hover:border-[#ffe000] flex items-center justify-center shrink-0 transition-all shadow-sm">
+                    <Phone
+                      size={16}
+                      className="text-zinc-500 group-hover:text-black transition-colors"
+                    />
                   </div>
-                  <div className="text-sm font-bold text-black group-hover:text-[#d4af37] transition-colors">
-                    1800 569 6363 (Toll Free)
+                  <div>
+                    <div className="text-xs font-black text-zinc-400 uppercase tracking-wider mb-0.5">
+                      Phone Number
+                    </div>
+                    <div className="text-sm font-bold text-black group-hover:text-[#d4af37] transition-colors">
+                      {phone}
+                    </div>
+                    <div className="text-xs text-zinc-400 mt-0.5">
+                      Free from all Indian networks
+                    </div>
                   </div>
-                  <div className="text-xs text-zinc-400 mt-0.5">
-                    Free from all Indian networks
-                  </div>
-                </div>
-              </a>
+                </a>
+              )}
 
-              <a
-                href="mailto:info@lubriconindia.com"
-                className="flex items-start gap-4 group"
-              >
-                <div className="w-10 h-10 rounded-full border border-zinc-200 bg-white group-hover:bg-[#ffe000] group-hover:border-[#ffe000] flex items-center justify-center shrink-0 transition-all shadow-sm">
-                  <Mail
-                    size={16}
-                    className="text-zinc-500 group-hover:text-black transition-colors"
-                  />
-                </div>
-                <div>
-                  <div className="text-xs font-black text-zinc-400 uppercase tracking-wider mb-0.5">
-                    Email
+              {email && (
+                <a
+                  href={`mailto:${email}`}
+                  className="flex items-start gap-4 group"
+                >
+                  <div className="w-10 h-10 rounded-full border border-zinc-200 bg-white group-hover:bg-[#ffe000] group-hover:border-[#ffe000] flex items-center justify-center shrink-0 transition-all shadow-sm">
+                    <Mail
+                      size={16}
+                      className="text-zinc-500 group-hover:text-black transition-colors"
+                    />
                   </div>
-                  <div className="text-sm font-bold text-black group-hover:text-[#d4af37] transition-colors">
-                    info@lubriconindia.com
+                  <div>
+                    <div className="text-xs font-black text-zinc-400 uppercase tracking-wider mb-0.5">
+                      Email
+                    </div>
+                    <div className="text-sm font-bold text-black group-hover:text-[#d4af37] transition-colors">
+                      {email}
+                    </div>
+                    <div className="text-xs text-zinc-400 mt-0.5">
+                      Prompt response &amp; technical support
+                    </div>
                   </div>
-                  <div className="text-xs text-zinc-400 mt-0.5">
-                    Prompt response &amp; technical support
-                  </div>
-                </div>
-              </a>
+                </a>
+              )}
             </div>
           </div>
 

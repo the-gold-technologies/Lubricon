@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Product } from "@/types";
+import { useCMSStore } from "@/store/useCMSStore";
 import {
   X,
   User,
@@ -85,13 +86,21 @@ export default function ProductQuoteDrawer({
     };
   }, [isOpen, onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 500);
+    await useCMSStore.getState().submitEnquiry({
+      type: "Product Quote Request",
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      company: formData.company,
+      product: product.name,
+      packaging: formData.packaging,
+      message: `Volume: ${formData.volume}, Destination: ${formData.destination}, Specs: ${formData.specs}`,
+    });
+    setIsSubmitting(false);
+    setSubmitted(true);
   };
 
   const handleReset = () => {
@@ -229,9 +238,9 @@ export default function ProductQuoteDrawer({
                       Viscosity / Grade:
                     </span>
                     <span className="font-extrabold text-zinc-900">
-                      {product.specifications.viscosity ||
-                        product.specifications.grade ||
-                        "Industrial Certified"}
+                      {product.specifications?.viscosity ??
+                        product.specifications?.grade ??
+                        ""}
                     </span>
                   </div>
                   <div>
@@ -239,8 +248,9 @@ export default function ProductQuoteDrawer({
                       Category:
                     </span>
                     <span className="font-extrabold text-zinc-900 capitalize">
-                      {product.subcategory ||
-                        product.category.replace("-", " ")}
+                      {product.subcategory ??
+                        product.category?.replace("-", " ") ??
+                        ""}
                     </span>
                   </div>
                 </div>

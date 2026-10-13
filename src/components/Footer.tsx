@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Phone, Mail, ChevronRight } from "lucide-react";
@@ -7,8 +10,27 @@ import {
   LinkedinIcon,
   YoutubeIcon,
 } from "@/components/SocialIcons";
+import { useCMSStore } from "@/store/useCMSStore";
 
 export default function Footer() {
+  const { globalConfig, fetchGlobalConfig, industries, fetchIndustries } =
+    useCMSStore();
+
+  useEffect(() => {
+    fetchGlobalConfig();
+    fetchIndustries();
+  }, [fetchGlobalConfig, fetchIndustries]);
+
+  const logo = globalConfig?.logo;
+  const description = globalConfig?.siteDescription;
+  const facebook = globalConfig?.socialLinks?.facebook;
+  const instagram = globalConfig?.socialLinks?.instagram;
+  const linkedin = globalConfig?.socialLinks?.linkedin;
+  const youtube = globalConfig?.socialLinks?.youtube;
+  const phone = globalConfig?.socialLinks?.tollFree ?? globalConfig?.phone;
+  const email = globalConfig?.email;
+  const copyrightText = globalConfig?.socialLinks?.copyrightText;
+
   return (
     <footer className="bg-black text-gray-300 border-t-4 border-[#ffe000] font-sans">
       {/* Upper Main Footer Grid */}
@@ -17,102 +39,115 @@ export default function Footer() {
           {/* Column 1: Company Profile with Logo */}
           <div>
             <Link href="/" className="inline-block mb-4">
-              <Image
-                src="/images/logo.png"
-                alt="Lubricon Specialities India"
-                width={220}
-                height={45}
-                className="h-11 w-auto object-contain brightness-110"
-              />
+              {logo ? (
+                <Image
+                  src={logo}
+                  alt="Lubricon Specialities India"
+                  width={220}
+                  height={45}
+                  className="h-11 w-auto object-contain brightness-110"
+                />
+              ) : (
+                <span className="text-xl font-black text-white">LUBRICON</span>
+              )}
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
-              Lubricon Specialities India delivers premium industrial and
-              automotive lubricants powered by Australian technology. Engineered
-              for Indian conditions to maximize performance, reduce downtime,
-              and extend equipment life.
-            </p>
+
+            {description && (
+              <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                {description}
+              </p>
+            )}
+
             <div className="flex items-center gap-3">
-              <a
-                href="https://m.facebook.com/LubriconIndia"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Facebook"
-                className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-[#ffe000] hover:text-black text-gray-300 flex items-center justify-center transition border border-zinc-800"
-              >
-                <FacebookIcon size={16} />
-              </a>
-              <a
-                href="https://www.instagram.com/"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Instagram"
-                className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-[#ffe000] hover:text-black text-gray-300 flex items-center justify-center transition border border-zinc-800"
-              >
-                <InstagramIcon size={16} />
-              </a>
-              <a
-                href="https://www.linkedin.com/company/lubriconindia"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="LinkedIn"
-                className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-[#ffe000] hover:text-black text-gray-300 flex items-center justify-center transition border border-zinc-800"
-              >
-                <LinkedinIcon size={16} />
-              </a>
-              <a
-                href="https://www.youtube.com/"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="YouTube"
-                className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-[#ffe000] hover:text-black text-gray-300 flex items-center justify-center transition border border-zinc-800"
-              >
-                <YoutubeIcon size={16} />
-              </a>
+              {facebook && (
+                <a
+                  href={facebook}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Facebook"
+                  className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-[#ffe000] hover:text-black text-gray-300 flex items-center justify-center transition border border-zinc-800"
+                >
+                  <FacebookIcon size={16} />
+                </a>
+              )}
+              {instagram && (
+                <a
+                  href={instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Instagram"
+                  className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-[#ffe000] hover:text-black text-gray-300 flex items-center justify-center transition border border-zinc-800"
+                >
+                  <InstagramIcon size={16} />
+                </a>
+              )}
+              {linkedin && (
+                <a
+                  href={linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="LinkedIn"
+                  className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-[#ffe000] hover:text-black text-gray-300 flex items-center justify-center transition border border-zinc-800"
+                >
+                  <LinkedinIcon size={16} />
+                </a>
+              )}
+              {youtube && (
+                <a
+                  href={youtube}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="YouTube"
+                  className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-[#ffe000] hover:text-black text-gray-300 flex items-center justify-center transition border border-zinc-800"
+                >
+                  <YoutubeIcon size={16} />
+                </a>
+              )}
             </div>
           </div>
 
-          {/* Column 2: About & Direct Contact */}
+          {/* Column 2: Direct Contact */}
           <div>
             <h4 className="text-white text-base font-bold uppercase tracking-wider mb-4 border-l-4 border-[#ffe000] pl-2.5">
               Contact Us
             </h4>
-            <p className="text-xs text-gray-400 mb-4">
-              Offers advanced Australian technology lubricants, engineered for
-              peak industrial and automotive performance.
-            </p>
             <div className="space-y-3 text-sm">
-              <div className="flex items-start gap-3">
-                <Phone
-                  size={16}
-                  className="text-[#ffe000] mt-1 flex-shrink-0"
-                />
-                <div>
-                  <div className="text-xs text-gray-400 font-semibold uppercase">
-                    Helpline (Toll Free)
+              {phone && (
+                <div className="flex items-start gap-3">
+                  <Phone
+                    size={16}
+                    className="text-[#ffe000] mt-1 flex-shrink-0"
+                  />
+                  <div>
+                    <div className="text-xs text-gray-400 font-semibold uppercase">
+                      Helpline (Toll Free)
+                    </div>
+                    <a
+                      href={`tel:${phone.replace(/\s+/g, "")}`}
+                      className="font-bold text-white hover:text-[#ffe000] transition"
+                    >
+                      {phone}
+                    </a>
                   </div>
-                  <a
-                    href="tel:18005696363"
-                    className="font-bold text-white hover:text-[#ffe000] transition"
-                  >
-                    1800 569 6363
-                  </a>
                 </div>
-              </div>
+              )}
 
-              <div className="flex items-start gap-3">
-                <Mail size={16} className="text-[#ffe000] mt-1 flex-shrink-0" />
-                <div>
-                  <div className="text-xs text-gray-400 font-semibold uppercase">
-                    Email Support
+              {email && (
+                <div className="flex items-start gap-3">
+                  <Mail size={16} className="text-[#ffe000] mt-1 flex-shrink-0" />
+                  <div>
+                    <div className="text-xs text-gray-400 font-semibold uppercase">
+                      Email Support
+                    </div>
+                    <a
+                      href={`mailto:${email}`}
+                      className="font-bold text-white hover:text-[#ffe000] transition"
+                    >
+                      {email}
+                    </a>
                   </div>
-                  <a
-                    href="mailto:info@lubriconindia.com"
-                    className="font-bold text-white hover:text-[#ffe000] transition"
-                  >
-                    info@lubriconindia.com
-                  </a>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -121,53 +156,21 @@ export default function Footer() {
             <h4 className="text-white text-base font-bold uppercase tracking-wider mb-4 border-l-4 border-[#ffe000] pl-2.5">
               Industries We Serve
             </h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <Link
-                  href="/industries#plastic-injection-molding"
-                  className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
-                >
-                  <ChevronRight size={14} className="text-[#ffe000]" /> Plastic
-                  Injection Molding
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/industries#paper-mills"
-                  className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
-                >
-                  <ChevronRight size={14} className="text-[#ffe000]" /> Paper
-                  Mills
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/industries#steel-plants"
-                  className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
-                >
-                  <ChevronRight size={14} className="text-[#ffe000]" /> Steel
-                  Plants
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/industries#automotive-fleet"
-                  className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
-                >
-                  <ChevronRight size={14} className="text-[#ffe000]" />{" "}
-                  Automotive & Fleet
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/industries#mining-heavy-equipment"
-                  className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
-                >
-                  <ChevronRight size={14} className="text-[#ffe000]" /> Mining &
-                  Heavy Equipment
-                </Link>
-              </li>
-            </ul>
+            {industries && industries.length > 0 && (
+              <ul className="space-y-2.5 text-sm">
+                {industries.map((ind) => (
+                  <li key={ind.id}>
+                    <Link
+                      href={`/industries#${ind.id}`}
+                      className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
+                    >
+                      <ChevronRight size={14} className="text-[#ffe000]" />
+                      <span>{ind.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Column 4: Quick Links */}
@@ -197,8 +200,7 @@ export default function Footer() {
                   href="/products"
                   className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
                 >
-                  <ChevronRight size={14} className="text-[#ffe000]" /> Products
-                  Catalog
+                  <ChevronRight size={14} className="text-[#ffe000]" /> Products Catalog
                 </Link>
               </li>
               <li>
@@ -206,8 +208,7 @@ export default function Footer() {
                   href="/industries"
                   className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
                 >
-                  <ChevronRight size={14} className="text-[#ffe000]" />{" "}
-                  Industries We Serve
+                  <ChevronRight size={14} className="text-[#ffe000]" /> Industries We Serve
                 </Link>
               </li>
               <li>
@@ -215,8 +216,7 @@ export default function Footer() {
                   href="/contact"
                   className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
                 >
-                  <ChevronRight size={14} className="text-[#ffe000]" /> Contact
-                  Us
+                  <ChevronRight size={14} className="text-[#ffe000]" /> Contact Us
                 </Link>
               </li>
             </ul>
@@ -228,8 +228,7 @@ export default function Footer() {
       <div className="bg-black border-t border-zinc-900 py-4 px-6 text-xs text-gray-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <div>
-            © {new Date().getFullYear()} Lubricon Specialities India. All rights
-            reserved.
+            {copyrightText ?? `© ${new Date().getFullYear()} Lubricon Specialities India. All rights reserved.`}
           </div>
           <div className="text-gray-400">
             Engineered with Australian Technology for Indian Conditions

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useCMSStore } from "@/store/useCMSStore";
 import {
   X,
   User,
@@ -85,13 +86,20 @@ export default function PlantAuditDrawer({
     };
   }, [isOpen, onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 500);
+    await useCMSStore.getState().submitEnquiry({
+      type: "Plant Audit / Technical Service",
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      company: formData.company,
+      product: formData.service,
+      message: `Industry: ${formData.industry}, City: ${formData.city}, Timeframe: ${formData.timeframe}, Notes: ${formData.notes}`,
+    });
+    setIsSubmitting(false);
+    setSubmitted(true);
   };
 
   const handleReset = () => {
@@ -167,7 +175,7 @@ export default function PlantAuditDrawer({
                   Thank you,{" "}
                   <strong className="text-black">{formData.name}</strong> from{" "}
                   <strong className="text-black">
-                    {formData.company || "your facility"}
+                    {formData.company ? formData.company : "your facility"}
                   </strong>
                   . A Senior Australian-Trained Tribology Engineer will contact
                   you within 24 hours to finalize your survey schedule.
@@ -189,7 +197,7 @@ export default function PlantAuditDrawer({
                     Facility / Location:
                   </span>
                   <span className="font-extrabold text-black">
-                    {formData.industry} • {formData.city || "India"}
+                    {formData.industry}{formData.city ? ` • ${formData.city}` : ""}
                   </span>
                 </div>
                 <div className="flex justify-between">

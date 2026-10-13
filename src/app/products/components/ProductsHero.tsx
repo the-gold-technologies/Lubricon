@@ -1,7 +1,15 @@
 import Image from "next/image";
 import { ShieldCheck, Award, Layers } from "lucide-react";
 
-export default function ProductsHero() {
+interface ProductsHeroProps {
+  headingTag?: string | null;
+}
+
+export default function ProductsHero({ headingTag }: ProductsHeroProps) {
+  const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+  const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
+  const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+
   return (
     <section className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-black via-[#0c0d12] to-black text-white border-b-4 border-[#ffe000] overflow-hidden">
       {/* Ambient background glow */}
@@ -19,9 +27,9 @@ export default function ProductsHero() {
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-4">
+            <Tag className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-4">
               All Lubricon <span className="text-[#ffe000]">Formulations</span>
-            </h1>
+            </Tag>
 
             {/* Subtitle Description */}
             <p className="text-zinc-300 text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed mb-8">

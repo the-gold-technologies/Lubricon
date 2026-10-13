@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
-import { industries } from "@/data/industries";
+import { useCMSStore } from "@/store/useCMSStore";
 import PlantAuditDrawer from "@/components/PlantAuditDrawer";
 
 export default function IndustriesList() {
+  const { industries } = useCMSStore();
   const [isAuditOpen, setIsAuditOpen] = useState(false);
   const [selectedIndustry, setSelectedIndustry] = useState("");
+
+  if (!industries || industries.length === 0) return null;
 
   return (
     <>
@@ -42,8 +45,7 @@ export default function IndustriesList() {
                       {industry.name}
                     </h3>
                     <p className="text-xs text-zinc-400 max-w-xs">
-                      Heavy duty engineered fluids ensuring maximum uptime and
-                      component protection.
+                      Heavy duty engineered fluids ensuring maximum uptime and component protection.
                     </p>
                   </div>
                 )}
@@ -63,55 +65,60 @@ export default function IndustriesList() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   {/* Challenges */}
-                  <div className="bg-red-50/70 p-4 rounded-xl border border-red-200">
-                    <h4 className="text-red-900 text-xs font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                      <span>⚠</span> Operating Challenges
-                    </h4>
-                    <ul className="space-y-1.5 text-xs text-zinc-700">
-                      {industry.challenges.map((c, i) => (
-                        <li key={i} className="flex items-start gap-1.5">
-                          <span className="text-red-500 font-bold">•</span>
-                          <span>{c}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {industry.challenges && industry.challenges.length > 0 && (
+                    <div className="bg-red-50/70 p-4 rounded-xl border border-red-200">
+                      <h4 className="text-red-900 text-xs font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                        <span>⚠</span> Operating Challenges
+                      </h4>
+                      <ul className="space-y-1.5 text-xs text-zinc-700">
+                        {industry.challenges.map((c, i) => (
+                          <li key={i} className="flex items-start gap-1.5">
+                            <span className="text-red-500 font-bold">•</span>
+                            <span>{c}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   {/* Solutions */}
-                  <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
-                    <h4 className="text-emerald-900 text-xs font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                      <CheckCircle size={14} className="text-emerald-600" />{" "}
-                      Lubricon Solutions
-                    </h4>
-                    <ul className="space-y-1.5 text-xs text-zinc-700">
-                      {industry.solutions.map((s, i) => (
-                        <li key={i} className="flex items-start gap-1.5">
-                          <span className="text-emerald-600 font-bold">✔</span>
-                          <span>{s}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {industry.solutions && industry.solutions.length > 0 && (
+                    <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
+                      <h4 className="text-emerald-900 text-xs font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                        <CheckCircle size={14} className="text-emerald-600" />
+                        <span>Lubricon Engineered Solutions</span>
+                      </h4>
+                      <ul className="space-y-1.5 text-xs text-zinc-700">
+                        {industry.solutions.map((s, i) => (
+                          <li key={i} className="flex items-start gap-1.5">
+                            <span className="text-emerald-600 font-bold">✓</span>
+                            <span>{s}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4">
-                  <Link
-                    href="/products"
-                    className="bg-[#ffe000] hover:bg-black hover:text-[#ffe000] text-black font-extrabold px-6 py-2.5 rounded-full text-xs uppercase tracking-wider transition shadow flex items-center gap-1.5"
-                  >
-                    <span>View Recommended Products</span>
-                    <ArrowRight size={14} />
-                  </Link>
+                {/* Bottom Row: Actions */}
+                <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-zinc-100">
                   <button
-                    type="button"
                     onClick={() => {
                       setSelectedIndustry(industry.name);
                       setIsAuditOpen(true);
                     }}
-                    className="border-2 border-zinc-900 hover:bg-zinc-900 hover:text-white text-zinc-900 font-bold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider transition flex items-center gap-1.5 cursor-pointer"
+                    className="bg-[#ffe000] hover:bg-[#fff04d] text-black font-extrabold px-6 py-2.5 rounded-full text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-2 cursor-pointer transform hover:scale-105"
                   >
-                    Request Technical Audit
+                    <span>Request Plant Audit</span>
+                    <ArrowRight size={13} />
                   </button>
+
+                  <Link
+                    href="/products"
+                    className="border-2 border-zinc-200 hover:border-black font-extrabold text-black text-xs px-5 py-2.5 rounded-full uppercase tracking-wider transition-all"
+                  >
+                    View Matching Formulations
+                  </Link>
                 </div>
               </div>
             </div>
@@ -119,13 +126,12 @@ export default function IndustriesList() {
         </div>
       </section>
 
-      {/* Plant Audit Slide-over Drawer */}
+      {/* Plant Audit Drawer */}
       <PlantAuditDrawer
         isOpen={isAuditOpen}
         onClose={() => setIsAuditOpen(false)}
-        initialService={`On-Site Plant Lubrication Audits – ${selectedIndustry}`}
+        initialService={selectedIndustry}
       />
     </>
   );
 }
-

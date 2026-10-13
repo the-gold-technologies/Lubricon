@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Product } from "@/types";
+import { useCMSStore } from "@/store/useCMSStore";
 import {
   X,
   User,
@@ -79,13 +80,20 @@ export default function ProductPriceListDrawer({
     };
   }, [isOpen, onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitted(true);
-    }, 500);
+    await useCMSStore.getState().submitEnquiry({
+      type: "Price List Request",
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      company: formData.company,
+      product: product.name,
+      message: `Buyer Type: ${formData.buyerType}, City: ${formData.city}, Include TDS: ${formData.includeTds}`,
+    });
+    setIsSubmitting(false);
+    setSubmitted(true);
   };
 
   const handleReset = () => {
@@ -217,9 +225,9 @@ export default function ProductPriceListDrawer({
                       Viscosity / Grade:
                     </span>
                     <span className="font-extrabold text-zinc-900">
-                      {product.specifications.viscosity ||
-                        product.specifications.grade ||
-                        "API Certified"}
+                      {product.specifications?.viscosity ??
+                        product.specifications?.grade ??
+                        ""}
                     </span>
                   </div>
                   <div>
@@ -227,8 +235,9 @@ export default function ProductPriceListDrawer({
                       Category:
                     </span>
                     <span className="font-extrabold text-zinc-900 capitalize">
-                      {product.subcategory ||
-                        product.category.replace("-", " ")}
+                      {product.subcategory ??
+                        product.category?.replace("-", " ") ??
+                        ""}
                     </span>
                   </div>
                 </div>

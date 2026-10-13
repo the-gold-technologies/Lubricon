@@ -1,5 +1,5 @@
-import { Search, Filter, X, SlidersHorizontal } from "lucide-react";
-import { productCategories, products } from "@/data/products";
+import { Search, X, SlidersHorizontal } from "lucide-react";
+import { useCMSStore } from "@/store/useCMSStore";
 
 interface ProductsFilterBarProps {
   searchQuery: string;
@@ -14,7 +14,14 @@ export default function ProductsFilterBar({
   activeCategory,
   setActiveCategory,
 }: ProductsFilterBarProps) {
-  // Dynamically compute item count per category
+  const { categories, products } = useCMSStore();
+
+  const allCategoryTabs = [
+    { id: "all", label: "All Products" },
+    ...categories.map((c) => ({ id: c.slug, label: c.name })),
+  ];
+
+  // Dynamically compute item count per category from live CMS products
   const getCategoryCount = (catId: string) => {
     if (catId === "all") return products.length;
     return products.filter((p) => p.category === catId).length;
@@ -57,7 +64,7 @@ export default function ProductsFilterBar({
               <span className="text-zinc-600">Filter:</span>
             </div>
 
-            {productCategories.map((cat) => {
+            {allCategoryTabs.map((cat) => {
               const count = getCategoryCount(cat.id);
               const isActive = activeCategory === cat.id;
 
