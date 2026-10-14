@@ -1,11 +1,13 @@
 import ProductCard from "@/components/ProductCard";
 import { Product } from "@/types";
 import { useCMSStore } from "@/store/useCMSStore";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 interface ProductsGridProps {
   products: Product[];
   activeCategory: string;
   searchQuery: string;
+  isLoading?: boolean;
   onSelectProduct: (product: Product) => void;
   onReset: () => void;
 }
@@ -14,6 +16,7 @@ export default function ProductsGrid({
   products,
   activeCategory,
   searchQuery,
+  isLoading = false,
   onSelectProduct,
   onReset,
 }: ProductsGridProps) {
@@ -58,8 +61,15 @@ export default function ProductsGrid({
           )}
         </div>
 
-        {/* Empty State */}
-        {products.length === 0 ? (
+        {/* Loading or Empty State */}
+        {isLoading ? (
+          <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm">
+            <LoadingIndicator
+              message="Loading lubricants catalog..."
+              subMessage="Fetching formulations & engineering specifications"
+            />
+          </div>
+        ) : products.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-zinc-200 p-8 shadow-sm">
             <div className="text-4xl mb-4">🔍</div>
             <h3 className="text-lg font-black text-black mb-2">

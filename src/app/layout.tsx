@@ -15,8 +15,10 @@ import { getGlobalSEO } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const globalSeo = await getGlobalSEO();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3000";
 
   return {
+    metadataBase: new URL(siteUrl),
     title: globalSeo?.siteTitle ?? undefined,
     description: globalSeo?.siteDescription ?? undefined,
     icons: globalSeo?.favicon

@@ -6,16 +6,28 @@ import ContactHero from "./ContactHero";
 import ContactFormAndCards from "./ContactFormAndCards";
 import ContactFaq from "./ContactFaq";
 
+import LoadingIndicator from "@/components/LoadingIndicator";
+
 interface ContactClientWrapperProps {
   headingTag?: string | null;
 }
 
 export default function ContactClientWrapper({ headingTag }: ContactClientWrapperProps) {
-  const { fetchContactData } = useCMSStore();
+  const { contactData, isContactLoading, fetchContactData } = useCMSStore();
 
   useEffect(() => {
     fetchContactData();
   }, [fetchContactData]);
+
+  if (isContactLoading || !contactData) {
+    return (
+      <LoadingIndicator
+        fullScreen
+        message="Loading Contact Details..."
+        subMessage="Lubricon Support & Headquarters"
+      />
+    );
+  }
 
   return (
     <>

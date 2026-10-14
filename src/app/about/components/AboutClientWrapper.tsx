@@ -9,16 +9,28 @@ import AboutPortfolio from "./AboutPortfolio";
 import AboutTimeline from "./AboutTimeline";
 import AboutCtaBanner from "./AboutCtaBanner";
 
+import LoadingIndicator from "@/components/LoadingIndicator";
+
 interface AboutClientWrapperProps {
   headingTag?: string | null;
 }
 
 export default function AboutClientWrapper({ headingTag }: AboutClientWrapperProps) {
-  const { fetchAboutData } = useCMSStore();
+  const { aboutData, isAboutLoading, fetchAboutData } = useCMSStore();
 
   useEffect(() => {
     fetchAboutData();
   }, [fetchAboutData]);
+
+  if (isAboutLoading || !aboutData) {
+    return (
+      <LoadingIndicator
+        fullScreen
+        message="Loading About Lubricon..."
+        subMessage="Precision Engineering & Australian Legacy"
+      />
+    );
+  }
 
   return (
     <>

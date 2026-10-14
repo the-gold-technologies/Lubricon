@@ -6,10 +6,11 @@ import ProductsHero from "./ProductsHero";
 import ProductsFilterBar from "./ProductsFilterBar";
 import ProductsGrid from "./ProductsGrid";
 import { useCMSStore } from "@/store/useCMSStore";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 function ProductsContent({ headingTag }: { headingTag?: string | null }) {
   const searchParams = useSearchParams();
-  const { products, fetchProducts } = useCMSStore();
+  const { products, isProductsLoading, fetchProducts } = useCMSStore();
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -62,6 +63,7 @@ function ProductsContent({ headingTag }: { headingTag?: string | null }) {
         products={filtered}
         activeCategory={activeCategory}
         searchQuery={searchQuery}
+        isLoading={isProductsLoading && products.length === 0}
         onSelectProduct={() => {}}
         onReset={() => {
           setActiveCategory("all");
@@ -80,9 +82,11 @@ export default function ProductsClientWrapper({ headingTag }: ProductsClientWrap
   return (
     <Suspense
       fallback={
-        <div className="py-20 text-center text-zinc-500">
-          Loading catalog...
-        </div>
+        <LoadingIndicator
+          fullScreen
+          message="Loading Lubricants Catalog..."
+          subMessage="Australian Technology Formulations"
+        />
       }
     >
       <ProductsContent headingTag={headingTag} />

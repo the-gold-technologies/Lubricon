@@ -6,17 +6,29 @@ import IndustriesHero from "./IndustriesHero";
 import IndustriesList from "./IndustriesList";
 import IndustriesPlantSupport from "./IndustriesPlantSupport";
 
+import LoadingIndicator from "@/components/LoadingIndicator";
+
 interface IndustriesClientWrapperProps {
   headingTag?: string | null;
 }
 
 export default function IndustriesClientWrapper({ headingTag }: IndustriesClientWrapperProps) {
-  const { fetchIndustriesData, fetchIndustries } = useCMSStore();
+  const { industriesData, industries, isIndustriesLoading, fetchIndustriesData, fetchIndustries } = useCMSStore();
 
   useEffect(() => {
     fetchIndustriesData();
     fetchIndustries();
   }, [fetchIndustriesData, fetchIndustries]);
+
+  if (isIndustriesLoading || (!industriesData && (!industries || industries.length === 0))) {
+    return (
+      <LoadingIndicator
+        fullScreen
+        message="Loading Industries & Solutions..."
+        subMessage="Specialized Australian Lubrication Formulations"
+      />
+    );
+  }
 
   return (
     <>

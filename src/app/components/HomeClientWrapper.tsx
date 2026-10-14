@@ -11,16 +11,28 @@ import HomeProductShowcase from "./HomeProductShowcase";
 import HomeLubricantFinderSection from "./HomeLubricantFinderSection";
 import HomeCtaBanner from "./HomeCtaBanner";
 
+import LoadingIndicator from "@/components/LoadingIndicator";
+
 interface HomeClientWrapperProps {
   headingTag?: string | null;
 }
 
 export default function HomeClientWrapper({ headingTag }: HomeClientWrapperProps) {
-  const { fetchHomeData } = useCMSStore();
+  const { homeData, isHomeLoading, fetchHomeData } = useCMSStore();
 
   useEffect(() => {
     fetchHomeData();
   }, [fetchHomeData]);
+
+  if (isHomeLoading || !homeData) {
+    return (
+      <LoadingIndicator
+        fullScreen
+        message="Loading Lubricon experience..."
+        subMessage="Australian Technology Lubricants & Fluids"
+      />
+    );
+  }
 
   return (
     <>
