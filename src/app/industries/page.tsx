@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import IndustriesClientWrapper from "./components/IndustriesClientWrapper";
+import JsonLd from "@/components/JsonLd";
 import { getPageSEO, buildMetadata, sanitizeHeadingTag } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -16,12 +17,7 @@ export default async function IndustriesPage() {
 
   return (
     <main className="bg-white text-zinc-900 min-h-screen font-sans">
-      {seo?.schema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: seo.schema }}
-        />
-      )}
+      {seo?.schema && <JsonLd schema={seo.schema} />}
       <IndustriesClientWrapper headingTag={sanitizeHeadingTag(seo?.headingOptions, "h1")} />
     </main>
   );

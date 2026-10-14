@@ -106,23 +106,55 @@ export default function Navbar() {
   const searchDropdownRef = useRef<HTMLDivElement>(null);
   const mobileSearchDropdownRef = useRef<HTMLDivElement>(null);
 
-  const { globalConfig, fetchGlobalConfig, products, fetchProducts, categories } = useCMSStore();
+  const {
+    globalConfig,
+    fetchGlobalConfig,
+    products,
+    fetchProducts,
+    categories,
+  } = useCMSStore();
 
   const productHierarchy: ProductCategoryItem[] = useMemo(() => {
-    return categories.map((cat) => {
-      const catProducts = products.filter(
-        (p) => p.category === cat.slug || p.raw?.categorySlug === cat.slug
-      );
-      return {
-        id: cat.slug,
-        label: cat.name,
-        href: `/products?cat=${cat.slug}`,
-        subcategories: catProducts.map((p) => ({
-          label: p.name,
-          href: `/products/${p.slug}`,
-        })),
-      };
-    });
+    if (!categories || categories.length === 0) return [];
+
+    return [...categories]
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      .map((cat) => {
+        const catProducts = products.filter(
+          (p) =>
+            p.category === cat.slug ||
+            p.raw?.categorySlug === cat.slug ||
+            (p.raw?.categoryName &&
+              p.raw.categoryName.toLowerCase() === cat.name.toLowerCase()),
+        );
+
+        // Standalone product check:
+        // Single standalone products (e.g. AdBlue/DEF, Brake Fluid, Compressor Oil, EDM Oil)
+        // do not have child subcategories; clicking navigates directly to that product.
+        const isStandaloneProduct =
+          catProducts.length === 1 &&
+          (cat.slug === "adblue" ||
+            cat.slug === "brake-fluid" ||
+            cat.slug === "compressor-oil" ||
+            cat.slug === "edm-oil");
+
+        const targetHref =
+          isStandaloneProduct && catProducts[0]
+            ? `/products/${catProducts[0].slug}`
+            : `/products?cat=${cat.slug}`;
+
+        return {
+          id: cat.slug,
+          label: cat.name,
+          href: targetHref,
+          subcategories: isStandaloneProduct
+            ? undefined
+            : catProducts.map((p) => ({
+                label: p.name,
+                href: `/products/${p.slug}`,
+              })),
+        };
+      });
   }, [categories, products]);
 
   useEffect(() => {
@@ -146,9 +178,11 @@ export default function Navbar() {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       const isOutsideDesktop =
-        !searchDropdownRef.current || !searchDropdownRef.current.contains(target);
+        !searchDropdownRef.current ||
+        !searchDropdownRef.current.contains(target);
       const isOutsideMobile =
-        !mobileSearchDropdownRef.current || !mobileSearchDropdownRef.current.contains(target);
+        !mobileSearchDropdownRef.current ||
+        !mobileSearchDropdownRef.current.contains(target);
       if (isOutsideDesktop && isOutsideMobile) {
         setIsSearchDropdownOpen(false);
       }
@@ -284,7 +318,10 @@ export default function Navbar() {
             </div>
 
             {/* Search Input - Desktop & Tablet */}
-            <div className="relative hidden sm:block font-sans" ref={searchDropdownRef}>
+            <div
+              className="relative hidden sm:block font-sans"
+              ref={searchDropdownRef}
+            >
               <form
                 onSubmit={handleSearchSubmit}
                 className="flex items-center font-sans"
@@ -623,7 +660,10 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className="p-4 border-b border-zinc-100 relative" ref={mobileSearchDropdownRef}>
+          <div
+            className="p-4 border-b border-zinc-100 relative"
+            ref={mobileSearchDropdownRef}
+          >
             <form onSubmit={handleSearchSubmit} className="flex items-stretch">
               <input
                 type="text"

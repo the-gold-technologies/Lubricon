@@ -95,6 +95,7 @@ export default function ProductQuoteDrawer({
       email: formData.email,
       phone: formData.phone,
       company: formData.company,
+      location: formData.destination,
       product: product.name,
       packaging: formData.packaging,
       message: `Volume: ${formData.volume}, Destination: ${formData.destination}, Specs: ${formData.specs}`,

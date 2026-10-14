@@ -89,6 +89,7 @@ export default function ProductPriceListDrawer({
       email: formData.email,
       phone: formData.phone,
       company: formData.company,
+      location: formData.city,
       product: product.name,
       message: `Buyer Type: ${formData.buyerType}, City: ${formData.city}, Include TDS: ${formData.includeTds}`,
     });

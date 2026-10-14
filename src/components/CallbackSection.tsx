@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Phone, Mail, CheckCircle2, ArrowRight } from "lucide-react";
+import { useCMSStore } from "@/store/useCMSStore";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -18,6 +19,21 @@ interface CallbackSectionProps {
 export default function CallbackSection({
   compact = false,
 }: CallbackSectionProps) {
+  const { globalConfig, fetchGlobalConfig } = useCMSStore();
+
+  useEffect(() => {
+    fetchGlobalConfig();
+  }, [fetchGlobalConfig]);
+
+  const phone = globalConfig?.socialLinks?.tollFree ?? globalConfig?.phone;
+  const email = globalConfig?.email;
+  const facebook = globalConfig?.socialLinks?.facebook;
+  const instagram = globalConfig?.socialLinks?.instagram;
+  const linkedin = globalConfig?.socialLinks?.linkedin;
+  const youtube = globalConfig?.socialLinks?.youtube;
+
+  const hasSocials = Boolean(facebook || instagram || linkedin || youtube);
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -26,9 +42,21 @@ export default function CallbackSection({
     requirement: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    await useCMSStore.getState().submitEnquiry({
+      type: "Callback Request",
+      name: formData.username,
+      email: formData.email,
+      phone: formData.mobile,
+      location: formData.location,
+      product: formData.requirement,
+      message: `Location: ${formData.location}, Requirement: ${formData.requirement}`,
+    });
+    setIsSubmitting(false);
     setSubmitted(true);
   };
 
@@ -56,83 +84,97 @@ export default function CallbackSection({
             </p>
 
             {/* Direct Contact Info */}
-            <div className="space-y-4 mb-8">
-              <a
-                href="tel:18005696363"
-                className="flex items-center gap-3 text-zinc-900 font-bold hover:text-amber-600 transition"
-              >
-                <div className="w-10 h-10 rounded-full bg-[#ffe109]/30 flex items-center justify-center text-black">
-                  <Phone size={18} />
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-500 uppercase font-semibold">
-                    Toll Free Helpline
-                  </div>
-                  <span className="text-lg font-black">1800 569 6363</span>
-                </div>
-              </a>
+            {(phone || email) && (
+              <div className="space-y-4 mb-8">
+                {phone && (
+                  <a
+                    href={`tel:${phone.replace(/\s+/g, "")}`}
+                    className="flex items-center gap-3 text-zinc-900 font-bold hover:text-amber-600 transition"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-[#ffe109]/30 flex items-center justify-center text-black">
+                      <Phone size={18} />
+                    </div>
+                    <div>
+                      <div className="text-xs text-zinc-500 uppercase font-semibold">
+                        Toll Free Helpline
+                      </div>
+                      <span className="text-lg font-black">{phone}</span>
+                    </div>
+                  </a>
+                )}
 
-              <a
-                href="mailto:info@lubriconindia.com"
-                className="flex items-center gap-3 text-zinc-900 font-bold hover:text-amber-600 transition"
-              >
-                <div className="w-10 h-10 rounded-full bg-[#ffe109]/30 flex items-center justify-center text-black">
-                  <Mail size={18} />
-                </div>
-                <div>
-                  <div className="text-xs text-zinc-500 uppercase font-semibold">
-                    Official Inquiry Email
-                  </div>
-                  <span className="text-base font-bold">
-                    info@lubriconindia.com
-                  </span>
-                </div>
-              </a>
-            </div>
+                {email && (
+                  <a
+                    href={`mailto:${email}`}
+                    className="flex items-center gap-3 text-zinc-900 font-bold hover:text-amber-600 transition"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-[#ffe109]/30 flex items-center justify-center text-black">
+                      <Mail size={18} />
+                    </div>
+                    <div>
+                      <div className="text-xs text-zinc-500 uppercase font-semibold">
+                        Official Inquiry Email
+                      </div>
+                      <span className="text-base font-bold">{email}</span>
+                    </div>
+                  </a>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Social Links */}
-          <div className="pt-6 border-t border-zinc-100 flex items-center gap-4">
-            <span className="text-xs font-bold uppercase text-zinc-400">
-              Connect:
-            </span>
-            <a
-              href="https://m.facebook.com/LubriconIndia"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-              className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-[#ffe000] text-zinc-800 flex items-center justify-center transition"
-            >
-              <FacebookIcon size={16} />
-            </a>
-            <a
-              href="https://www.instagram.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Instagram"
-              className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-[#ffe000] text-zinc-800 flex items-center justify-center transition"
-            >
-              <InstagramIcon size={16} />
-            </a>
-            <a
-              href="https://www.linkedin.com/company/lubriconindia"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="LinkedIn"
-              className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-[#ffe000] text-zinc-800 flex items-center justify-center transition"
-            >
-              <LinkedinIcon size={16} />
-            </a>
-            <a
-              href="https://www.youtube.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="YouTube"
-              className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-[#ffe000] text-zinc-800 flex items-center justify-center transition"
-            >
-              <YoutubeIcon size={16} />
-            </a>
-          </div>
+          {hasSocials && (
+            <div className="pt-6 border-t border-zinc-100 flex items-center gap-4">
+              <span className="text-xs font-bold uppercase text-zinc-400">
+                Connect:
+              </span>
+              {facebook && (
+                <a
+                  href={facebook}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Facebook"
+                  className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-[#ffe000] text-zinc-800 flex items-center justify-center transition"
+                >
+                  <FacebookIcon size={16} />
+                </a>
+              )}
+              {instagram && (
+                <a
+                  href={instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="Instagram"
+                  className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-[#ffe000] text-zinc-800 flex items-center justify-center transition"
+                >
+                  <InstagramIcon size={16} />
+                </a>
+              )}
+              {linkedin && (
+                <a
+                  href={linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="LinkedIn"
+                  className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-[#ffe000] text-zinc-800 flex items-center justify-center transition"
+                >
+                  <LinkedinIcon size={16} />
+                </a>
+              )}
+              {youtube && (
+                <a
+                  href={youtube}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="YouTube"
+                  className="w-9 h-9 rounded-full bg-zinc-100 hover:bg-[#ffe000] text-zinc-800 flex items-center justify-center transition"
+                >
+                  <YoutubeIcon size={16} />
+                </a>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right Side: Form */}
@@ -239,9 +281,10 @@ export default function CallbackSection({
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-[#ffd400] hover:bg-[#ffe000] text-black font-extrabold uppercase text-sm tracking-wider rounded-lg shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5"
+                disabled={isSubmitting}
+                className="w-full py-3.5 bg-[#ffd400] hover:bg-[#ffe000] text-black font-extrabold uppercase text-sm tracking-wider rounded-lg shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 disabled:opacity-50"
               >
-                Submit Now
+                {isSubmitting ? "Submitting..." : "Submit Now"}
               </button>
             </form>
           )}

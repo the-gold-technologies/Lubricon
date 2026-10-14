@@ -91,6 +91,9 @@ export default function CallbackModal({
       name: formData.username,
       email: formData.email,
       phone: formData.mobile,
+      location: formData.location,
+      industry: formData.industry,
+      product: formData.requirement,
       message: `Location: ${formData.location}, Industry: ${formData.industry}, Requirement: ${formData.requirement}`,
     });
     setIsSubmitting(false);

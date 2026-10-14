@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductCtaButtons from "./components/ProductCtaButtons";
+import JsonLd from "@/components/JsonLd";
 import { normalizeProduct, ExtendedProduct, getApiBaseUrl } from "@/store/useCMSStore";
 
 interface Props {
@@ -35,15 +36,7 @@ export async function generateStaticParams() {
   return [];
 }
 
-const categoryImageMap: Record<string, string> = {
-  "engine-oil": "/images/lubricon-can-5l.jpg",
-  "gear-oil": "/images/lubricon-pail-20l.jpg",
-  atf: "/images/prod-atf.jpg",
-  industrial: "/images/lubricon-drum-clean.jpg",
-  fluids: "/images/lubricon-can-5l.jpg",
-  coolants: "/images/lubricon-pail-20l.jpg",
-  greases: "/images/lubricon-pail-20l.jpg",
-};
+
 
 import { Metadata } from "next";
 
@@ -127,18 +120,11 @@ export default async function ProductDetailPage({ params }: Props) {
     console.error("Error loading related products from CMS:", err);
   }
 
-  const imgSrc = product.raw?.containerImage
-    ? product.raw.containerImage
-    : categoryImageMap[product.category];
+  const imgSrc = product.raw?.containerImage;
 
   return (
     <main className="bg-[#f8f9fa] text-zinc-900 min-h-screen">
-      {product.raw?.schema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: product.raw.schema }}
-        />
-      )}
+      {product.raw?.schema && <JsonLd schema={product.raw.schema} />}
       {/* ── BREADCRUMB & BACK LINK ── */}
       <div className="bg-white border-b border-zinc-200 py-3.5 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
@@ -221,65 +207,55 @@ export default async function ProductDetailPage({ params }: Props) {
               </div>
 
               {/* Bottom Card: Engineering Standards */}
-              <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7">
-                <div className="flex items-center gap-2 text-sm font-black text-black mb-5 pb-3 border-b border-zinc-100">
-                  <Zap size={16} className="text-[#ffe000] fill-black" />
-                  <span>Engineering Standards</span>
-                </div>
-
-                <div className="divide-y divide-zinc-100 text-xs sm:text-sm">
-                  {product.specifications?.grade && (
-                    <div className="py-3 flex items-center justify-between">
-                      <span className="text-zinc-500 font-medium">Performance Grade</span>
-                      <span className="text-black font-extrabold text-right">
-                        {product.specifications.grade}
-                      </span>
-                    </div>
-                  )}
-
-                  {product.specifications?.viscosity && (
-                    <div className="py-3 flex items-center justify-between">
-                      <span className="text-zinc-500 font-medium">Viscosity Rating</span>
-                      <span className="text-black font-extrabold text-right">
-                        {product.specifications.viscosity}
-                      </span>
-                    </div>
-                  )}
-
-                  {product.specifications?.standard && (
-                    <div className="py-3 flex items-center justify-between">
-                      <span className="text-zinc-500 font-medium">Testing Standard</span>
-                      <span className="text-black font-extrabold text-right">
-                        {product.specifications.standard}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="py-3 flex items-center justify-between">
-                    <span className="text-zinc-500 font-medium">Australian Chemistry</span>
-                    <span className="text-emerald-700 font-extrabold flex items-center gap-1">
-                      <Check size={14} className="stroke-[3]" />
-                      <span>Certified Formulation</span>
-                    </span>
+              {(product.specifications?.grade ||
+                product.specifications?.viscosity ||
+                product.specifications?.standard ||
+                (product.specifications?.packaging && product.specifications.packaging.length > 0)) && (
+                <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7">
+                  <div className="flex items-center gap-2 text-sm font-black text-black mb-5 pb-3 border-b border-zinc-100">
+                    <Zap size={16} className="text-[#ffe000] fill-black" />
+                    <span>Engineering Standards</span>
                   </div>
 
-                  <div className="py-3 flex items-center justify-between">
-                    <span className="text-zinc-500 font-medium">Thermal Stability</span>
-                    <span className="text-black font-extrabold text-right">
-                      High Viscosity Index (HVI)
-                    </span>
-                  </div>
+                  <div className="divide-y divide-zinc-100 text-xs sm:text-sm">
+                    {product.specifications?.grade && (
+                      <div className="py-3 flex items-center justify-between">
+                        <span className="text-zinc-500 font-medium">Performance Grade</span>
+                        <span className="text-black font-extrabold text-right">
+                          {product.specifications.grade}
+                        </span>
+                      </div>
+                    )}
 
-                  {product.specifications?.packaging && product.specifications.packaging.length > 0 && (
-                    <div className="py-3 flex items-center justify-between">
-                      <span className="text-zinc-500 font-medium">Standard Packaging</span>
-                      <span className="text-black font-extrabold text-right">
-                        {product.specifications.packaging.join(", ")}
-                      </span>
-                    </div>
-                  )}
+                    {product.specifications?.viscosity && (
+                      <div className="py-3 flex items-center justify-between">
+                        <span className="text-zinc-500 font-medium">Viscosity Rating</span>
+                        <span className="text-black font-extrabold text-right">
+                          {product.specifications.viscosity}
+                        </span>
+                      </div>
+                    )}
+
+                    {product.specifications?.standard && (
+                      <div className="py-3 flex items-center justify-between">
+                        <span className="text-zinc-500 font-medium">Testing Standard</span>
+                        <span className="text-black font-extrabold text-right">
+                          {product.specifications.standard}
+                        </span>
+                      </div>
+                    )}
+
+                    {product.specifications?.packaging && product.specifications.packaging.length > 0 && (
+                      <div className="py-3 flex items-center justify-between">
+                        <span className="text-zinc-500 font-medium">Standard Packaging</span>
+                        <span className="text-black font-extrabold text-right">
+                          {product.specifications.packaging.join(", ")}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* ── RIGHT COLUMN: OVERVIEW, BENEFITS & ACTIONS ── */}
@@ -391,19 +367,22 @@ export default async function ProductDetailPage({ params }: Props) {
                       <tr className="border-b border-zinc-200 text-zinc-500 font-extrabold uppercase text-[11px]">
                         <th className="py-2.5 px-3">Property</th>
                         <th className="py-2.5 px-3">Test Method</th>
-                        <th className="py-2.5 px-3">Unit</th>
                         <th className="py-2.5 px-3">Typical Value</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100 font-medium">
-                      {product.propertiesTable.map((row: any, rIdx: number) => (
-                        <tr key={rIdx} className="hover:bg-zinc-50 transition-colors">
-                          <td className="py-2.5 px-3 font-bold text-black">{row.property}</td>
-                          <td className="py-2.5 px-3 text-zinc-500">{row.testMethod}</td>
-                          <td className="py-2.5 px-3 text-zinc-500">{row.unit}</td>
-                          <td className="py-2.5 px-3 font-extrabold text-black">{row.value}</td>
-                        </tr>
-                      ))}
+                      {product.propertiesTable.map((row: any, rIdx: number) => {
+                        const property = typeof row?.property === "string" ? row.property : Array.isArray(row) ? row[0] : "";
+                        const testMethod = typeof row?.testMethod === "string" ? row.testMethod : Array.isArray(row) && row.length > 2 ? row[1] : "-";
+                        const value = typeof row?.value === "string" ? row.value : Array.isArray(row) ? row[row.length - 1] : "";
+                        return (
+                          <tr key={rIdx} className="hover:bg-zinc-50 transition-colors">
+                            <td className="py-2.5 px-3 font-bold text-black">{property}</td>
+                            <td className="py-2.5 px-3 text-zinc-500">{testMethod}</td>
+                            <td className="py-2.5 px-3 font-extrabold text-black">{value}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

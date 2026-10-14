@@ -194,6 +194,17 @@ export interface ContactData {
     image?: string;
     [key: string]: any;
   };
+  ContactForm?: {
+    infoHeading?: string;
+    infoDescription?: string;
+    formTitle?: string;
+    formSubtitle?: string;
+    submitButtonText?: string;
+    phone?: string;
+    email?: string;
+    address?: string;
+    [key: string]: any;
+  };
   ContactFaq?: {
     badge?: string;
     heading?: string;
@@ -311,6 +322,7 @@ interface CMSStoreState {
   contactData: ContactData | null;
   products: ExtendedProduct[];
   categories: any[];
+  productsHero: any;
   industries: Industry[];
   industriesData: any;
   globalConfig: GlobalConfig | null;
@@ -359,6 +371,7 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>(
     industriesData: null,
     products: [],
     categories: [],
+    productsHero: null,
     industries: [],
     globalConfig: null,
     navLinks: [],
@@ -530,6 +543,7 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>(
             categories: Array.isArray(json.data.categories)
               ? json.data.categories
               : [],
+            productsHero: json.data.hero ?? json.data.productsHero ?? get().productsHero,
             isProductsLoading: false,
           });
           return normalized;

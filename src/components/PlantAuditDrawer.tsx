@@ -95,6 +95,10 @@ export default function PlantAuditDrawer({
       email: formData.email,
       phone: formData.phone,
       company: formData.company,
+      location: formData.city,
+      industry: formData.industry,
+      service: formData.service,
+      timeframe: formData.timeframe,
       product: formData.service,
       message: `Industry: ${formData.industry}, City: ${formData.city}, Timeframe: ${formData.timeframe}, Notes: ${formData.notes}`,
     });

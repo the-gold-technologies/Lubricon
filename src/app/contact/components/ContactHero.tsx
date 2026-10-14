@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
 import { useCMSStore } from "@/store/useCMSStore";
@@ -13,12 +12,18 @@ export default function ContactHero({ headingTag }: ContactHeroProps) {
   const { contactData } = useCMSStore();
 
   const hero = contactData?.ContactHero;
-  const badge = hero?.badge;
-  const heading = hero?.heading;
-  const description = hero?.description;
-  const helpline = hero?.helpline;
-  const email = hero?.email;
-  const image = hero?.image ?? "/images/contact-hero.jpg";
+  if (!hero) return null;
+
+  const badge = hero.badge;
+  const heading = hero.heading;
+  const description = hero.description;
+  const helpline = hero.helpline;
+  const email = hero.email;
+  const image = hero.image;
+
+  const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
+  const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
+  const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
   return (
     <section className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-black via-[#0c0d12] to-black text-white border-b-4 border-[#ffe000] overflow-hidden">
@@ -39,22 +44,11 @@ export default function ContactHero({ headingTag }: ContactHeroProps) {
             )}
 
             {/* Main Headline */}
-            {(() => {
-              const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
-              const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
-              const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-              return (
-                <Tag className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-4">
-                  {heading ? (
-                    heading
-                  ) : (
-                    <>
-                      Contact <span className="text-[#ffe000]">Lubricon</span> India
-                    </>
-                  )}
-                </Tag>
-              );
-            })()}
+            {heading && (
+              <Tag className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-4">
+                {heading}
+              </Tag>
+            )}
 
             {/* Description */}
             {description && (
@@ -106,52 +100,56 @@ export default function ContactHero({ headingTag }: ContactHeroProps) {
           </div>
 
           {/* Right Column: Contact Image */}
-          <div className="lg:col-span-6 relative flex justify-center">
-            {/* Ambient gold aura */}
-            <div className="absolute -inset-1.5 bg-gradient-to-tr from-[#ffe000]/30 to-zinc-700/20 rounded-[28px] blur-xl opacity-75 pointer-events-none" />
+          {image && (
+            <div className="lg:col-span-6 relative flex justify-center">
+              {/* Ambient gold aura */}
+              <div className="absolute -inset-1.5 bg-gradient-to-tr from-[#ffe000]/30 to-zinc-700/20 rounded-[28px] blur-xl opacity-75 pointer-events-none" />
 
-            {/* Image Card */}
-            <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-zinc-700 shadow-2xl bg-zinc-950 group">
-              <div className="relative w-full aspect-[16/11]">
-                <Image
-                  src={image}
-                  alt={heading ?? "Lubricon Technical Support"}
-                  fill
-                  priority
-                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                />
-                {/* Vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
+              {/* Image Card */}
+              <div className="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden border border-zinc-700 shadow-2xl bg-zinc-950 group">
+                <div className="relative w-full aspect-[16/11]">
+                  <Image
+                    src={image}
+                    alt={heading ?? ""}
+                    fill
+                    priority
+                    className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                  {/* Vignette */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
 
-                {/* Top Badge */}
-                <div className="absolute top-3.5 left-3.5 bg-black/80 backdrop-blur-md border border-white/20 text-white text-[11px] font-extrabold uppercase px-3 py-1 rounded-full shadow-lg flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#ffe000] shadow-[0_0_6px_#ffe000] animate-pulse" />
-                  <span>Expert Technical Support</span>
-                </div>
+                  {/* Top Badge */}
+                  <div className="absolute top-3.5 left-3.5 bg-black/80 backdrop-blur-md border border-white/20 text-white text-[11px] font-extrabold uppercase px-3 py-1 rounded-full shadow-lg flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-[#ffe000] shadow-[0_0_6px_#ffe000] animate-pulse" />
+                    <span>Expert Technical Support</span>
+                  </div>
 
-                {/* Bottom Floating Bar */}
-                <div className="absolute bottom-3 left-3 right-3 p-3 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">🇮🇳</span>
-                    <div>
-                      <div className="font-extrabold text-white text-xs">
-                        Lubricon Specialities India
-                      </div>
-                      <div className="text-[10px] text-zinc-400">
-                        Australian Technology · Certified Engineers
+                  {/* Bottom Floating Bar */}
+                  <div className="absolute bottom-3 left-3 right-3 p-3 rounded-xl bg-black/85 backdrop-blur-md border border-white/10 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">🇮🇳</span>
+                      <div>
+                        <div className="font-extrabold text-white text-xs">
+                          Lubricon Specialities India
+                        </div>
+                        <div className="text-[10px] text-zinc-400">
+                          Australian Technology · Certified Engineers
+                        </div>
                       </div>
                     </div>
+                    {helpline && (
+                      <a
+                        href={`tel:${helpline.replace(/\s+/g, "")}`}
+                        className="text-[#ffe000] font-black uppercase text-[10px] border-l border-white/20 pl-2.5 hover:underline"
+                      >
+                        Call Now ↗
+                      </a>
+                    )}
                   </div>
-                  <a
-                    href="tel:18005696363"
-                    className="text-[#ffe000] font-black uppercase text-[10px] border-l border-white/20 pl-2.5 hover:underline"
-                  >
-                    Call Now ↗
-                  </a>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

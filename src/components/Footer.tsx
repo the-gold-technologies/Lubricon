@@ -219,6 +219,14 @@ export default function Footer() {
                   <ChevronRight size={14} className="text-[#ffe000]" /> Contact Us
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/privacy-policy"
+                  className="flex items-center gap-1.5 text-gray-400 hover:text-[#ffe000] transition"
+                >
+                  <ChevronRight size={14} className="text-[#ffe000]" /> Privacy Policy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
@@ -227,8 +235,15 @@ export default function Footer() {
       {/* Bottom Copyright Strip */}
       <div className="bg-black border-t border-zinc-900 py-4 px-6 text-xs text-gray-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
-          <div>
-            {copyrightText ?? `© ${new Date().getFullYear()} Lubricon Specialities India. All rights reserved.`}
+          <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
+            <span>{copyrightText ?? `© ${new Date().getFullYear()} Lubricon Specialities India. All rights reserved.`}</span>
+            <span className="text-zinc-700 hidden sm:inline">•</span>
+            <Link
+              href="/privacy-policy"
+              className="text-gray-400 hover:text-[#ffe000] underline-offset-4 hover:underline transition-colors font-medium"
+            >
+              Privacy Policy
+            </Link>
           </div>
           <div className="text-gray-400">
             Engineered with Australian Technology for Indian Conditions

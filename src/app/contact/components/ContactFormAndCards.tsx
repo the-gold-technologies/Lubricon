@@ -99,14 +99,17 @@ const generateCaptcha = (): CaptchaItem => {
 };
 
 export default function ContactFormAndCards() {
-  const { globalConfig, fetchGlobalConfig } = useCMSStore();
+  const { contactData } = useCMSStore();
 
-  useEffect(() => {
-    fetchGlobalConfig();
-  }, [fetchGlobalConfig]);
+  const contactForm = contactData?.ContactForm;
+  const infoHeading = contactForm?.infoHeading;
+  const infoDescription = contactForm?.infoDescription;
+  const formTitle = contactForm?.formTitle;
+  const formSubtitle = contactForm?.formSubtitle;
+  const submitButtonText = contactForm?.submitButtonText;
 
-  const phone = globalConfig?.socialLinks?.tollFree ?? globalConfig?.phone;
-  const email = globalConfig?.email;
+  const phone = contactForm?.phone;
+  const email = contactForm?.email;
 
   const [form, setForm] = useState({
     name: "",
@@ -153,6 +156,7 @@ export default function ContactFormAndCards() {
       email: form.email,
       phone: form.mobile,
       company: form.company,
+      location: form.address,
       message: `Address: ${form.address}, Message: ${form.message}`,
     });
     setIsSubmitting(false);
@@ -165,14 +169,16 @@ export default function ContactFormAndCards() {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* ── Left: Info ── */}
           <div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-black tracking-tight leading-tight mb-3">
-              Need more information?{" "}
-              <span className="text-[#d4af37]">Get in touch</span> with us
-            </h2>
-            <p className="text-zinc-500 text-sm leading-relaxed mb-10 max-w-sm">
-              A dedicated team of Australian lubrication engineers ready to
-              assist with product selection, bulk orders, and on-site support.
-            </p>
+            {infoHeading && (
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-black tracking-tight leading-tight mb-3">
+                {infoHeading}
+              </h2>
+            )}
+            {infoDescription && (
+              <p className="text-zinc-500 text-sm leading-relaxed mb-10 max-w-sm">
+                {infoDescription}
+              </p>
+            )}
 
             {/* Contact List */}
             <div className="space-y-6">
@@ -265,13 +271,16 @@ export default function ContactFormAndCards() {
               </div>
             ) : (
               <>
-                <h3 className="text-2xl sm:text-3xl font-black text-black tracking-tight mb-1">
-                  Send Message
-                </h3>
-                <p className="text-zinc-400 text-sm mb-7 leading-relaxed">
-                  Please fill out the form below with your details and message
-                  to contact us.
-                </p>
+                {formTitle && (
+                  <h3 className="text-2xl sm:text-3xl font-black text-black tracking-tight mb-1">
+                    {formTitle}
+                  </h3>
+                )}
+                {formSubtitle && (
+                  <p className="text-zinc-400 text-sm mb-7 leading-relaxed">
+                    {formSubtitle}
+                  </p>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   {/* Two-Column Grid for Name, Email, Mobile, and Company */}
@@ -500,7 +509,7 @@ export default function ContactFormAndCards() {
                     type="submit"
                     className="w-full py-3.5 bg-black hover:bg-[#ffe000] hover:text-black text-white font-black text-sm uppercase tracking-wider rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <span>Send Message</span>
+                    <span>{submitButtonText}</span>
                     <Send size={14} />
                   </button>
                 </form>
