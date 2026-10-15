@@ -38,9 +38,7 @@ export default function HomeLubricantFinderSection() {
             </div>
           )}
           {title && (
-            <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tight">
-              {title}
-            </h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tight">{title}</h2>
           )}
           {subtitle && (
             <p className="text-sm sm:text-base text-zinc-600 font-medium mt-3 leading-relaxed">

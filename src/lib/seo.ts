@@ -39,7 +39,7 @@ export interface GlobalSEO {
 
 export function sanitizeHeadingTag(
   tag?: string | null,
-  fallback: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" = "h1"
+  fallback: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" = "h1",
 ): "h1" | "h2" | "h3" | "h4" | "h5" | "h6" {
   if (!tag) return fallback;
   const clean = String(tag).toLowerCase().trim();
@@ -86,12 +86,15 @@ export async function getPageSEO(slug: string): Promise<PageSEO | null> {
 export function buildMetadata(
   seo: PageSEO | null,
   fallbackTitle: string,
-  fallbackDesc: string
+  fallbackDesc: string,
 ): Metadata {
   const title = seo?.metaTitle ? seo.metaTitle : fallbackTitle;
   const description = seo?.metaDescription ? seo.metaDescription : fallbackDesc;
   const keywords = seo?.targetKeywords
-    ? seo.targetKeywords.split(",").map((k) => k.trim()).filter(Boolean)
+    ? seo.targetKeywords
+        .split(",")
+        .map((k) => k.trim())
+        .filter(Boolean)
     : undefined;
 
   return {

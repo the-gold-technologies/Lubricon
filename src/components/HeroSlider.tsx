@@ -55,9 +55,7 @@ export default function HeroSlider({ headingTag }: HeroSliderProps) {
             <div
               key={slide.id ?? index}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                isActive
-                  ? "opacity-100 z-10"
-                  : "opacity-0 z-0 pointer-events-none"
+                isActive ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
               }`}
             >
               <div className="relative w-full h-full">
@@ -151,9 +149,7 @@ export default function HeroSlider({ headingTag }: HeroSliderProps) {
                 key={i}
                 onClick={() => setCurrent(i)}
                 className={`h-2 rounded-full transition-all cursor-pointer ${
-                  i === current
-                    ? "w-8 bg-[#ffe000]"
-                    : "w-2 bg-white/50 hover:bg-white"
+                  i === current ? "w-8 bg-[#ffe000]" : "w-2 bg-white/50 hover:bg-white"
                 }`}
                 aria-label={`Go to slide ${i + 1}`}
               />

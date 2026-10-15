@@ -67,10 +67,7 @@ export default function HomeAboutStrip() {
                     key={idx}
                     className="flex items-center gap-2.5 text-sm text-zinc-800 font-medium"
                   >
-                    <CheckCircle2
-                      size={18}
-                      className="text-[#ffe000] fill-black flex-shrink-0"
-                    />
+                    <CheckCircle2 size={18} className="text-[#ffe000] fill-black flex-shrink-0" />
                     <span>{bullet}</span>
                   </div>
                 ))}
@@ -125,9 +122,7 @@ export default function HomeAboutStrip() {
                         </div>
                       )}
                       {badgeSubtitle && (
-                        <div className="text-[11px] text-zinc-300 mt-0.5">
-                          {badgeSubtitle}
-                        </div>
+                        <div className="text-[11px] text-zinc-300 mt-0.5">{badgeSubtitle}</div>
                       )}
                     </div>
                     <span className="text-2xl">🇦🇺</span>

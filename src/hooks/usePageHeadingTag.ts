@@ -3,10 +3,7 @@
 import { useEffect, type ElementType } from "react";
 import { useCMSStore, getHeadingTag } from "@/store/useCMSStore";
 
-export function usePageHeadingTag(
-  pageSlug: string,
-  initialTag?: string | null,
-): ElementType {
+export function usePageHeadingTag(pageSlug: string, initialTag?: string | null): ElementType {
   const pageState = useCMSStore((state) => state.pages[pageSlug]);
   const pageSEO = useCMSStore((state) => state.pageSEO[pageSlug]);
   const globalConfig = useCMSStore((state) => state.globalConfig);
@@ -21,11 +18,7 @@ export function usePageHeadingTag(
   }, [fetchGlobalConfig]);
 
   if (pageSlug === "home") {
-    const raw =
-      globalConfig?.headingOptions ||
-      homeData?.seo?.headingOptions ||
-      initialTag ||
-      "h1";
+    const raw = globalConfig?.headingOptions || homeData?.seo?.headingOptions || initialTag || "h1";
     return getHeadingTag(raw, "h1");
   }
 

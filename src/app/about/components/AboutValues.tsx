@@ -31,14 +31,10 @@ export default function AboutValues() {
             </div>
           )}
           {title && (
-            <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tight">
-              {title}
-            </h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tight">{title}</h2>
           )}
           {subtitle && (
-            <p className="text-sm sm:text-base text-zinc-600 font-medium mt-3">
-              {subtitle}
-            </p>
+            <p className="text-sm sm:text-base text-zinc-600 font-medium mt-3">{subtitle}</p>
           )}
         </div>
 
@@ -52,14 +48,10 @@ export default function AboutValues() {
                 {icons[i % icons.length]}
               </div>
               {v.title && (
-                <h3 className="text-lg font-black text-black mb-2 tracking-tight">
-                  {v.title}
-                </h3>
+                <h3 className="text-lg font-black text-black mb-2 tracking-tight">{v.title}</h3>
               )}
               {v.desc && (
-                <p className="text-zinc-600 text-xs sm:text-sm leading-relaxed">
-                  {v.desc}
-                </p>
+                <p className="text-zinc-600 text-xs sm:text-sm leading-relaxed">{v.desc}</p>
               )}
             </div>
           ))}

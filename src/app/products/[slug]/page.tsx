@@ -1,15 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  ChevronRight,
-  Zap,
-  CheckCircle2,
-  ArrowLeft,
-  Wrench,
-  Cpu,
-  Check,
-} from "lucide-react";
+import { ChevronRight, Zap, CheckCircle2, ArrowLeft, Wrench, Cpu, Check } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductCtaButtons from "./components/ProductCtaButtons";
 import JsonLd from "@/components/JsonLd";
@@ -35,8 +27,6 @@ export async function generateStaticParams() {
   }
   return [];
 }
-
-
 
 import { Metadata } from "next";
 
@@ -104,7 +94,7 @@ export default async function ProductDetailPage({ params }: Props) {
   try {
     const relRes = await fetch(
       `${baseUrl}/api/products?category=${encodeURIComponent(product.category)}`,
-      { cache: "no-store" }
+      { cache: "no-store" },
     );
     if (relRes.ok) {
       const relJson = await relRes.json();
@@ -144,9 +134,7 @@ export default async function ProductDetailPage({ params }: Props) {
               {product.subcategory}
             </Link>
             <ChevronRight size={13} className="text-zinc-400" />
-            <span className="text-black font-extrabold truncate max-w-[200px]">
-              {product.name}
-            </span>
+            <span className="text-black font-extrabold truncate max-w-[200px]">{product.name}</span>
           </nav>
 
           <Link
@@ -210,7 +198,8 @@ export default async function ProductDetailPage({ params }: Props) {
               {(product.specifications?.grade ||
                 product.specifications?.viscosity ||
                 product.specifications?.standard ||
-                (product.specifications?.packaging && product.specifications.packaging.length > 0)) && (
+                (product.specifications?.packaging &&
+                  product.specifications.packaging.length > 0)) && (
                 <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7">
                   <div className="flex items-center gap-2 text-sm font-black text-black mb-5 pb-3 border-b border-zinc-100">
                     <Zap size={16} className="text-[#ffe000] fill-black" />
@@ -245,14 +234,15 @@ export default async function ProductDetailPage({ params }: Props) {
                       </div>
                     )}
 
-                    {product.specifications?.packaging && product.specifications.packaging.length > 0 && (
-                      <div className="py-3 flex items-center justify-between">
-                        <span className="text-zinc-500 font-medium">Standard Packaging</span>
-                        <span className="text-black font-extrabold text-right">
-                          {product.specifications.packaging.join(", ")}
-                        </span>
-                      </div>
-                    )}
+                    {product.specifications?.packaging &&
+                      product.specifications.packaging.length > 0 && (
+                        <div className="py-3 flex items-center justify-between">
+                          <span className="text-zinc-500 font-medium">Standard Packaging</span>
+                          <span className="text-black font-extrabold text-right">
+                            {product.specifications.packaging.join(", ")}
+                          </span>
+                        </div>
+                      )}
                   </div>
                 </div>
               )}
@@ -274,10 +264,13 @@ export default async function ProductDetailPage({ params }: Props) {
                 </div>
 
                 {(() => {
-                  const headingTag = product.raw?.headingOptions ? product.raw.headingOptions : "h1";
+                  const headingTag = product.raw?.headingOptions
+                    ? product.raw.headingOptions
+                    : "h1";
                   const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
                   const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
-                  const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+                  const Tag = (validTags.includes(clean) ? clean : "h1") as
+                    "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
                   return (
                     <Tag className="text-2xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight leading-[1.15] mb-4">
                       {product.name}
@@ -331,9 +324,7 @@ export default async function ProductDetailPage({ params }: Props) {
                     <div className="w-8 h-8 rounded-lg bg-black text-[#ffe000] flex items-center justify-center font-bold text-xs">
                       <Wrench size={16} />
                     </div>
-                    <h2 className="text-lg font-black text-black">
-                      Recommended Application Areas
-                    </h2>
+                    <h2 className="text-lg font-black text-black">Recommended Application Areas</h2>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -357,9 +348,7 @@ export default async function ProductDetailPage({ params }: Props) {
                     <div className="w-8 h-8 rounded-lg bg-[#ffe000] text-black flex items-center justify-center font-bold text-xs">
                       <Cpu size={16} />
                     </div>
-                    <h2 className="text-lg font-black text-black">
-                      Physico-Chemical Properties
-                    </h2>
+                    <h2 className="text-lg font-black text-black">Physico-Chemical Properties</h2>
                   </div>
 
                   <table className="w-full text-left border-collapse text-xs sm:text-sm">
@@ -372,9 +361,24 @@ export default async function ProductDetailPage({ params }: Props) {
                     </thead>
                     <tbody className="divide-y divide-zinc-100 font-medium">
                       {product.propertiesTable.map((row: any, rIdx: number) => {
-                        const property = typeof row?.property === "string" ? row.property : Array.isArray(row) ? row[0] : "";
-                        const testMethod = typeof row?.testMethod === "string" ? row.testMethod : Array.isArray(row) && row.length > 2 ? row[1] : "-";
-                        const value = typeof row?.value === "string" ? row.value : Array.isArray(row) ? row[row.length - 1] : "";
+                        const property =
+                          typeof row?.property === "string"
+                            ? row.property
+                            : Array.isArray(row)
+                              ? row[0]
+                              : "";
+                        const testMethod =
+                          typeof row?.testMethod === "string"
+                            ? row.testMethod
+                            : Array.isArray(row) && row.length > 2
+                              ? row[1]
+                              : "-";
+                        const value =
+                          typeof row?.value === "string"
+                            ? row.value
+                            : Array.isArray(row)
+                              ? row[row.length - 1]
+                              : "";
                         return (
                           <tr key={rIdx} className="hover:bg-zinc-50 transition-colors">
                             <td className="py-2.5 px-3 font-bold text-black">{property}</td>

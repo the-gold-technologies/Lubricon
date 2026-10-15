@@ -21,14 +21,9 @@ interface ProductQuoteDrawerProps {
   product: Product;
 }
 
-export default function ProductQuoteDrawer({
-  isOpen,
-  onClose,
-  product,
-}: ProductQuoteDrawerProps) {
+export default function ProductQuoteDrawer({ isOpen, onClose, product }: ProductQuoteDrawerProps) {
   const defaultPackaging =
-    product.specifications.packaging &&
-    product.specifications.packaging.length > 0
+    product.specifications.packaging && product.specifications.packaging.length > 0
       ? product.specifications.packaging[0]
       : "210L Drum";
 
@@ -173,12 +168,9 @@ export default function ProductQuoteDrawer({
                   Quotation Request Sent!
                 </h3>
                 <p className="text-zinc-600 text-sm max-w-sm mx-auto mt-2 leading-relaxed">
-                  Thank you,{" "}
-                  <strong className="text-black">{formData.name}</strong>. Our
-                  industrial desk will contact you with commercial pricing and
-                  batch availability for{" "}
-                  <strong className="text-black">{product.name}</strong> within
-                  2 hours.
+                  Thank you, <strong className="text-black">{formData.name}</strong>. Our industrial
+                  desk will contact you with commercial pricing and batch availability for{" "}
+                  <strong className="text-black">{product.name}</strong> within 2 hours.
                 </p>
               </div>
 
@@ -186,23 +178,15 @@ export default function ProductQuoteDrawer({
               <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-left text-xs space-y-2 max-w-sm mx-auto mt-4">
                 <div className="flex justify-between">
                   <span className="text-zinc-500 font-semibold">Product:</span>
-                  <span className="font-extrabold text-black">
-                    {product.name}
-                  </span>
+                  <span className="font-extrabold text-black">{product.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-500 font-semibold">
-                    Target Volume:
-                  </span>
-                  <span className="font-extrabold text-black">
-                    {formData.volume}
-                  </span>
+                  <span className="text-zinc-500 font-semibold">Target Volume:</span>
+                  <span className="font-extrabold text-black">{formData.volume}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500 font-semibold">Contact:</span>
-                  <span className="font-extrabold text-black">
-                    {formData.phone}
-                  </span>
+                  <span className="font-extrabold text-black">{formData.phone}</span>
                 </div>
               </div>
 
@@ -239,19 +223,13 @@ export default function ProductQuoteDrawer({
                       Viscosity / Grade:
                     </span>
                     <span className="font-extrabold text-zinc-900">
-                      {product.specifications?.viscosity ??
-                        product.specifications?.grade ??
-                        ""}
+                      {product.specifications?.viscosity ?? product.specifications?.grade ?? ""}
                     </span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 block text-[11px] mb-0.5">
-                      Category:
-                    </span>
+                    <span className="text-zinc-500 block text-[11px] mb-0.5">Category:</span>
                     <span className="font-extrabold text-zinc-900 capitalize">
-                      {product.subcategory ??
-                        product.category?.replace("-", " ") ??
-                        ""}
+                      {product.subcategory ?? product.category?.replace("-", " ") ?? ""}
                     </span>
                   </div>
                 </div>
@@ -259,22 +237,15 @@ export default function ProductQuoteDrawer({
 
               {/* Your Name */}
               <div>
-                <label className="block text-xs font-bold text-zinc-800 mb-1.5">
-                  Your Name *
-                </label>
+                <label className="block text-xs font-bold text-zinc-800 mb-1.5">Your Name *</label>
                 <div className="relative">
-                  <User
-                    size={16}
-                    className="absolute left-3.5 top-3.5 text-zinc-400"
-                  />
+                  <User size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                   <input
                     type="text"
                     required
                     placeholder="e.g. Vikram Malhotra"
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                   />
                 </div>
@@ -287,18 +258,13 @@ export default function ProductQuoteDrawer({
                     Corporate Email *
                   </label>
                   <div className="relative">
-                    <Mail
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Mail size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="email"
                       required
                       placeholder="name@company.com"
                       value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>
@@ -309,10 +275,7 @@ export default function ProductQuoteDrawer({
                     Phone / WhatsApp *
                   </label>
                   <div className="relative">
-                    <Phone
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Phone size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="tel"
                       inputMode="numeric"
@@ -340,18 +303,13 @@ export default function ProductQuoteDrawer({
                     Company / Firm Name *
                   </label>
                   <div className="relative">
-                    <Building2
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Building2 size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. Apex Precision Works"
                       value={formData.company}
-                      onChange={(e) =>
-                        setFormData({ ...formData, company: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>
@@ -362,10 +320,7 @@ export default function ProductQuoteDrawer({
                     Delivery City / State *
                   </label>
                   <div className="relative">
-                    <MapPin
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <MapPin size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="text"
                       required
@@ -390,24 +345,14 @@ export default function ProductQuoteDrawer({
                 </label>
                 <select
                   value={formData.volume}
-                  onChange={(e) =>
-                    setFormData({ ...formData, volume: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, volume: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium text-zinc-900 transition"
                   required
                 >
-                  <option value="1 - 5 Units (Trial Batch)">
-                    1 - 5 Units (Trial Batch)
-                  </option>
-                  <option value="10 - 25 Units (Commercial)">
-                    10 - 25 Units (Commercial)
-                  </option>
-                  <option value="1 - 5 Barrels (210L Drum)">
-                    1 - 5 Barrels (210L Drum)
-                  </option>
-                  <option value="10+ Barrels / Full Truckload">
-                    10+ Barrels / Full Truckload
-                  </option>
+                  <option value="1 - 5 Units (Trial Batch)">1 - 5 Units (Trial Batch)</option>
+                  <option value="10 - 25 Units (Commercial)">10 - 25 Units (Commercial)</option>
+                  <option value="1 - 5 Barrels (210L Drum)">1 - 5 Barrels (210L Drum)</option>
+                  <option value="10+ Barrels / Full Truckload">10+ Barrels / Full Truckload</option>
                   <option value="1,000L - 5,000L Monthly Contract">
                     1,000L - 5,000L Monthly Contract
                   </option>
@@ -423,22 +368,15 @@ export default function ProductQuoteDrawer({
                   rows={3}
                   placeholder="e.g. ISO VG 68, OEM hydraulic pump compatibility, customized batch certificate..."
                   value={formData.specs}
-                  onChange={(e) =>
-                    setFormData({ ...formData, specs: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, specs: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition resize-none"
                 />
               </div>
 
               {/* Trust Badge */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 py-1">
-                <ShieldCheck
-                  size={14}
-                  className="text-emerald-600 shrink-0 stroke-[2.5]"
-                />
-                <span>
-                  Confidential B2B Wholesale Pricing • Batch Tested Quality
-                </span>
+                <ShieldCheck size={14} className="text-emerald-600 shrink-0 stroke-[2.5]" />
+                <span>Confidential B2B Wholesale Pricing • Batch Tested Quality</span>
               </div>
 
               {/* Big Solid Submit Button matching reference */}

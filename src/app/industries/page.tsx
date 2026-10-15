@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
     seo,
     "Industries We Serve | Lubricon Specialities India",
-    "Lubricon provides specialized lubrication solutions for plastic injection molding, paper mills, and steel plants. Australian technology for maximum uptime."
+    "Lubricon provides specialized lubrication solutions for plastic injection molding, paper mills, and steel plants. Australian technology for maximum uptime.",
   );
 }
 

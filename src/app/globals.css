@@ -15,8 +15,7 @@
   --color-slate-200: #e2e8f0;
   --color-slate-100: #f1f5f9;
 
-  --font-sans:
-    "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
   --font-display: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
 
   --radius-xl: 1rem;
@@ -640,7 +639,7 @@ html.translating-hi body {
 
 /* Sleek brand progress line while Hindi translates */
 html.translating-hi::before {
-  content: '';
+  content: "";
   position: fixed;
   top: 0;
   left: 0;
@@ -653,11 +652,14 @@ html.translating-hi::before {
 }
 
 @keyframes translate-progress {
-  0% { background-position: 100% 0; }
-  100% { background-position: -100% 0; }
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
 }
 
 body {
   transition: opacity 0.2s ease-in-out;
 }
-

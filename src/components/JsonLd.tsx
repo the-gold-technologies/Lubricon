@@ -37,10 +37,6 @@ export default function JsonLd({ schema, id }: JsonLdProps) {
   if (!rawJson) return null;
 
   return (
-    <script
-      id={id}
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: rawJson }}
-    />
+    <script id={id} type="application/ld+json" dangerouslySetInnerHTML={{ __html: rawJson }} />
   );
 }

@@ -31,8 +31,7 @@ function ProductsContent({ headingTag }: { headingTag?: string | null }) {
   };
 
   const filtered = products.filter((p) => {
-    const matchesCategory =
-      activeCategory === "all" || p.category === activeCategory;
+    const matchesCategory = activeCategory === "all" || p.category === activeCategory;
     const q = searchQuery.toLowerCase().trim();
     const matchesSearch =
       !q ||

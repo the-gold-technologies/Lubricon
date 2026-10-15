@@ -37,9 +37,7 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
     (product as any).raw?.containerImage ??
     categoryImageMap[product.category] ??
     "";
-  const badgeClass = product.badge
-    ? (badgeClassMap[product.badge] ?? badgeClassMap.default)
-    : "";
+  const badgeClass = product.badge ? (badgeClassMap[product.badge] ?? badgeClassMap.default) : "";
 
   const handleCardClick = () => {
     if (onClick) {
@@ -72,9 +70,7 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
           {product.featured && (
             <div className="absolute top-3 left-3 z-10 bg-black text-[#ffe000] px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-md">
               <Star size={11} className="fill-[#ffe000]" />
-              <span className="text-[10px] font-black uppercase tracking-wider">
-                Featured
-              </span>
+              <span className="text-[10px] font-black uppercase tracking-wider">Featured</span>
             </div>
           )}
           {product.badge && (
@@ -101,8 +97,7 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
           </p>
 
           {/* Specs pills */}
-          {(product.specifications.viscosity ||
-            product.specifications.grade) && (
+          {(product.specifications.viscosity || product.specifications.grade) && (
             <div className="flex flex-wrap gap-1.5 mb-4">
               {product.specifications.viscosity && (
                 <span className="text-[11px] font-semibold bg-zinc-900 text-zinc-200 px-2.5 py-1 rounded-md border border-zinc-700/80">

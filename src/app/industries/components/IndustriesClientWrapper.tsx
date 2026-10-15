@@ -13,7 +13,8 @@ interface IndustriesClientWrapperProps {
 }
 
 export default function IndustriesClientWrapper({ headingTag }: IndustriesClientWrapperProps) {
-  const { industriesData, industries, isIndustriesLoading, fetchIndustriesData, fetchIndustries } = useCMSStore();
+  const { industriesData, industries, isIndustriesLoading, fetchIndustriesData, fetchIndustries } =
+    useCMSStore();
 
   useEffect(() => {
     fetchIndustriesData();

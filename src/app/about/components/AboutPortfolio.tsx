@@ -25,14 +25,10 @@ export default function AboutPortfolio() {
             </div>
           )}
           {title && (
-            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-              {title}
-            </h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">{title}</h2>
           )}
           {subtitle && (
-            <p className="text-sm sm:text-base text-zinc-400 font-medium mt-3">
-              {subtitle}
-            </p>
+            <p className="text-sm sm:text-base text-zinc-400 font-medium mt-3">{subtitle}</p>
           )}
         </div>
 
@@ -54,10 +50,7 @@ export default function AboutPortfolio() {
                         key={j}
                         className="flex items-start gap-2 text-xs text-zinc-300 font-medium"
                       >
-                        <CheckCircle2
-                          size={14}
-                          className="text-[#ffe000] mt-0.5 shrink-0"
-                        />
+                        <CheckCircle2 size={14} className="text-[#ffe000] mt-0.5 shrink-0" />
                         <span>{item}</span>
                       </li>
                     ))}

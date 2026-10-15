@@ -201,10 +201,7 @@ export default function IndustriesPlantSupport() {
       />
 
       {/* Callback Modal */}
-      <CallbackModal
-        isOpen={isCallbackOpen}
-        onClose={() => setIsCallbackOpen(false)}
-      />
+      <CallbackModal isOpen={isCallbackOpen} onClose={() => setIsCallbackOpen(false)} />
     </section>
   );
 }

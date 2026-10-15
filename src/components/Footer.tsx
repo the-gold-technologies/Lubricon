@@ -4,17 +4,11 @@ import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Phone, Mail, ChevronRight } from "lucide-react";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  LinkedinIcon,
-  YoutubeIcon,
-} from "@/components/SocialIcons";
+import { FacebookIcon, InstagramIcon, LinkedinIcon, YoutubeIcon } from "@/components/SocialIcons";
 import { useCMSStore } from "@/store/useCMSStore";
 
 export default function Footer() {
-  const { globalConfig, fetchGlobalConfig, industries, fetchIndustries } =
-    useCMSStore();
+  const { globalConfig, fetchGlobalConfig, industries, fetchIndustries } = useCMSStore();
 
   useEffect(() => {
     fetchGlobalConfig();
@@ -53,9 +47,7 @@ export default function Footer() {
             </Link>
 
             {description && (
-              <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                {description}
-              </p>
+              <p className="text-gray-400 text-sm leading-relaxed mb-6">{description}</p>
             )}
 
             <div className="flex items-center gap-3">
@@ -114,10 +106,7 @@ export default function Footer() {
             <div className="space-y-3 text-sm">
               {phone && (
                 <div className="flex items-start gap-3">
-                  <Phone
-                    size={16}
-                    className="text-[#ffe000] mt-1 flex-shrink-0"
-                  />
+                  <Phone size={16} className="text-[#ffe000] mt-1 flex-shrink-0" />
                   <div>
                     <div className="text-xs text-gray-400 font-semibold uppercase">
                       Helpline (Toll Free)
@@ -236,7 +225,10 @@ export default function Footer() {
       <div className="bg-black border-t border-zinc-900 py-4 px-6 text-xs text-gray-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
-            <span>{copyrightText ?? `© ${new Date().getFullYear()} Lubricon Specialities India. All rights reserved.`}</span>
+            <span>
+              {copyrightText ??
+                `© ${new Date().getFullYear()} Lubricon Specialities India. All rights reserved.`}
+            </span>
             <span className="text-zinc-700 hidden sm:inline">•</span>
             <Link
               href="/privacy-policy"

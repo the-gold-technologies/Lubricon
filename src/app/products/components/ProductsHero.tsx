@@ -74,14 +74,10 @@ export default function ProductsHero({ headingTag }: ProductsHeroProps) {
                       </div>
                       <div>
                         {tb.title && (
-                          <div className="text-xs font-extrabold text-white">
-                            {tb.title}
-                          </div>
+                          <div className="text-xs font-extrabold text-white">{tb.title}</div>
                         )}
                         {tb.subtitle && (
-                          <div className="text-[11px] text-zinc-400">
-                            {tb.subtitle}
-                          </div>
+                          <div className="text-[11px] text-zinc-400">{tb.subtitle}</div>
                         )}
                       </div>
                     </div>
@@ -117,9 +113,7 @@ export default function ProductsHero({ headingTag }: ProductsHeroProps) {
                       {floatingBadgeTitle && (
                         <div className="flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-[#ffe000] shadow-[0_0_6px_#ffe000]" />
-                          <span className="font-extrabold text-white">
-                            {floatingBadgeTitle}
-                          </span>
+                          <span className="font-extrabold text-white">{floatingBadgeTitle}</span>
                         </div>
                       )}
                       {floatingBadgeTag && (

@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
     seo,
     "Contact Us | Lubricon Specialities India",
-    "Contact Lubricon Specialities India for industrial lubrication quotes, bulk orders, and technical support. Toll-free 1800 569 6363."
+    "Contact Lubricon Specialities India for industrial lubrication quotes, bulk orders, and technical support. Toll-free 1800 569 6363.",
   );
 }
 

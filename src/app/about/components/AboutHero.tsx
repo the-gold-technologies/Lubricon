@@ -90,9 +90,7 @@ export default function AboutHero({ headingTag }: AboutHeroProps) {
                           </div>
                         )}
                         {cardSubtag && (
-                          <div className="text-[11px] text-zinc-300 font-medium">
-                            {cardSubtag}
-                          </div>
+                          <div className="text-[11px] text-zinc-300 font-medium">{cardSubtag}</div>
                         )}
                       </div>
                     </div>
@@ -100,9 +98,7 @@ export default function AboutHero({ headingTag }: AboutHeroProps) {
                     {(isoBadgeTitle || isoBadgeSub) && (
                       <div className="text-right border-l border-white/20 pl-3">
                         {isoBadgeTitle && (
-                          <div className="text-[#ffe000] text-xs font-black">
-                            {isoBadgeTitle}
-                          </div>
+                          <div className="text-[#ffe000] text-xs font-black">{isoBadgeTitle}</div>
                         )}
                         {isoBadgeSub && (
                           <div className="text-[10px] uppercase font-bold text-zinc-300">
@@ -156,9 +152,7 @@ export default function AboutHero({ headingTag }: AboutHeroProps) {
                       {renderIcon(pillar.icon)}
                     </div>
                     {pillar.title && (
-                      <div className="font-extrabold text-sm text-black">
-                        {pillar.title}
-                      </div>
+                      <div className="font-extrabold text-sm text-black">{pillar.title}</div>
                     )}
                     {pillar.desc && (
                       <div className="text-[11px] sm:text-xs text-zinc-500 mt-1 leading-snug">

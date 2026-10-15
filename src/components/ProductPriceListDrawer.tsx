@@ -165,12 +165,10 @@ export default function ProductPriceListDrawer({
                   Price List Dispatched!
                 </h3>
                 <p className="text-zinc-600 text-sm max-w-sm mx-auto mt-2 leading-relaxed">
-                  Thank you,{" "}
-                  <strong className="text-black">{formData.name}</strong>. The
-                  latest commercial wholesale rate card and technical TDS for{" "}
-                  <strong className="text-black">{product.name}</strong> are
-                  being transmitted to your WhatsApp (
-                  <strong className="text-black">{formData.phone}</strong>) and
+                  Thank you, <strong className="text-black">{formData.name}</strong>. The latest
+                  commercial wholesale rate card and technical TDS for{" "}
+                  <strong className="text-black">{product.name}</strong> are being transmitted to
+                  your WhatsApp (<strong className="text-black">{formData.phone}</strong>) and
                   email.
                 </p>
               </div>
@@ -188,8 +186,7 @@ export default function ProductPriceListDrawer({
                   </div>
                 )}
                 <div className="text-zinc-500 text-[11px] pt-1">
-                  Estimated delivery: <strong>Under 15 minutes</strong> via
-                  WhatsApp.
+                  Estimated delivery: <strong>Under 15 minutes</strong> via WhatsApp.
                 </div>
               </div>
 
@@ -226,19 +223,13 @@ export default function ProductPriceListDrawer({
                       Viscosity / Grade:
                     </span>
                     <span className="font-extrabold text-zinc-900">
-                      {product.specifications?.viscosity ??
-                        product.specifications?.grade ??
-                        ""}
+                      {product.specifications?.viscosity ?? product.specifications?.grade ?? ""}
                     </span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 block text-[11px] mb-0.5">
-                      Category:
-                    </span>
+                    <span className="text-zinc-500 block text-[11px] mb-0.5">Category:</span>
                     <span className="font-extrabold text-zinc-900 capitalize">
-                      {product.subcategory ??
-                        product.category?.replace("-", " ") ??
-                        ""}
+                      {product.subcategory ?? product.category?.replace("-", " ") ?? ""}
                     </span>
                   </div>
                 </div>
@@ -246,22 +237,15 @@ export default function ProductPriceListDrawer({
 
               {/* Your Name */}
               <div>
-                <label className="block text-xs font-bold text-zinc-800 mb-1.5">
-                  Your Name *
-                </label>
+                <label className="block text-xs font-bold text-zinc-800 mb-1.5">Your Name *</label>
                 <div className="relative">
-                  <User
-                    size={16}
-                    className="absolute left-3.5 top-3.5 text-zinc-400"
-                  />
+                  <User size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                   <input
                     type="text"
                     required
                     placeholder="e.g. Amit Verma"
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                   />
                 </div>
@@ -274,18 +258,13 @@ export default function ProductPriceListDrawer({
                     Corporate Email *
                   </label>
                   <div className="relative">
-                    <Mail
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Mail size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="email"
                       required
                       placeholder="name@company.com"
                       value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>
@@ -296,10 +275,7 @@ export default function ProductPriceListDrawer({
                     WhatsApp Number *
                   </label>
                   <div className="relative">
-                    <Phone
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Phone size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="tel"
                       inputMode="numeric"
@@ -327,18 +303,13 @@ export default function ProductPriceListDrawer({
                     Company / Dealership *
                   </label>
                   <div className="relative">
-                    <Building2
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Building2 size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. Verma Auto Spares"
                       value={formData.company}
-                      onChange={(e) =>
-                        setFormData({ ...formData, company: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>
@@ -349,18 +320,13 @@ export default function ProductPriceListDrawer({
                     City / State *
                   </label>
                   <div className="relative">
-                    <MapPin
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <MapPin size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. Ahmedabad, Gujarat"
                       value={formData.city}
-                      onChange={(e) =>
-                        setFormData({ ...formData, city: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>
@@ -374,27 +340,19 @@ export default function ProductPriceListDrawer({
                 </label>
                 <select
                   value={formData.buyerType}
-                  onChange={(e) =>
-                    setFormData({ ...formData, buyerType: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, buyerType: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium text-zinc-900 transition"
                   required
                 >
-                  <option value="Plant / Industrial End-User">
-                    Plant / Industrial End-User
-                  </option>
+                  <option value="Plant / Industrial End-User">Plant / Industrial End-User</option>
                   <option value="Authorized Distributor / Stockist">
                     Authorized Distributor / Stockist
                   </option>
                   <option value="Automotive Workshop / Service Center">
                     Automotive Workshop / Service Center
                   </option>
-                  <option value="Fleet Operator / Logistics">
-                    Fleet Operator / Logistics
-                  </option>
-                  <option value="Machine OEM / Fabricator">
-                    Machine OEM / Fabricator
-                  </option>
+                  <option value="Fleet Operator / Logistics">Fleet Operator / Logistics</option>
+                  <option value="Machine OEM / Fabricator">Machine OEM / Fabricator</option>
                 </select>
               </div>
 
@@ -404,28 +362,17 @@ export default function ProductPriceListDrawer({
                   <input
                     type="checkbox"
                     checked={formData.includeTds}
-                    onChange={(e) =>
-                      setFormData({ ...formData, includeTds: e.target.checked })
-                    }
+                    onChange={(e) => setFormData({ ...formData, includeTds: e.target.checked })}
                     className="w-4 h-4 rounded border-zinc-300 text-black focus:ring-black accent-black cursor-pointer"
                   />
-                  <span>
-                    Include Technical Data Sheet (TDS) and OEM Compliance
-                    Certificate
-                  </span>
+                  <span>Include Technical Data Sheet (TDS) and OEM Compliance Certificate</span>
                 </label>
               </div>
 
               {/* Trust Badge */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 py-1">
-                <ShieldCheck
-                  size={14}
-                  className="text-emerald-600 shrink-0 stroke-[2.5]"
-                />
-                <span>
-                  Direct manufacturer pricing • Instant PDF delivery via
-                  WhatsApp
-                </span>
+                <ShieldCheck size={14} className="text-emerald-600 shrink-0 stroke-[2.5]" />
+                <span>Direct manufacturer pricing • Instant PDF delivery via WhatsApp</span>
               </div>
 
               {/* Big Solid Submit Button matching reference */}

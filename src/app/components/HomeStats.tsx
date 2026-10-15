@@ -18,9 +18,7 @@ export default function HomeStats() {
         {/* Left Title & Subtitle */}
         <div className="lg:max-w-xs shrink-0">
           {heading && (
-            <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
-              {heading}
-            </h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight">{heading}</h2>
           )}
           {subtitle && (
             <p className="text-xs sm:text-sm text-zinc-500 font-medium mt-2 leading-relaxed">

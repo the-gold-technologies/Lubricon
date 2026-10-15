@@ -91,7 +91,7 @@ export default function LubricantFinder({
     id: c.id,
     title: c.title,
     subtitle: c.subtitle,
-    icon: (c.icon && ICON_MAP[c.icon]) ? ICON_MAP[c.icon] : Settings,
+    icon: c.icon && ICON_MAP[c.icon] ? ICON_MAP[c.icon] : Settings,
   }));
 
   // Dynamic Equipment & Recommendations Map from CMS
@@ -106,7 +106,7 @@ export default function LubricantFinder({
       id: eq.id,
       title: eq.title,
       subtitle: eq.subtitle,
-      icon: (eq.icon && ICON_MAP[eq.icon]) ? ICON_MAP[eq.icon] : Settings,
+      icon: eq.icon && ICON_MAP[eq.icon] ? ICON_MAP[eq.icon] : Settings,
     }));
 
     (cat.equipment || []).forEach((eq) => {
@@ -145,9 +145,7 @@ export default function LubricantFinder({
     }, 180);
   };
 
-  const currentOptions = selectedCategory
-    ? equipmentMap[selectedCategory] || []
-    : [];
+  const currentOptions = selectedCategory ? equipmentMap[selectedCategory] || [] : [];
   const matchedProducts = selectedType ? resultsData[selectedType] || [] : [];
 
   if (!categories || categories.length === 0) {
@@ -220,9 +218,7 @@ export default function LubricantFinder({
               </h3>
             )}
             {step1Subtitle && (
-              <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">
-                {step1Subtitle}
-              </p>
+              <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">{step1Subtitle}</p>
             )}
           </div>
 
@@ -250,9 +246,7 @@ export default function LubricantFinder({
                     >
                       <Icon size={24} />
                     </div>
-                    <h4 className="text-base font-black text-black mb-1.5">
-                      {opt.title}
-                    </h4>
+                    <h4 className="text-base font-black text-black mb-1.5">{opt.title}</h4>
                     {opt.subtitle && (
                       <p className="text-xs text-zinc-600 leading-relaxed font-medium">
                         {opt.subtitle}
@@ -261,11 +255,7 @@ export default function LubricantFinder({
                   </div>
 
                   <div className="mt-5 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-black uppercase tracking-wider text-black">
-                    <span>
-                      {isSelected
-                        ? "Loading Equipment..."
-                        : "Select & Continue"}
-                    </span>
+                    <span>{isSelected ? "Loading Equipment..." : "Select & Continue"}</span>
                     <ChevronRight
                       size={16}
                       className="transform group-hover:translate-x-1.5 transition-transform"
@@ -291,9 +281,7 @@ export default function LubricantFinder({
                 </h3>
               )}
               {step2Subtitle && (
-                <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">
-                  {step2Subtitle}
-                </p>
+                <p className="text-xs sm:text-sm text-zinc-600 mt-1 font-medium">{step2Subtitle}</p>
               )}
             </div>
             {resetBtnText && (
@@ -331,9 +319,7 @@ export default function LubricantFinder({
                     >
                       <Icon size={24} />
                     </div>
-                    <h4 className="text-base font-black text-black mb-1.5">
-                      {opt.title}
-                    </h4>
+                    <h4 className="text-base font-black text-black mb-1.5">{opt.title}</h4>
                     {opt.subtitle && (
                       <p className="text-xs text-zinc-600 leading-relaxed font-medium">
                         {opt.subtitle}
@@ -342,11 +328,7 @@ export default function LubricantFinder({
                   </div>
 
                   <div className="mt-5 pt-4 border-t border-zinc-100 flex items-center justify-between text-xs font-black uppercase tracking-wider text-black">
-                    <span>
-                      {isSelected
-                        ? "Matching Formulation..."
-                        : "View Formulations"}
-                    </span>
+                    <span>{isSelected ? "Matching Formulation..." : "View Formulations"}</span>
                     <ArrowRight
                       size={16}
                       className="transform group-hover:translate-x-1.5 transition-transform text-black"
@@ -410,9 +392,7 @@ export default function LubricantFinder({
                     )}
                   </div>
 
-                  <h4 className="text-lg font-black text-black mb-2">
-                    {prod.name}
-                  </h4>
+                  <h4 className="text-lg font-black text-black mb-2">{prod.name}</h4>
 
                   {prod.benefits && prod.benefits.length > 0 && (
                     <ul className="space-y-2 mb-6">
@@ -421,10 +401,7 @@ export default function LubricantFinder({
                           key={bIdx}
                           className="flex items-start gap-2 text-xs font-medium text-zinc-700"
                         >
-                          <CheckCircle2
-                            size={14}
-                            className="text-black flex-shrink-0 mt-0.5"
-                          />
+                          <CheckCircle2 size={14} className="text-black flex-shrink-0 mt-0.5" />
                           <span>{b}</span>
                         </li>
                       ))}
@@ -469,11 +446,7 @@ export default function LubricantFinder({
                     {helplinePrompt}
                   </div>
                 )}
-                {helplineText && (
-                  <div className="text-xs text-zinc-300">
-                    {helplineText}
-                  </div>
-                )}
+                {helplineText && <div className="text-xs text-zinc-300">{helplineText}</div>}
               </div>
             </div>
 

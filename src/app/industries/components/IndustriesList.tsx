@@ -41,9 +41,7 @@ export default function IndustriesList() {
                 ) : (
                   <div className="w-full h-80 bg-zinc-900 rounded-xl flex flex-col items-center justify-center text-center p-6 border-2 border-[#ffe000]">
                     <span className="text-6xl mb-4">{industry.icon}</span>
-                    <h3 className="text-xl font-bold text-white mb-2">
-                      {industry.name}
-                    </h3>
+                    <h3 className="text-xl font-bold text-white mb-2">{industry.name}</h3>
                     {industry.description && (
                       <p className="text-xs text-zinc-400 max-w-xs line-clamp-3">
                         {industry.description}
@@ -57,13 +55,9 @@ export default function IndustriesList() {
               <div className="lg:col-span-7">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-2xl">{industry.icon}</span>
-                  <h2 className="text-2xl sm:text-3xl font-black text-zinc-900">
-                    {industry.name}
-                  </h2>
+                  <h2 className="text-2xl sm:text-3xl font-black text-zinc-900">{industry.name}</h2>
                 </div>
-                <p className="text-zinc-600 text-sm leading-relaxed mb-6">
-                  {industry.description}
-                </p>
+                <p className="text-zinc-600 text-sm leading-relaxed mb-6">{industry.description}</p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                   {/* Challenges */}

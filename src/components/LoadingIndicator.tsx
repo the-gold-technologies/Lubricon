@@ -25,15 +25,11 @@ export default function LoadingIndicator({
     size === "sm"
       ? { outer: "w-12 h-12", inner: "w-8 h-8", icon: 16 }
       : size === "lg"
-      ? { outer: "w-24 h-24", inner: "w-16 h-16", icon: 32 }
-      : { outer: "w-16 h-16", inner: "w-11 h-11", icon: 22 };
+        ? { outer: "w-24 h-24", inner: "w-16 h-16", icon: 32 }
+        : { outer: "w-16 h-16", inner: "w-11 h-11", icon: 22 };
 
   return (
-    <div
-      role="status"
-      aria-live="polite"
-      className={`${containerClasses} ${className}`}
-    >
+    <div role="status" aria-live="polite" className={`${containerClasses} ${className}`}>
       <div className="relative flex items-center justify-center">
         {/* Ambient subtle yellow glow */}
         <div className="absolute -inset-4 bg-[#ffe000]/15 rounded-full blur-xl pointer-events-none animate-pulse" />
@@ -74,17 +70,9 @@ export default function LoadingIndicator({
           </span>
         </div>
 
-        {message && (
-          <p className="text-sm font-semibold text-zinc-800 tracking-tight">
-            {message}
-          </p>
-        )}
+        {message && <p className="text-sm font-semibold text-zinc-800 tracking-tight">{message}</p>}
 
-        {subMessage && (
-          <p className="text-xs text-zinc-400 mt-0.5">
-            {subMessage}
-          </p>
-        )}
+        {subMessage && <p className="text-xs text-zinc-400 mt-0.5">{subMessage}</p>}
 
         {/* Shimmering loader track */}
         <div className="w-28 h-1 bg-zinc-100 rounded-full overflow-hidden mt-3 relative">

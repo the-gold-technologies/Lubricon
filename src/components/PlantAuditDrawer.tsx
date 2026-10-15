@@ -176,41 +176,31 @@ export default function PlantAuditDrawer({
                   Plant Audit Confirmed!
                 </h3>
                 <p className="text-zinc-600 text-sm max-w-sm mx-auto mt-2 leading-relaxed">
-                  Thank you,{" "}
-                  <strong className="text-black">{formData.name}</strong> from{" "}
+                  Thank you, <strong className="text-black">{formData.name}</strong> from{" "}
                   <strong className="text-black">
                     {formData.company ? formData.company : "your facility"}
                   </strong>
-                  . A Senior Australian-Trained Tribology Engineer will contact
-                  you within 24 hours to finalize your survey schedule.
+                  . A Senior Australian-Trained Tribology Engineer will contact you within 24 hours
+                  to finalize your survey schedule.
                 </p>
               </div>
 
               {/* Summary Card */}
               <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-left text-xs space-y-2 max-w-sm mx-auto mt-4">
                 <div className="flex justify-between">
-                  <span className="text-zinc-500 font-semibold">
-                    Service Focus:
-                  </span>
+                  <span className="text-zinc-500 font-semibold">Service Focus:</span>
+                  <span className="font-extrabold text-black">{formData.service}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500 font-semibold">Facility / Location:</span>
                   <span className="font-extrabold text-black">
-                    {formData.service}
+                    {formData.industry}
+                    {formData.city ? ` • ${formData.city}` : ""}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-500 font-semibold">
-                    Facility / Location:
-                  </span>
-                  <span className="font-extrabold text-black">
-                    {formData.industry}{formData.city ? ` • ${formData.city}` : ""}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-zinc-500 font-semibold">
-                    Engineer Contact:
-                  </span>
-                  <span className="font-extrabold text-black">
-                    {formData.phone}
-                  </span>
+                  <span className="text-zinc-500 font-semibold">Engineer Contact:</span>
+                  <span className="font-extrabold text-black">{formData.phone}</span>
                 </div>
               </div>
 
@@ -251,9 +241,7 @@ export default function PlantAuditDrawer({
                     </span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 block text-[11px] mb-0.5">
-                      Format:
-                    </span>
+                    <span className="text-zinc-500 block text-[11px] mb-0.5">Format:</span>
                     <span className="font-extrabold text-zinc-900">
                       On-Site Field Engineer Survey
                     </span>
@@ -263,22 +251,15 @@ export default function PlantAuditDrawer({
 
               {/* Your Name */}
               <div>
-                <label className="block text-xs font-bold text-zinc-800 mb-1.5">
-                  Your Name *
-                </label>
+                <label className="block text-xs font-bold text-zinc-800 mb-1.5">Your Name *</label>
                 <div className="relative">
-                  <User
-                    size={16}
-                    className="absolute left-3.5 top-3.5 text-zinc-400"
-                  />
+                  <User size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                   <input
                     type="text"
                     required
                     placeholder="e.g. Rajesh Sharma"
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                   />
                 </div>
@@ -291,18 +272,13 @@ export default function PlantAuditDrawer({
                     Corporate Email *
                   </label>
                   <div className="relative">
-                    <Mail
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Mail size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="email"
                       required
                       placeholder="name@company.com"
                       value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>
@@ -313,10 +289,7 @@ export default function PlantAuditDrawer({
                     Phone / WhatsApp *
                   </label>
                   <div className="relative">
-                    <Phone
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Phone size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="tel"
                       inputMode="numeric"
@@ -344,18 +317,13 @@ export default function PlantAuditDrawer({
                     Company / Plant Name *
                   </label>
                   <div className="relative">
-                    <Building2
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <Building2 size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. Apex Plastics Ltd"
                       value={formData.company}
-                      onChange={(e) =>
-                        setFormData({ ...formData, company: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>
@@ -366,18 +334,13 @@ export default function PlantAuditDrawer({
                     Plant Location (City, State) *
                   </label>
                   <div className="relative">
-                    <MapPin
-                      size={16}
-                      className="absolute left-3.5 top-3.5 text-zinc-400"
-                    />
+                    <MapPin size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                     <input
                       type="text"
                       required
                       placeholder="e.g. Pune, Maharashtra"
                       value={formData.city}
-                      onChange={(e) =>
-                        setFormData({ ...formData, city: e.target.value })
-                      }
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                       className="w-full pl-10 pr-3.5 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition"
                     />
                   </div>
@@ -391,33 +354,21 @@ export default function PlantAuditDrawer({
                 </label>
                 <select
                   value={formData.industry}
-                  onChange={(e) =>
-                    setFormData({ ...formData, industry: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium text-zinc-900 transition"
                   required
                 >
-                  <option value="Plastic Injection Molding">
-                    Plastic Injection Molding
-                  </option>
+                  <option value="Plastic Injection Molding">Plastic Injection Molding</option>
                   <option value="Steel Mills & Metal Forming">
                     Steel Mills &amp; Metal Forming
                   </option>
-                  <option value="Pulp & Paper Manufacturing">
-                    Pulp &amp; Paper Manufacturing
-                  </option>
+                  <option value="Pulp & Paper Manufacturing">Pulp &amp; Paper Manufacturing</option>
                   <option value="Automotive & Fleet Transport">
                     Automotive &amp; Fleet Transport
                   </option>
-                  <option value="Precision CNC & Machining">
-                    Precision CNC &amp; Machining
-                  </option>
-                  <option value="Mining & Heavy Earthmoving">
-                    Mining &amp; Heavy Earthmoving
-                  </option>
-                  <option value="Cement & Power Plants">
-                    Cement &amp; Power Plants
-                  </option>
+                  <option value="Precision CNC & Machining">Precision CNC &amp; Machining</option>
+                  <option value="Mining & Heavy Earthmoving">Mining &amp; Heavy Earthmoving</option>
+                  <option value="Cement & Power Plants">Cement &amp; Power Plants</option>
                 </select>
               </div>
 
@@ -430,23 +381,15 @@ export default function PlantAuditDrawer({
                   rows={3}
                   placeholder="e.g. Excessive hydraulic oil temperature, varnish formation, bearing chatter in high-load presses..."
                   value={formData.notes}
-                  onChange={(e) =>
-                    setFormData({ ...formData, notes: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition resize-none"
                 />
               </div>
 
               {/* Trust Badge */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 py-1">
-                <ShieldCheck
-                  size={14}
-                  className="text-emerald-600 shrink-0 stroke-[2.5]"
-                />
-                <span>
-                  No-obligation plant audit conducted by certified tribology
-                  engineers
-                </span>
+                <ShieldCheck size={14} className="text-emerald-600 shrink-0 stroke-[2.5]" />
+                <span>No-obligation plant audit conducted by certified tribology engineers</span>
               </div>
 
               {/* Big Solid Submit Button matching reference */}

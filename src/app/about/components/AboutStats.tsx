@@ -37,9 +37,7 @@ export default function AboutStats() {
                 <span>{stat.value}</span>
                 <span className="text-[#ffe000] ml-0.5 font-bold">{stat.suffix}</span>
               </div>
-              <div className="text-xs sm:text-sm font-medium text-zinc-600 mt-1">
-                {stat.label}
-              </div>
+              <div className="text-xs sm:text-sm font-medium text-zinc-600 mt-1">{stat.label}</div>
             </div>
           ))}
         </div>

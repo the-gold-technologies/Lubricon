@@ -66,18 +66,13 @@ export function CustomHeaderScripts({ content }: CustomCodeProps) {
           type="text/javascript"
           dangerouslySetInnerHTML={{
             __html: `/* Custom Header Injection */\n(function(){ try { var d = document.createElement('div'); d.innerHTML = ${JSON.stringify(
-              trimmed
+              trimmed,
             )}; while (d.firstChild) { document.head.appendChild(d.firstChild); } } catch(e){ console.error(e); } })();`,
           }}
         />
       );
     }
-    return (
-      <script
-        id="custom-header-inline-js"
-        dangerouslySetInnerHTML={{ __html: trimmed }}
-      />
-    );
+    return <script id="custom-header-inline-js" dangerouslySetInnerHTML={{ __html: trimmed }} />;
   }
 
   return (
@@ -169,14 +164,7 @@ export function CustomFooterScripts({ content }: CustomCodeProps) {
           const key = `custom-foot-${item.tag}-${idx}`;
           if (item.tag === "script") {
             if (item.attrs.src) {
-              return (
-                <Script
-                  key={key}
-                  id={key}
-                  src={item.attrs.src}
-                  strategy="lazyOnload"
-                />
-              );
+              return <Script key={key} id={key} src={item.attrs.src} strategy="lazyOnload" />;
             }
             return (
               <Script
@@ -199,10 +187,5 @@ export function CustomFooterScripts({ content }: CustomCodeProps) {
     );
   }
 
-  return (
-    <div
-      id="custom-footer-container"
-      dangerouslySetInnerHTML={{ __html: trimmed }}
-    />
-  );
+  return <div id="custom-footer-container" dangerouslySetInnerHTML={{ __html: trimmed }} />;
 }

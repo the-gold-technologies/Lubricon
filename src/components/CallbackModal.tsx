@@ -167,11 +167,9 @@ export default function CallbackModal({
                   Callback Request Received!
                 </h3>
                 <p className="text-zinc-600 text-sm max-w-sm mx-auto mt-2 leading-relaxed">
-                  Thank you,{" "}
-                  <strong className="text-black">{formData.username}</strong>. A
+                  Thank you, <strong className="text-black">{formData.username}</strong>. A
                   technical advisor will call you back on{" "}
-                  <strong className="text-black">{formData.mobile}</strong>{" "}
-                  shortly.
+                  <strong className="text-black">{formData.mobile}</strong> shortly.
                 </p>
               </div>
 
@@ -212,9 +210,7 @@ export default function CallbackModal({
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Your Name */}
               <div>
-                <label className="block text-xs font-bold text-zinc-800 mb-1.5">
-                  Your Name *
-                </label>
+                <label className="block text-xs font-bold text-zinc-800 mb-1.5">Your Name *</label>
                 <div className="relative">
                   <User size={16} className="absolute left-3.5 top-3.5 text-zinc-400" />
                   <input
@@ -305,7 +301,9 @@ export default function CallbackModal({
                   <option value="Plastic Injection Molding">Plastic Injection Molding</option>
                   <option value="Paper Mills">Paper Mills</option>
                   <option value="Steel Plants">Steel Plants</option>
-                  <option value="Automotive Fleet & Transport">Automotive Fleet &amp; Transport</option>
+                  <option value="Automotive Fleet & Transport">
+                    Automotive Fleet &amp; Transport
+                  </option>
                   <option value="Precision Engineering / CNC">Precision Engineering / CNC</option>
                   <option value="General Industrial Inquiry">General Industrial Lubricants</option>
                 </select>

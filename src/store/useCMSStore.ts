@@ -230,10 +230,7 @@ export function normalizeProduct(p: any): ExtendedProduct {
   const categorySlug = String(p.categorySlug ?? p.category ?? "").toLowerCase();
 
   let feat: string[] = [];
-  if (
-    Array.isArray(p.performanceBenefits) &&
-    p.performanceBenefits.length > 0
-  ) {
+  if (Array.isArray(p.performanceBenefits) && p.performanceBenefits.length > 0) {
     feat = p.performanceBenefits;
   } else if (Array.isArray(p.features) && p.features.length > 0) {
     feat = p.features;
@@ -290,9 +287,7 @@ export function normalizeIndustry(ind: any): Industry {
     description: ind.description ?? "",
     challenges: Array.isArray(ind.challenges) ? ind.challenges : [],
     solutions: Array.isArray(ind.solutions) ? ind.solutions : [],
-    recommendedProducts: Array.isArray(ind.recommendedProducts)
-      ? ind.recommendedProducts
-      : [],
+    recommendedProducts: Array.isArray(ind.recommendedProducts) ? ind.recommendedProducts : [],
   };
 }
 
@@ -341,10 +336,7 @@ interface CMSStoreActions {
   fetchAboutData: (force?: boolean) => Promise<AboutData | null>;
   fetchContactData: (force?: boolean) => Promise<ContactData | null>;
   fetchIndustriesData: (force?: boolean) => Promise<any>;
-  fetchProducts: (
-    categorySlug?: string,
-    force?: boolean,
-  ) => Promise<ExtendedProduct[]>;
+  fetchProducts: (categorySlug?: string, force?: boolean) => Promise<ExtendedProduct[]>;
   fetchProductBySlug: (slug: string) => Promise<ExtendedProduct | null>;
   fetchIndustries: (force?: boolean) => Promise<Industry[]>;
   fetchGlobalConfig: (force?: boolean) => Promise<GlobalConfig | null>;
@@ -362,320 +354,291 @@ interface CMSStoreActions {
   }) => Promise<{ success: boolean; data?: any; error?: string }>;
 }
 
-export const useCMSStore = create<CMSStoreState & CMSStoreActions>(
-  (set, get) => ({
-    pages: {},
-    pageSEO: {},
-    homeData: null,
-    aboutData: null,
-    contactData: null,
-    industriesData: null,
-    products: [],
-    categories: [],
-    productsHero: null,
-    industries: [],
-    globalConfig: null,
-    navLinks: [],
-    isHomeLoading: false,
-    isAboutLoading: false,
-    isContactLoading: false,
-    isProductsLoading: false,
-    isIndustriesLoading: false,
+export const useCMSStore = create<CMSStoreState & CMSStoreActions>((set, get) => ({
+  pages: {},
+  pageSEO: {},
+  homeData: null,
+  aboutData: null,
+  contactData: null,
+  industriesData: null,
+  products: [],
+  categories: [],
+  productsHero: null,
+  industries: [],
+  globalConfig: null,
+  navLinks: [],
+  isHomeLoading: false,
+  isAboutLoading: false,
+  isContactLoading: false,
+  isProductsLoading: false,
+  isIndustriesLoading: false,
 
-    fetchPage: async (slug: string, force = false) => {
-      const normalizedSlug = slug.replace(/^\/+/, "");
-      if (get().pages[normalizedSlug] && !force) {
-        return get().pages[normalizedSlug];
-      }
+  fetchPage: async (slug: string, force = false) => {
+    const normalizedSlug = slug.replace(/^\/+/, "");
+    if (get().pages[normalizedSlug] && !force) {
+      return get().pages[normalizedSlug];
+    }
 
-      const key = "page:" + normalizedSlug;
-      if (inFlightRequests.has(key)) {
-        return inFlightRequests.get(key);
-      }
+    const key = "page:" + normalizedSlug;
+    if (inFlightRequests.has(key)) {
+      return inFlightRequests.get(key);
+    }
 
-      const reqPromise = (async () => {
-        try {
-          const baseUrl = getApiBaseUrl();
-          let endpoint = normalizedSlug;
-          if (endpoint === "home") endpoint = "home";
-          else if (endpoint === "about" || endpoint === "about-us")
-            endpoint = "about";
-          else if (endpoint === "contact" || endpoint === "contact-us")
-            endpoint = "contact";
-          else if (endpoint === "industries") endpoint = "industries";
-          else if (endpoint === "products") endpoint = "products";
-
-          const res = await fetch(`${baseUrl}/api/${endpoint}`, {
-            cache: "no-store",
-          });
-          if (!res.ok) throw new Error(`Failed to fetch page ${slug} from CMS`);
-          const json = await res.json();
-          if (json.success && json.data) {
-            let pageData = json.data;
-            if (pageData && typeof pageData === "object" && pageData.sections) {
-              pageData = {
-                ...pageData,
-                ...pageData.sections,
-              };
-            }
-            const seo = json.seo ?? pageData?.seo ?? null;
-
-            if (normalizedSlug === "home") {
-              const rawProducts = Array.isArray(json.products)
-                ? json.products
-                : [];
-              const normalizedProducts = rawProducts.map(normalizeProduct);
-              const cats = Array.isArray(json.categories)
-                ? json.categories
-                : [];
-              set({
-                homeData: { ...pageData, seo },
-                products:
-                  normalizedProducts.length > 0
-                    ? normalizedProducts
-                    : get().products,
-                categories: cats.length > 0 ? cats : get().categories,
-              });
-            } else if (
-              normalizedSlug === "about" ||
-              normalizedSlug === "about-us"
-            ) {
-              set({ aboutData: { ...pageData, seo } });
-            } else if (
-              normalizedSlug === "contact" ||
-              normalizedSlug === "contact-us"
-            ) {
-              set({
-                contactData: {
-                  ...pageData,
-                  offices: json.offices ?? pageData.offices,
-                  seo,
-                },
-              });
-            } else if (normalizedSlug === "industries") {
-              const rawInd = Array.isArray(json.industries)
-                ? json.industries
-                : [];
-              set({
-                industriesData: { ...pageData, seo },
-                industries:
-                  rawInd.length > 0
-                    ? rawInd.map(normalizeIndustry)
-                    : get().industries,
-              });
-            }
-
-            set((state) => ({
-              pages: { ...state.pages, [normalizedSlug]: pageData },
-              pageSEO: seo
-                ? { ...state.pageSEO, [normalizedSlug]: seo }
-                : state.pageSEO,
-            }));
-
-            return pageData;
-          }
-        } catch (err) {
-          console.error(`Error loading page ${slug} from CMS:`, err);
-        } finally {
-          inFlightRequests.delete(key);
-        }
-        return null;
-      })();
-
-      inFlightRequests.set(key, reqPromise);
-      return reqPromise;
-    },
-
-    fetchHomeData: async (force = false) => {
-      if (get().homeData && !force) return get().homeData;
-      set({ isHomeLoading: true });
-      await get().fetchPage("home", force);
-      set({ isHomeLoading: false });
-      return get().homeData;
-    },
-
-    fetchAboutData: async (force = false) => {
-      if (get().aboutData && !force) return get().aboutData;
-      set({ isAboutLoading: true });
-      await get().fetchPage("about", force);
-      set({ isAboutLoading: false });
-      return get().aboutData;
-    },
-
-    fetchContactData: async (force = false) => {
-      if (get().contactData && !force) return get().contactData;
-      set({ isContactLoading: true });
-      await get().fetchPage("contact", force);
-      set({ isContactLoading: false });
-      return get().contactData;
-    },
-
-    fetchIndustriesData: async (force = false) => {
-      if (get().industriesData && !force) return get().industriesData;
-      set({ isIndustriesLoading: true });
-      await get().fetchPage("industries", force);
-      set({ isIndustriesLoading: false });
-      return get().industriesData;
-    },
-
-    fetchProducts: async (categorySlug?: string, force = false) => {
-      if (get().products.length > 0 && !force && !categorySlug) {
-        return get().products;
-      }
-      set({ isProductsLoading: true });
+    const reqPromise = (async () => {
       try {
         const baseUrl = getApiBaseUrl();
-        const url =
-          categorySlug && categorySlug !== "all"
-            ? `${baseUrl}/api/products?category=${encodeURIComponent(categorySlug)}`
-            : `${baseUrl}/api/products`;
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to fetch products from CMS");
+        let endpoint = normalizedSlug;
+        if (endpoint === "home") endpoint = "home";
+        else if (endpoint === "about" || endpoint === "about-us") endpoint = "about";
+        else if (endpoint === "contact" || endpoint === "contact-us") endpoint = "contact";
+        else if (endpoint === "industries") endpoint = "industries";
+        else if (endpoint === "products") endpoint = "products";
+
+        const res = await fetch(`${baseUrl}/api/${endpoint}`, {
+          cache: "no-store",
+        });
+        if (!res.ok) throw new Error(`Failed to fetch page ${slug} from CMS`);
         const json = await res.json();
         if (json.success && json.data) {
-          const rawList = Array.isArray(json.data.products)
-            ? json.data.products
+          let pageData = json.data;
+          if (pageData && typeof pageData === "object" && pageData.sections) {
+            pageData = {
+              ...pageData,
+              ...pageData.sections,
+            };
+          }
+          const seo = json.seo ?? pageData?.seo ?? null;
+
+          if (normalizedSlug === "home") {
+            const rawProducts = Array.isArray(json.products) ? json.products : [];
+            const normalizedProducts = rawProducts.map(normalizeProduct);
+            const cats = Array.isArray(json.categories) ? json.categories : [];
+            set({
+              homeData: { ...pageData, seo },
+              products: normalizedProducts.length > 0 ? normalizedProducts : get().products,
+              categories: cats.length > 0 ? cats : get().categories,
+            });
+          } else if (normalizedSlug === "about" || normalizedSlug === "about-us") {
+            set({ aboutData: { ...pageData, seo } });
+          } else if (normalizedSlug === "contact" || normalizedSlug === "contact-us") {
+            set({
+              contactData: {
+                ...pageData,
+                offices: json.offices ?? pageData.offices,
+                seo,
+              },
+            });
+          } else if (normalizedSlug === "industries") {
+            const rawInd = Array.isArray(json.industries) ? json.industries : [];
+            set({
+              industriesData: { ...pageData, seo },
+              industries: rawInd.length > 0 ? rawInd.map(normalizeIndustry) : get().industries,
+            });
+          }
+
+          set((state) => ({
+            pages: { ...state.pages, [normalizedSlug]: pageData },
+            pageSEO: seo ? { ...state.pageSEO, [normalizedSlug]: seo } : state.pageSEO,
+          }));
+
+          return pageData;
+        }
+      } catch (err) {
+        console.error(`Error loading page ${slug} from CMS:`, err);
+      } finally {
+        inFlightRequests.delete(key);
+      }
+      return null;
+    })();
+
+    inFlightRequests.set(key, reqPromise);
+    return reqPromise;
+  },
+
+  fetchHomeData: async (force = false) => {
+    if (get().homeData && !force) return get().homeData;
+    set({ isHomeLoading: true });
+    await get().fetchPage("home", force);
+    set({ isHomeLoading: false });
+    return get().homeData;
+  },
+
+  fetchAboutData: async (force = false) => {
+    if (get().aboutData && !force) return get().aboutData;
+    set({ isAboutLoading: true });
+    await get().fetchPage("about", force);
+    set({ isAboutLoading: false });
+    return get().aboutData;
+  },
+
+  fetchContactData: async (force = false) => {
+    if (get().contactData && !force) return get().contactData;
+    set({ isContactLoading: true });
+    await get().fetchPage("contact", force);
+    set({ isContactLoading: false });
+    return get().contactData;
+  },
+
+  fetchIndustriesData: async (force = false) => {
+    if (get().industriesData && !force) return get().industriesData;
+    set({ isIndustriesLoading: true });
+    await get().fetchPage("industries", force);
+    set({ isIndustriesLoading: false });
+    return get().industriesData;
+  },
+
+  fetchProducts: async (categorySlug?: string, force = false) => {
+    if (get().products.length > 0 && !force && !categorySlug) {
+      return get().products;
+    }
+    set({ isProductsLoading: true });
+    try {
+      const baseUrl = getApiBaseUrl();
+      const url =
+        categorySlug && categorySlug !== "all"
+          ? `${baseUrl}/api/products?category=${encodeURIComponent(categorySlug)}`
+          : `${baseUrl}/api/products`;
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("Failed to fetch products from CMS");
+      const json = await res.json();
+      if (json.success && json.data) {
+        const rawList = Array.isArray(json.data.products)
+          ? json.data.products
+          : Array.isArray(json.data)
+            ? json.data
+            : [];
+        const normalized = rawList.map(normalizeProduct);
+        set({
+          products: normalized,
+          categories: Array.isArray(json.data.categories) ? json.data.categories : [],
+          productsHero: json.data.hero ?? json.data.productsHero ?? get().productsHero,
+          isProductsLoading: false,
+        });
+        return normalized;
+      }
+    } catch (err) {
+      console.error("Error loading products from CMS:", err);
+    }
+    set({ isProductsLoading: false });
+    return get().products;
+  },
+
+  fetchProductBySlug: async (slug: string) => {
+    try {
+      const baseUrl = getApiBaseUrl();
+      const res = await fetch(`${baseUrl}/api/products?slug=${encodeURIComponent(slug)}`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          return normalizeProduct(json.data);
+        }
+      }
+    } catch (err) {
+      console.error(`Error loading product ${slug} from CMS:`, err);
+    }
+    return null;
+  },
+
+  fetchIndustries: async (force = false) => {
+    if (get().industries.length > 0 && !force) {
+      return get().industries;
+    }
+    set({ isIndustriesLoading: true });
+    try {
+      const baseUrl = getApiBaseUrl();
+      const res = await fetch(`${baseUrl}/api/industries`, {
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error("Failed to fetch industries from CMS");
+      const json = await res.json();
+      if (json.success && json.data) {
+        const rawList = Array.isArray(json.data.industries)
+          ? json.data.industries
+          : Array.isArray(json.industries)
+            ? json.industries
             : Array.isArray(json.data)
               ? json.data
               : [];
-          const normalized = rawList.map(normalizeProduct);
-          set({
-            products: normalized,
-            categories: Array.isArray(json.data.categories)
-              ? json.data.categories
-              : [],
-            productsHero: json.data.hero ?? json.data.productsHero ?? get().productsHero,
-            isProductsLoading: false,
-          });
-          return normalized;
-        }
-      } catch (err) {
-        console.error("Error loading products from CMS:", err);
+        const normalized = rawList.map(normalizeIndustry);
+        set({ industries: normalized, isIndustriesLoading: false });
+        return normalized;
       }
-      set({ isProductsLoading: false });
-      return get().products;
-    },
+    } catch (err) {
+      console.error("Error loading industries from CMS:", err);
+    }
+    set({ isIndustriesLoading: false });
+    return get().industries;
+  },
 
-    fetchProductBySlug: async (slug: string) => {
-      try {
-        const baseUrl = getApiBaseUrl();
-        const res = await fetch(
-          `${baseUrl}/api/products?slug=${encodeURIComponent(slug)}`,
-          {
-            cache: "no-store",
-          },
-        );
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && json.data) {
-            return normalizeProduct(json.data);
-          }
-        }
-      } catch (err) {
-        console.error(`Error loading product ${slug} from CMS:`, err);
-      }
-      return null;
-    },
-
-    fetchIndustries: async (force = false) => {
-      if (get().industries.length > 0 && !force) {
-        return get().industries;
-      }
-      set({ isIndustriesLoading: true });
-      try {
-        const baseUrl = getApiBaseUrl();
-        const res = await fetch(`${baseUrl}/api/industries`, {
-          cache: "no-store",
-        });
-        if (!res.ok) throw new Error("Failed to fetch industries from CMS");
+  fetchGlobalConfig: async (force = false) => {
+    if (get().globalConfig && !force) return get().globalConfig;
+    try {
+      const baseUrl = getApiBaseUrl();
+      const res = await fetch(`${baseUrl}/api/seo`, { cache: "no-store" });
+      if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {
-          const rawList = Array.isArray(json.data.industries)
-            ? json.data.industries
-            : Array.isArray(json.industries)
-              ? json.industries
-              : Array.isArray(json.data)
-                ? json.data
-                : [];
-          const normalized = rawList.map(normalizeIndustry);
-          set({ industries: normalized, isIndustriesLoading: false });
-          return normalized;
+          set({ globalConfig: json.data });
+          return json.data;
         }
-      } catch (err) {
-        console.error("Error loading industries from CMS:", err);
       }
-      set({ isIndustriesLoading: false });
-      return get().industries;
-    },
+    } catch (err) {
+      console.error("Error loading global config from CMS:", err);
+    }
+    return get().globalConfig;
+  },
 
-    fetchGlobalConfig: async (force = false) => {
-      if (get().globalConfig && !force) return get().globalConfig;
-      try {
-        const baseUrl = getApiBaseUrl();
-        const res = await fetch(`${baseUrl}/api/seo`, { cache: "no-store" });
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && json.data) {
-            set({ globalConfig: json.data });
-            return json.data;
-          }
-        }
-      } catch (err) {
-        console.error("Error loading global config from CMS:", err);
-      }
-      return get().globalConfig;
-    },
-
-    fetchNavLinks: async (force = false) => {
-      if (get().navLinks.length > 0 && !force) return get().navLinks;
-      try {
-        const baseUrl = getApiBaseUrl();
-        const res = await fetch(`${baseUrl}/api/nav-links`, {
-          cache: "no-store",
-        });
-        if (res.ok) {
-          const json = await res.json();
-          if (json.success && json.data) {
-            set({ navLinks: json.data });
-            return json.data;
-          }
-        }
-      } catch (err) {
-        console.error("Error loading nav links from CMS:", err);
-      }
-      return get().navLinks;
-    },
-
-    submitEnquiry: async (data) => {
-      try {
-        const baseUrl = getApiBaseUrl();
-        const res = await fetch(`${baseUrl}/api/enquiries`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            phone: null,
-            company: null,
-            product: null,
-            packaging: null,
-            message: null,
-            ...data,
-            type: data.type ?? "General",
-            email: data.email ?? "",
-          }),
-        });
+  fetchNavLinks: async (force = false) => {
+    if (get().navLinks.length > 0 && !force) return get().navLinks;
+    try {
+      const baseUrl = getApiBaseUrl();
+      const res = await fetch(`${baseUrl}/api/nav-links`, {
+        cache: "no-store",
+      });
+      if (res.ok) {
         const json = await res.json();
-        return {
-          success: json.success ?? res.ok,
-          data: json.data,
-          error: json.error,
-        };
-      } catch (err: any) {
-        console.error("Failed to submit enquiry to CMS:", err);
-        return {
-          success: false,
-          error: err.message ?? "Network error submitting enquiry",
-        };
+        if (json.success && json.data) {
+          set({ navLinks: json.data });
+          return json.data;
+        }
       }
-    },
-  }),
-);
+    } catch (err) {
+      console.error("Error loading nav links from CMS:", err);
+    }
+    return get().navLinks;
+  },
+
+  submitEnquiry: async (data) => {
+    try {
+      const baseUrl = getApiBaseUrl();
+      const res = await fetch(`${baseUrl}/api/enquiries`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: null,
+          company: null,
+          product: null,
+          packaging: null,
+          message: null,
+          ...data,
+          type: data.type ?? "General",
+          email: data.email ?? "",
+        }),
+      });
+      const json = await res.json();
+      return {
+        success: json.success ?? res.ok,
+        data: json.data,
+        error: json.error,
+      };
+    } catch (err: any) {
+      console.error("Failed to submit enquiry to CMS:", err);
+      return {
+        success: false,
+        error: err.message ?? "Network error submitting enquiry",
+      };
+    }
+  },
+}));

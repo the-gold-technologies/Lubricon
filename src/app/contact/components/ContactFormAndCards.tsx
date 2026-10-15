@@ -2,15 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useCMSStore } from "@/store/useCMSStore";
-import {
-  Phone,
-  Mail,
-  Send,
-  CheckCircle2,
-  RotateCw,
-  ShieldCheck,
-  Lock,
-} from "lucide-react";
+import { Phone, Mail, Send, CheckCircle2, RotateCw, ShieldCheck, Lock } from "lucide-react";
 
 interface CaptchaItem {
   code: string;
@@ -88,10 +80,7 @@ const generateCaptcha = (): CaptchaItem => {
       cx: Math.floor(Math.random() * 155),
       cy: Math.floor(Math.random() * 42),
       r: Math.random() > 0.75 ? 1.5 : 1,
-      fill:
-        Math.random() > 0.5
-          ? "rgba(100, 116, 139, 0.45)"
-          : "rgba(217, 119, 6, 0.35)",
+      fill: Math.random() > 0.5 ? "rgba(100, 116, 139, 0.45)" : "rgba(217, 119, 6, 0.35)",
     });
   }
 
@@ -140,10 +129,7 @@ export default function ContactFormAndCards() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      !captchaData ||
-      captchaInput.trim().toUpperCase() !== captchaData.code.toUpperCase()
-    ) {
+    if (!captchaData || captchaInput.trim().toUpperCase() !== captchaData.code.toUpperCase()) {
       setCaptchaError("Incorrect security code. Please check and try again.");
       refreshCaptcha();
       return;
@@ -208,10 +194,7 @@ export default function ContactFormAndCards() {
               )}
 
               {email && (
-                <a
-                  href={`mailto:${email}`}
-                  className="flex items-start gap-4 group"
-                >
+                <a href={`mailto:${email}`} className="flex items-start gap-4 group">
                   <div className="w-10 h-10 rounded-full border border-zinc-200 bg-white group-hover:bg-[#ffe000] group-hover:border-[#ffe000] flex items-center justify-center shrink-0 transition-all shadow-sm">
                     <Mail
                       size={16}
@@ -248,8 +231,8 @@ export default function ContactFormAndCards() {
                   Message Sent!
                 </h3>
                 <p className="text-zinc-500 text-sm max-w-xs mx-auto leading-relaxed">
-                  Thank you, <strong className="text-black">{form.name}</strong>
-                  . Our team will get back to you shortly.
+                  Thank you, <strong className="text-black">{form.name}</strong>. Our team will get
+                  back to you shortly.
                 </p>
                 <button
                   onClick={() => {
@@ -277,9 +260,7 @@ export default function ContactFormAndCards() {
                   </h3>
                 )}
                 {formSubtitle && (
-                  <p className="text-zinc-400 text-sm mb-7 leading-relaxed">
-                    {formSubtitle}
-                  </p>
+                  <p className="text-zinc-400 text-sm mb-7 leading-relaxed">{formSubtitle}</p>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -291,9 +272,7 @@ export default function ContactFormAndCards() {
                       type="text"
                       placeholder="Your Name"
                       value={form.name}
-                      onChange={(e) =>
-                        setForm({ ...form, name: e.target.value })
-                      }
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
                     />
 
@@ -303,9 +282,7 @@ export default function ContactFormAndCards() {
                       type="email"
                       placeholder="Your Email"
                       value={form.email}
-                      onChange={(e) =>
-                        setForm({ ...form, email: e.target.value })
-                      }
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
                     />
 
@@ -319,9 +296,7 @@ export default function ContactFormAndCards() {
                       placeholder="Mobile Number (10 digits)"
                       value={form.mobile}
                       onChange={(e) => {
-                        const numericOnly = e.target.value
-                          .replace(/\D/g, "")
-                          .slice(0, 10);
+                        const numericOnly = e.target.value.replace(/\D/g, "").slice(0, 10);
                         setForm({ ...form, mobile: numericOnly });
                       }}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
@@ -332,9 +307,7 @@ export default function ContactFormAndCards() {
                       type="text"
                       placeholder="Company Name"
                       value={form.company}
-                      onChange={(e) =>
-                        setForm({ ...form, company: e.target.value })
-                      }
+                      onChange={(e) => setForm({ ...form, company: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
                     />
                   </div>
@@ -344,9 +317,7 @@ export default function ContactFormAndCards() {
                     type="text"
                     placeholder="Your Address"
                     value={form.address}
-                    onChange={(e) =>
-                      setForm({ ...form, address: e.target.value })
-                    }
+                    onChange={(e) => setForm({ ...form, address: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition"
                   />
 
@@ -356,9 +327,7 @@ export default function ContactFormAndCards() {
                     rows={4}
                     placeholder="Message"
                     value={form.message}
-                    onChange={(e) =>
-                      setForm({ ...form, message: e.target.value })
-                    }
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 hover:bg-white focus:bg-white text-sm text-zinc-900 font-medium placeholder:text-zinc-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition resize-none"
                   />
 
@@ -395,29 +364,14 @@ export default function ContactFormAndCards() {
                                   height="8"
                                   patternUnits="userSpaceOnUse"
                                 >
-                                  <circle
-                                    cx="2"
-                                    cy="2"
-                                    r="0.75"
-                                    fill="rgba(0,0,0,0.06)"
-                                  />
+                                  <circle cx="2" cy="2" r="0.75" fill="rgba(0,0,0,0.06)" />
                                 </pattern>
                               </defs>
-                              <rect
-                                width="100%"
-                                height="100%"
-                                fill="url(#captcha-dots-pattern)"
-                              />
+                              <rect width="100%" height="100%" fill="url(#captcha-dots-pattern)" />
 
                               {/* Noise dots */}
                               {captchaData.dots.map((d, i) => (
-                                <circle
-                                  key={i}
-                                  cx={d.cx}
-                                  cy={d.cy}
-                                  r={d.r}
-                                  fill={d.fill}
-                                />
+                                <circle key={i} cx={d.cx} cy={d.cy} r={d.r} fill={d.fill} />
                               ))}
 
                               {/* Interference wavy lines */}

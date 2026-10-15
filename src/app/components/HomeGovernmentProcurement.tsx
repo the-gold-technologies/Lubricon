@@ -28,14 +28,10 @@ export default function HomeGovernmentProcurement() {
             </div>
           )}
           {title && (
-            <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
-              {title}
-            </h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight">{title}</h2>
           )}
           {subtitle && (
-            <p className="text-xs sm:text-sm text-zinc-500 font-medium mt-1.5">
-              {subtitle}
-            </p>
+            <p className="text-xs sm:text-sm text-zinc-500 font-medium mt-1.5">{subtitle}</p>
           )}
         </div>
 
@@ -66,14 +62,10 @@ export default function HomeGovernmentProcurement() {
 
               <div>
                 {gemCard.title && (
-                  <h3 className="text-base font-extrabold text-black">
-                    {gemCard.title}
-                  </h3>
+                  <h3 className="text-base font-extrabold text-black">{gemCard.title}</h3>
                 )}
                 {gemCard.description && (
-                  <p className="text-xs text-zinc-600 mt-1">
-                    {gemCard.description}
-                  </p>
+                  <p className="text-xs text-zinc-600 mt-1">{gemCard.description}</p>
                 )}
               </div>
 
@@ -121,14 +113,10 @@ export default function HomeGovernmentProcurement() {
 
               <div>
                 {irepsCard.title && (
-                  <h3 className="text-base font-extrabold text-black">
-                    {irepsCard.title}
-                  </h3>
+                  <h3 className="text-base font-extrabold text-black">{irepsCard.title}</h3>
                 )}
                 {irepsCard.description && (
-                  <p className="text-xs text-zinc-600 mt-1">
-                    {irepsCard.description}
-                  </p>
+                  <p className="text-xs text-zinc-600 mt-1">{irepsCard.description}</p>
                 )}
               </div>
 

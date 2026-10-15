@@ -17,12 +17,7 @@ export interface Product {
   featured?: boolean;
 }
 
-export type ProductCategory =
-  | 'engine-oil'
-  | 'gear-oil'
-  | 'atf'
-  | 'industrial'
-  | 'fluids';
+export type ProductCategory = "engine-oil" | "gear-oil" | "atf" | "industrial" | "fluids";
 
 export interface Industry {
   id: string;

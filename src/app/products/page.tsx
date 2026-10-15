@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
     seo,
     "All Lubricant Formulations & Products | Lubricon Specialities India",
-    "Explore our comprehensive range of industrial and automotive lubricants — powered by advanced Australian additive technology."
+    "Explore our comprehensive range of industrial and automotive lubricants — powered by advanced Australian additive technology.",
   );
 }
 

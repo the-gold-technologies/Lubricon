@@ -7,15 +7,15 @@ import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import GoogleTranslator from "@/components/GoogleTranslator";
 import ScrollToTopOnNavigation from "@/components/ScrollToTopOnNavigation";
 import JsonLd from "@/components/JsonLd";
-import {
-  CustomHeaderScripts,
-  CustomFooterScripts,
-} from "@/components/CustomCodeInjector";
+import { CustomHeaderScripts, CustomFooterScripts } from "@/components/CustomCodeInjector";
 import { getGlobalSEO } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const globalSeo = await getGlobalSEO();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_WEBSITE_URL || "http://localhost:3000";
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_WEBSITE_URL ||
+    "http://localhost:3000";
 
   return {
     metadataBase: new URL(siteUrl),
@@ -37,11 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const globalSeo = await getGlobalSEO();
 
   return (
@@ -58,10 +54,7 @@ export default async function RootLayout({
 
         {/* Google Search Console verification meta */}
         {globalSeo?.searchConsoleId && (
-          <meta
-            name="google-site-verification"
-            content={globalSeo.searchConsoleId}
-          />
+          <meta name="google-site-verification" content={globalSeo.searchConsoleId} />
         )}
 
         {/* Google Tag Manager (GTM) */}
@@ -100,9 +93,7 @@ gtag('config', '${globalSeo.googleAnalyticsId}');`,
         )}
 
         {/* Global Structured Data (JSON-LD from CMS Global Config) */}
-        {globalSeo?.schema && (
-          <JsonLd schema={globalSeo.schema} id="global-seo-jsonld" />
-        )}
+        {globalSeo?.schema && <JsonLd schema={globalSeo.schema} id="global-seo-jsonld" />}
 
         {/* Custom Header Scripts (from CMS Global Config) */}
         <CustomHeaderScripts content={globalSeo?.customHeaderScripts} />
@@ -148,10 +139,7 @@ gtag('config', '${globalSeo.googleAnalyticsId}');`,
           }}
         />
       </head>
-      <body
-        className="min-h-screen flex flex-col antialiased"
-        suppressHydrationWarning
-      >
+      <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
         {/* GTM noscript fallback */}
         {globalSeo?.gtmId && (
           <noscript>

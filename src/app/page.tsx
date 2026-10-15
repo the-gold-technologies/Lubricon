@@ -21,9 +21,7 @@ export default async function HomePage() {
 
   return (
     <div className="bg-white text-zinc-900 min-h-screen">
-      <HomeClientWrapper
-        headingTag={sanitizeHeadingTag(globalSeo?.headingOptions, "h1")}
-      />
+      <HomeClientWrapper headingTag={sanitizeHeadingTag(globalSeo?.headingOptions, "h1")} />
     </div>
   );
 }

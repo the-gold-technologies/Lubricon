@@ -8,10 +8,7 @@ function ScrollHandler() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      "scrollRestoration" in window.history
-    ) {
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
   }, []);

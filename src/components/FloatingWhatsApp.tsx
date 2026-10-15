@@ -30,14 +30,10 @@ export default function FloatingWhatsApp() {
                 <MessageCircle size={20} className="text-white" />
               </div>
               <div>
-                <p className="text-black text-sm font-black tracking-tight">
-                  Lubricon Support
-                </p>
+                <p className="text-black text-sm font-black tracking-tight">Lubricon Support</p>
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#25d366] animate-pulse" />
-                  <span className="text-[11px] font-bold text-zinc-500">
-                    Technical Team Online
-                  </span>
+                  <span className="text-[11px] font-bold text-zinc-500">Technical Team Online</span>
                 </div>
               </div>
             </div>
@@ -53,9 +49,8 @@ export default function FloatingWhatsApp() {
           {/* Chat Bubble with Soft Gray Tint */}
           <div className="bg-[#f8f9fa] border border-zinc-200/80 rounded-2xl p-3.5 mb-4">
             <p className="text-zinc-700 text-xs sm:text-sm leading-relaxed font-medium">
-              👋 <strong className="text-black">Hello!</strong> How can we help
-              you today? Chat with us for quick lubrication advice, bulk
-              pricing, and product inquiries.
+              👋 <strong className="text-black">Hello!</strong> How can we help you today? Chat with
+              us for quick lubrication advice, bulk pricing, and product inquiries.
             </p>
           </div>
 

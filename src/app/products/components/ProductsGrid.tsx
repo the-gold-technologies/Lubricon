@@ -30,16 +30,12 @@ export default function ProductsGrid({
         {/* Results Header */}
         <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-200">
           <p className="text-zinc-600 text-sm">
-            Showing{" "}
-            <span className="text-black font-extrabold">{products.length}</span>{" "}
-            product{products.length !== 1 ? "s" : ""}
+            Showing <span className="text-black font-extrabold">{products.length}</span> product
+            {products.length !== 1 ? "s" : ""}
             {activeCategory !== "all" && (
               <>
                 {" "}
-                in{" "}
-                <span className="font-bold text-black">
-                  {activeCategoryLabel}
-                </span>
+                in <span className="font-bold text-black">{activeCategoryLabel}</span>
               </>
             )}
             {searchQuery && (
@@ -72,12 +68,10 @@ export default function ProductsGrid({
         ) : products.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-zinc-200 p-8 shadow-sm">
             <div className="text-4xl mb-4">🔍</div>
-            <h3 className="text-lg font-black text-black mb-2">
-              No lubricants found
-            </h3>
+            <h3 className="text-lg font-black text-black mb-2">No lubricants found</h3>
             <p className="text-zinc-500 text-sm max-w-sm mx-auto mb-6">
-              We couldn&apos;t find any products matching your search criteria.
-              Try another keyword or browse all categories.
+              We couldn&apos;t find any products matching your search criteria. Try another keyword
+              or browse all categories.
             </p>
             <button
               onClick={onReset}

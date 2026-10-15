@@ -23,14 +23,10 @@ export default function AboutTimeline() {
             </div>
           )}
           {title && (
-            <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tight">
-              {title}
-            </h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-black tracking-tight">{title}</h2>
           )}
           {subtitle && (
-            <p className="text-sm sm:text-base text-zinc-600 font-medium mt-2">
-              {subtitle}
-            </p>
+            <p className="text-sm sm:text-base text-zinc-600 font-medium mt-2">{subtitle}</p>
           )}
         </div>
 
@@ -58,9 +54,7 @@ export default function AboutTimeline() {
                       <span className="inline-block bg-[#ffe000] text-black font-black text-xs px-2.5 py-1 rounded-md mb-2 shadow-xs">
                         {m.year}
                       </span>
-                      <h3 className="text-lg font-black text-black mb-1">
-                        {m.title}
-                      </h3>
+                      <h3 className="text-lg font-black text-black mb-1">{m.title}</h3>
                       <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed">
                         {m.description}
                       </p>

@@ -25,11 +25,7 @@ export default function HomeIndustries() {
             </h2>
           )}
           <div className="w-20 h-1 bg-[#ffe000] mx-auto mt-3 rounded-full" />
-          {subtitle && (
-            <p className="text-zinc-600 text-sm mt-3 max-w-xl mx-auto">
-              {subtitle}
-            </p>
-          )}
+          {subtitle && <p className="text-zinc-600 text-sm mt-3 max-w-xl mx-auto">{subtitle}</p>}
         </div>
 
         {industries && industries.length > 0 && (

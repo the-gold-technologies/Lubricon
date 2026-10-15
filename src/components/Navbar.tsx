@@ -52,9 +52,7 @@ export default function Navbar() {
         }
       }
       const computed =
-        Math.round(
-          parseFloat(getComputedStyle(document.documentElement).fontSize),
-        ) || 16;
+        Math.round(parseFloat(getComputedStyle(document.documentElement).fontSize)) || 16;
       setCurrentFontSize(computed);
     } catch {
       setCurrentFontSize(16);
@@ -84,9 +82,7 @@ export default function Navbar() {
   };
 
   const detectedLanguage = useLanguage();
-  const [currentLanguage, setCurrentLanguage] = useState<"EN" | "HI">(
-    detectedLanguage || "EN",
-  );
+  const [currentLanguage, setCurrentLanguage] = useState<"EN" | "HI">(detectedLanguage || "EN");
 
   useEffect(() => {
     setCurrentLanguage(detectedLanguage);
@@ -106,13 +102,7 @@ export default function Navbar() {
   const searchDropdownRef = useRef<HTMLDivElement>(null);
   const mobileSearchDropdownRef = useRef<HTMLDivElement>(null);
 
-  const {
-    globalConfig,
-    fetchGlobalConfig,
-    products,
-    fetchProducts,
-    categories,
-  } = useCMSStore();
+  const { globalConfig, fetchGlobalConfig, products, fetchProducts, categories } = useCMSStore();
 
   const productHierarchy: ProductCategoryItem[] = useMemo(() => {
     if (!categories || categories.length === 0) return [];
@@ -124,8 +114,7 @@ export default function Navbar() {
           (p) =>
             p.category === cat.slug ||
             p.raw?.categorySlug === cat.slug ||
-            (p.raw?.categoryName &&
-              p.raw.categoryName.toLowerCase() === cat.name.toLowerCase()),
+            (p.raw?.categoryName && p.raw.categoryName.toLowerCase() === cat.name.toLowerCase()),
         );
 
         // Standalone product check:
@@ -178,11 +167,9 @@ export default function Navbar() {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
       const isOutsideDesktop =
-        !searchDropdownRef.current ||
-        !searchDropdownRef.current.contains(target);
+        !searchDropdownRef.current || !searchDropdownRef.current.contains(target);
       const isOutsideMobile =
-        !mobileSearchDropdownRef.current ||
-        !mobileSearchDropdownRef.current.contains(target);
+        !mobileSearchDropdownRef.current || !mobileSearchDropdownRef.current.contains(target);
       if (isOutsideDesktop && isOutsideMobile) {
         setIsSearchDropdownOpen(false);
       }
@@ -318,14 +305,8 @@ export default function Navbar() {
             </div>
 
             {/* Search Input - Desktop & Tablet */}
-            <div
-              className="relative hidden sm:block font-sans"
-              ref={searchDropdownRef}
-            >
-              <form
-                onSubmit={handleSearchSubmit}
-                className="flex items-center font-sans"
-              >
+            <div className="relative hidden sm:block font-sans" ref={searchDropdownRef}>
+              <form onSubmit={handleSearchSubmit} className="flex items-center font-sans">
                 <div className="relative flex items-stretch">
                   <input
                     type="text"
@@ -503,9 +484,7 @@ export default function Navbar() {
                   {/* Main Dropdown Column */}
                   <div className="w-56 bg-white shadow-xl rounded-sm border border-zinc-200">
                     {productHierarchy.map((item) => {
-                      const hasSub = Boolean(
-                        item.subcategories && item.subcategories.length > 0,
-                      );
+                      const hasSub = Boolean(item.subcategories && item.subcategories.length > 0);
                       const isHovered = hoveredCategory === item.id;
 
                       return (
@@ -660,10 +639,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div
-            className="p-4 border-b border-zinc-100 relative"
-            ref={mobileSearchDropdownRef}
-          >
+          <div className="p-4 border-b border-zinc-100 relative" ref={mobileSearchDropdownRef}>
             <form onSubmit={handleSearchSubmit} className="flex items-stretch">
               <input
                 type="text"

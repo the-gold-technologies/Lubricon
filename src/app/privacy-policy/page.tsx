@@ -42,15 +42,12 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata(
     seo,
     "Privacy Policy | Lubricon Specialities India",
-    "Read the official Privacy Policy of Lubricon Specialities India — Australian technology lubricants and industrial fluids data protection practices."
+    "Read the official Privacy Policy of Lubricon Specialities India — Australian technology lubricants and industrial fluids data protection practices.",
   );
 }
 
 export default async function PrivacyPolicyPage() {
-  const [data, seo] = await Promise.all([
-    getPrivacyPolicyData(),
-    getPageSEO("privacy-policy"),
-  ]);
+  const [data, seo] = await Promise.all([getPrivacyPolicyData(), getPageSEO("privacy-policy")]);
 
   if (!data) {
     notFound();
@@ -63,10 +60,7 @@ export default async function PrivacyPolicyPage() {
     <main className="min-h-screen bg-white">
       {/* Schema Injection */}
       {seo?.schema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: seo.schema }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: seo.schema }} />
       )}
 
       {/* ── 1. PREMIUM FULL-WIDTH HERO SECTION FROM CMS ── */}
@@ -93,7 +87,10 @@ export default async function PrivacyPolicyPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col items-start max-w-4xl">
             {/* Breadcrumb Navigation */}
-            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-zinc-400 mb-5">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex items-center gap-2 text-xs text-zinc-400 mb-5"
+            >
               <Link href="/" className="hover:text-[#ffe000] transition-colors">
                 Home
               </Link>
@@ -174,7 +171,8 @@ export default async function PrivacyPolicyPage() {
                   Need Help or Have Privacy Inquiries?
                 </h3>
                 <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                  Our compliance officer and data protection desk are available to address queries regarding your personal data, technical specifications, or quotation details.
+                  Our compliance officer and data protection desk are available to address queries
+                  regarding your personal data, technical specifications, or quotation details.
                 </p>
               </div>
 
