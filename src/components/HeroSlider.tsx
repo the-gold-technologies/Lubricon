@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { useCMSStore } from "@/store/useCMSStore";
+import { usePageHeadingTag } from "@/hooks/usePageHeadingTag";
 
 interface HeroSliderProps {
   headingTag?: string | null;
@@ -12,6 +13,7 @@ interface HeroSliderProps {
 
 export default function HeroSlider({ headingTag }: HeroSliderProps) {
   const { homeData } = useCMSStore();
+  const HeadingTag = usePageHeadingTag("home", headingTag);
   const [current, setCurrent] = useState(0);
 
   const slides = homeData?.HeroSlider?.slides;
@@ -86,28 +88,11 @@ export default function HeroSlider({ headingTag }: HeroSliderProps) {
                       </div>
                     )}
 
-                    {title &&
-                      (() => {
-                        const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
-                        const clean = headingTag
-                          ? headingTag.toLowerCase().trim()
-                          : "h1";
-                        const safeTag = validTags.includes(clean)
-                          ? clean
-                          : "h1";
-                        const Tag = (index === 0 ? safeTag : "h2") as
-                          | "h1"
-                          | "h2"
-                          | "h3"
-                          | "h4"
-                          | "h5"
-                          | "h6";
-                        return (
-                          <Tag className="text-2xl sm:text-4xl lg:text-5xl font-black text-white drop-shadow-md tracking-tight leading-tight mb-2.5">
-                            {title}
-                          </Tag>
-                        );
-                      })()}
+                    {title && (
+                      <HeadingTag className="text-2xl sm:text-4xl lg:text-5xl font-black text-white drop-shadow-md tracking-tight leading-tight mb-2.5">
+                        {title}
+                      </HeadingTag>
+                    )}
 
                     {subtitle && (
                       <p className="text-white/90 text-sm sm:text-base font-normal drop-shadow mb-6 max-w-lg line-clamp-2">

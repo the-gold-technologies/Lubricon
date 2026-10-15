@@ -18,6 +18,7 @@ export interface GlobalConfig {
   };
   logo?: string;
   favicon?: string;
+  headingOptions?: string;
 }
 
 export interface HeroSlide {

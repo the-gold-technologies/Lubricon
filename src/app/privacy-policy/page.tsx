@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ShieldCheck, Calendar, Phone, Mail, ChevronRight, Lock, CheckCircle2 } from "lucide-react";
 import { getPageSEO, buildMetadata, sanitizeHeadingTag } from "@/lib/seo";
-import { getApiBaseUrl } from "@/store/useCMSStore";
+import { getApiBaseUrl } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 

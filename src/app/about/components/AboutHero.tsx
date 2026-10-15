@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ShieldCheck, Cpu, Factory, PhoneCall } from "lucide-react";
 import { useCMSStore } from "@/store/useCMSStore";
+import { usePageHeadingTag } from "@/hooks/usePageHeadingTag";
 
 interface AboutHeroProps {
   headingTag?: string | null;
@@ -11,6 +12,7 @@ interface AboutHeroProps {
 
 export default function AboutHero({ headingTag }: AboutHeroProps) {
   const { aboutData } = useCMSStore();
+  const HeadingTag = usePageHeadingTag("about", headingTag);
   const hero = aboutData?.AboutHero;
 
   if (!hero) return null;
@@ -124,16 +126,11 @@ export default function AboutHero({ headingTag }: AboutHeroProps) {
               </div>
             )}
 
-            {heading && (() => {
-              const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
-              const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
-              const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-              return (
-                <Tag className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-black text-black tracking-tight leading-[1.12] mb-5">
-                  {heading}
-                </Tag>
-              );
-            })()}
+            {heading && (
+              <HeadingTag className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.25rem] font-black text-black tracking-tight leading-[1.12] mb-5">
+                {heading}
+              </HeadingTag>
+            )}
 
             {narrative && (
               <p className="text-sm sm:text-base text-zinc-600 leading-relaxed mb-4 font-normal">

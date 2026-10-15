@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
 import { useCMSStore } from "@/store/useCMSStore";
+import { usePageHeadingTag } from "@/hooks/usePageHeadingTag";
 
 interface ContactHeroProps {
   headingTag?: string | null;
@@ -10,6 +11,7 @@ interface ContactHeroProps {
 
 export default function ContactHero({ headingTag }: ContactHeroProps) {
   const { contactData } = useCMSStore();
+  const Tag = usePageHeadingTag("contact", headingTag);
 
   const hero = contactData?.ContactHero;
   if (!hero) return null;
@@ -20,10 +22,6 @@ export default function ContactHero({ headingTag }: ContactHeroProps) {
   const helpline = hero.helpline;
   const email = hero.email;
   const image = hero.image;
-
-  const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
-  const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
-  const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
   return (
     <section className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-black via-[#0c0d12] to-black text-white border-b-4 border-[#ffe000] overflow-hidden">

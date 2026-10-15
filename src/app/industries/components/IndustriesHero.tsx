@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useCMSStore } from "@/store/useCMSStore";
+import { usePageHeadingTag } from "@/hooks/usePageHeadingTag";
 
 interface IndustriesHeroProps {
   headingTag?: string | null;
@@ -9,13 +10,10 @@ interface IndustriesHeroProps {
 
 export default function IndustriesHero({ headingTag }: IndustriesHeroProps) {
   const { industriesData } = useCMSStore();
+  const Tag = usePageHeadingTag("industries", headingTag);
   const hero = industriesData?.IndustriesHero;
 
   if (!hero) return null;
-
-  const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
-  const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
-  const Tag = (validTags.includes(clean) ? clean : "h1") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
   const badge = hero.badge;
   const heading = hero.heading;

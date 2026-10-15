@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getApiBaseUrl } from "@/store/useCMSStore";
+import { getApiBaseUrl } from "@/lib/api";
 
 export interface PageSEO {
   metaTitle?: string | null;

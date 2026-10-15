@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ShieldCheck, Award, Layers } from "lucide-react";
 import { useCMSStore } from "@/store/useCMSStore";
+import { usePageHeadingTag } from "@/hooks/usePageHeadingTag";
 
 interface ProductsHeroProps {
   headingTag?: string | null;
@@ -10,16 +11,7 @@ interface ProductsHeroProps {
 
 export default function ProductsHero({ headingTag }: ProductsHeroProps) {
   const { productsHero } = useCMSStore();
-
-  const validTags = ["h1", "h2", "h3", "h4", "h5", "h6"];
-  const clean = headingTag ? headingTag.toLowerCase().trim() : "h1";
-  const Tag = (validTags.includes(clean) ? clean : "h1") as
-    | "h1"
-    | "h2"
-    | "h3"
-    | "h4"
-    | "h5"
-    | "h6";
+  const Tag = usePageHeadingTag("products", headingTag);
 
   const badge = productsHero?.badge;
   const heading = productsHero?.heading;
