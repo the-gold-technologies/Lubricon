@@ -10,15 +10,14 @@ import JsonLd from "@/components/JsonLd";
 import { CustomHeaderScripts, CustomFooterScripts } from "@/components/CustomCodeInjector";
 import { getGlobalSEO } from "@/lib/seo";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const globalSeo = await getGlobalSEO();
-  const siteUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.NEXT_PUBLIC_WEBSITE_URL ||
-    "http://localhost:3000";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
   return {
-    metadataBase: new URL(siteUrl),
+    ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
     title: globalSeo?.siteTitle ?? undefined,
     description: globalSeo?.siteDescription ?? undefined,
     icons: globalSeo?.favicon
