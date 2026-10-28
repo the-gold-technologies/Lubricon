@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import CookieConsent from "@/components/CookieConsent";
 import GoogleTranslator from "@/components/GoogleTranslator";
 import ScrollToTopOnNavigation from "@/components/ScrollToTopOnNavigation";
 import JsonLd from "@/components/JsonLd";
@@ -12,19 +13,35 @@ import { getGlobalSEO } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
+function resolveFaviconUrl(favicon?: string | null): string | undefined {
+  if (!favicon) return undefined;
+  if (
+    favicon.startsWith("http://") ||
+    favicon.startsWith("https://") ||
+    favicon.startsWith("data:")
+  ) {
+    return favicon;
+  }
+  const baseUrl = process.env.NEXT_PUBLIC_CMS_API_URL || "";
+  const cleanBase = baseUrl.replace(/\/+$/, "");
+  const cleanPath = favicon.startsWith("/") ? favicon : `/${favicon}`;
+  return cleanBase ? `${cleanBase}${cleanPath}` : cleanPath;
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const globalSeo = await getGlobalSEO();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const faviconUrl = resolveFaviconUrl(globalSeo?.favicon);
 
   return {
     ...(siteUrl ? { metadataBase: new URL(siteUrl) } : {}),
     title: globalSeo?.siteTitle ?? undefined,
     description: globalSeo?.siteDescription ?? undefined,
-    icons: globalSeo?.favicon
+    icons: faviconUrl
       ? {
-          icon: globalSeo.favicon,
-          shortcut: globalSeo.favicon,
-          apple: globalSeo.favicon,
+          icon: faviconUrl,
+          shortcut: faviconUrl,
+          apple: faviconUrl,
         }
       : undefined,
     verification: globalSeo?.searchConsoleId
@@ -38,16 +55,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const globalSeo = await getGlobalSEO();
+  const faviconUrl = resolveFaviconUrl(globalSeo?.favicon);
 
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         {/* Dynamic Favicon link tags so browser reliably gets it on every single page */}
-        {globalSeo?.favicon && (
+        {faviconUrl && (
           <>
-            <link rel="icon" href={globalSeo.favicon} />
-            <link rel="shortcut icon" href={globalSeo.favicon} />
-            <link rel="apple-touch-icon" href={globalSeo.favicon} />
+            <link rel="icon" href={faviconUrl} />
+            <link rel="shortcut icon" href={faviconUrl} />
+            <link rel="apple-touch-icon" href={faviconUrl} />
           </>
         )}
 
@@ -157,6 +175,7 @@ gtag('config', '${globalSeo.googleAnalyticsId}');`,
         <main className="flex-1">{children}</main>
         <Footer />
         <FloatingWhatsApp />
+        <CookieConsent />
 
         {/* Custom Footer Scripts (from CMS Global Config) */}
         <CustomFooterScripts content={globalSeo?.customFooterScripts} />

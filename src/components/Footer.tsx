@@ -237,8 +237,19 @@ export default function Footer() {
               Privacy Policy
             </Link>
           </div>
-          <div className="text-gray-400">
-            Engineered with Australian Technology for Indian Conditions
+          <div className="flex flex-col text-[10px] mt-2 items-center sm:items-end gap-1 text-gray-400 text-center sm:text-right">
+            <div>Engineered with Australian Technology for Indian Conditions</div>
+            <div>
+              Designed &amp; Developed by{" "}
+              <a
+                href={"https://thegoldtechnologies.com/"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-200 hover:text-[#ffe000] underline underline-offset-4 decoration-1 font-semibold transition-colors"
+              >
+                TGT
+              </a>
+            </div>
           </div>
         </div>
       </div>
