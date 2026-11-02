@@ -126,7 +126,7 @@ export default function IndustriesList() {
       <PlantAuditDrawer
         isOpen={isAuditOpen}
         onClose={() => setIsAuditOpen(false)}
-        initialService={selectedIndustry}
+        initialIndustry={selectedIndustry}
       />
     </>
   );

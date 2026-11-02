@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Product } from "@/types";
 import { useCMSStore } from "@/store/useCMSStore";
 import CaptchaField, { useCaptcha, handleCaptchaResult } from "@/components/CaptchaField";
+import { enquiryRefCode } from "@/lib/enquiryRef";
 import {
   X,
   User,
@@ -42,6 +43,7 @@ export default function ProductPriceListDrawer({
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  const [refCode, setRefCode] = useState("");
   const captcha = useCaptcha();
 
   // Smooth enter & exit animation state
@@ -100,6 +102,7 @@ export default function ProductPriceListDrawer({
     });
     setIsSubmitting(false);
     if (!handleCaptchaResult(captcha, result, setFormError)) return;
+    setRefCode(enquiryRefCode(result.data?.id));
     setSubmitted(true);
   };
 
@@ -166,22 +169,24 @@ export default function ProductPriceListDrawer({
                 <CheckCircle2 size={36} className="stroke-[2.5]" />
               </div>
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
-                  Ref: LUB-PRC-{Math.floor(10000 + Math.random() * 90000)}
-                </span>
+                {refCode && (
+                  <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                    Ref: LUB-PRC-{refCode}
+                  </span>
+                )}
                 <h3 className="text-2xl font-black text-black tracking-tight mt-1">
-                  Price List Dispatched!
+                  Price List Request Received
                 </h3>
                 <p className="text-zinc-600 text-sm max-w-sm mx-auto mt-2 leading-relaxed">
-                  Thank you, <strong className="text-black">{formData.name}</strong>. The latest
-                  commercial wholesale rate card and technical TDS for{" "}
-                  <strong className="text-black">{product.name}</strong> are being transmitted to
-                  your WhatsApp (<strong className="text-black">{formData.phone}</strong>) and
-                  email.
+                  Thank you, <strong className="text-black">{formData.name}</strong>. Our sales team
+                  will share the latest rate card for{" "}
+                  <strong className="text-black">{product.name}</strong> on your WhatsApp (
+                  <strong className="text-black">{formData.phone}</strong>) and email within 24
+                  hours.
                 </p>
               </div>
 
-              {/* Delivery items list */}
+              {/* What the customer will receive */}
               <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-left text-xs space-y-2 max-w-sm mx-auto mt-4">
                 <div className="flex items-center gap-2 text-emerald-700 font-extrabold">
                   <Download size={14} />
@@ -194,7 +199,7 @@ export default function ProductPriceListDrawer({
                   </div>
                 )}
                 <div className="text-zinc-500 text-[11px] pt-1">
-                  Estimated delivery: <strong>Under 15 minutes</strong> via WhatsApp.
+                  Shared by our sales team <strong>within 24 hours</strong> (business days).
                 </div>
               </div>
 
@@ -388,7 +393,9 @@ export default function ProductPriceListDrawer({
               {/* Trust Badge */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 py-1">
                 <ShieldCheck size={14} className="text-emerald-600 shrink-0 stroke-[2.5]" />
-                <span>Direct manufacturer pricing • Instant PDF delivery via WhatsApp</span>
+                <span>
+                  Direct manufacturer pricing • Shared on WhatsApp &amp; email within 24 hours
+                </span>
               </div>
 
               {/* Big Solid Submit Button matching reference */}
@@ -399,10 +406,10 @@ export default function ProductPriceListDrawer({
                   className="w-full py-3.5 rounded-xl bg-black hover:bg-[#ffe000] hover:text-black text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <span>Dispatching Rate Card...</span>
+                    <span>Submitting Request...</span>
                   ) : (
                     <>
-                      <span>Send Price List &amp; Catalog</span>
+                      <span>Request Price List &amp; Catalog</span>
                       <Send size={14} />
                     </>
                   )}

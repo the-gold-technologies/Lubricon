@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Product } from "@/types";
 import { useCMSStore } from "@/store/useCMSStore";
 import CaptchaField, { useCaptcha, handleCaptchaResult } from "@/components/CaptchaField";
+import { enquiryRefCode } from "@/lib/enquiryRef";
 import {
   X,
   User,
@@ -42,6 +43,7 @@ export default function ProductQuoteDrawer({ isOpen, onClose, product }: Product
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  const [refCode, setRefCode] = useState("");
   const captcha = useCaptcha();
 
   // Smooth enter & exit animation state
@@ -102,6 +104,7 @@ export default function ProductQuoteDrawer({ isOpen, onClose, product }: Product
     });
     setIsSubmitting(false);
     if (!handleCaptchaResult(captcha, result, setFormError)) return;
+    setRefCode(enquiryRefCode(result.data?.id));
     setSubmitted(true);
   };
 
@@ -169,9 +172,11 @@ export default function ProductQuoteDrawer({ isOpen, onClose, product }: Product
                 <CheckCircle2 size={36} className="stroke-[2.5]" />
               </div>
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
-                  Ref: LUB-QTE-{Math.floor(10000 + Math.random() * 90000)}
-                </span>
+                {refCode && (
+                  <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                    Ref: LUB-QTE-{refCode}
+                  </span>
+                )}
                 <h3 className="text-2xl font-black text-black tracking-tight mt-1">
                   Quotation Request Sent!
                 </h3>

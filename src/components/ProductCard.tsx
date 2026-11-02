@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Product } from "@/types";
 import { ChevronRight, Star } from "lucide-react";
 
@@ -31,7 +31,6 @@ const badgeClassMap: Record<string | "default", string> = {
 };
 
 export default function ProductCard({ product, onClick }: ProductCardProps) {
-  const router = useRouter();
   const imgSrc =
     (product as any).containerImage ??
     (product as any).raw?.containerImage ??
@@ -39,23 +38,11 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
     "";
   const badgeClass = product.badge ? (badgeClassMap[product.badge] ?? badgeClassMap.default) : "";
 
-  const handleCardClick = () => {
-    if (onClick) {
-      onClick(product);
-    } else {
-      router.push(`/products/${product.slug}`);
-    }
-  };
+  const cardClassName =
+    "group cursor-pointer rounded-2xl overflow-hidden border border-zinc-800/90 hover:border-zinc-600 bg-[#12141a] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between";
 
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      className="group cursor-pointer rounded-2xl overflow-hidden border border-zinc-800/90 hover:border-zinc-600 bg-[#12141a] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl flex flex-col justify-between"
-      onClick={handleCardClick}
-      onKeyDown={(e) => e.key === "Enter" && handleCardClick()}
-      aria-label={`View details for ${product.name}`}
-    >
+  const content = (
+    <>
       <div>
         {/* Crisp White Studio Packshot Bay */}
         <div className="relative h-52 w-full bg-white overflow-hidden border-b border-zinc-800/80 flex items-center justify-center p-3">
@@ -129,6 +116,33 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
           />
         </span>
       </div>
-    </div>
+    </>
+  );
+
+  // Custom click handler (e.g. selecting a product in a picker)
+  if (onClick) {
+    return (
+      <div
+        role="button"
+        tabIndex={0}
+        className={cardClassName}
+        onClick={() => onClick(product)}
+        onKeyDown={(e) => e.key === "Enter" && onClick(product)}
+        aria-label={`View details for ${product.name}`}
+      >
+        {content}
+      </div>
+    );
+  }
+
+  // Default: a real link, so search engines can crawl it and users can open it in a new tab
+  return (
+    <Link
+      href={`/products/${product.slug}`}
+      className={cardClassName}
+      aria-label={`View details for ${product.name}`}
+    >
+      {content}
+    </Link>
   );
 }

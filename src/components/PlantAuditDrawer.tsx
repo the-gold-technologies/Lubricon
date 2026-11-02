@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useCMSStore } from "@/store/useCMSStore";
 import CaptchaField, { useCaptcha, handleCaptchaResult } from "@/components/CaptchaField";
+import { enquiryRefCode } from "@/lib/enquiryRef";
 import {
   X,
   User,
@@ -18,21 +19,72 @@ import {
 interface PlantAuditDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  /** Pre-selects a service card title (from the CMS Plant Engineering Services section) */
   initialService?: string;
+  /** Pre-selects an industry (from the CMS industries list) */
+  initialIndustry?: string;
 }
+
+interface PlantService {
+  title?: string;
+  tag?: string;
+  deliverable?: string;
+}
+
+// Used only if the CMS industries list hasn't loaded / is empty
+const FALLBACK_INDUSTRIES = [
+  "Plastic Injection Molding",
+  "Steel Mills & Metal Forming",
+  "Pulp & Paper Manufacturing",
+  "Automotive & Fleet Transport",
+  "Precision CNC & Machining",
+  "Mining & Heavy Earthmoving",
+  "Cement & Power Plants",
+];
+const FALLBACK_SERVICE = "Plant Lubrication Audit";
+
+const uniq = (items: string[]) => Array.from(new Set(items.filter(Boolean)));
 
 export default function PlantAuditDrawer({
   isOpen,
   onClose,
-  initialService = "On-Site Plant Lubrication Audits",
+  initialService = "",
+  initialIndustry = "",
 }: PlantAuditDrawerProps) {
+  const industriesData = useCMSStore((s) => s.industriesData);
+  const cmsIndustries = useCMSStore((s) => s.industries);
+
+  // Make sure the CMS service cards + industries are available wherever the drawer opens
+  useEffect(() => {
+    if (!isOpen) return;
+    const store = useCMSStore.getState();
+    if (!store.industriesData) store.fetchIndustriesData();
+    if (!store.industries.length) store.fetchIndustries();
+  }, [isOpen]);
+
+  const plantServices: PlantService[] = Array.isArray(
+    industriesData?.IndustriesPlantSupport?.services,
+  )
+    ? industriesData.IndustriesPlantSupport.services
+    : [];
+  const cmsServiceTitles = uniq(plantServices.map((sv) => (sv?.title ?? "").trim()));
+  const serviceOptions = uniq([initialService, ...cmsServiceTitles]);
+  if (serviceOptions.length === 0) serviceOptions.push(FALLBACK_SERVICE);
+
+  const cmsIndustryNames = uniq(cmsIndustries.map((ind) => (ind?.name ?? "").trim()));
+  const industryOptions = uniq([
+    initialIndustry,
+    ...(cmsIndustryNames.length ? cmsIndustryNames : FALLBACK_INDUSTRIES),
+    "Other",
+  ]);
+
   const [formData, setFormData] = useState({
     name: "",
     company: "",
     email: "",
     phone: "",
     city: "",
-    industry: "Plastic Injection Molding",
+    industry: initialIndustry,
     service: initialService,
     timeframe: "Within 2 Weeks",
     notes: "",
@@ -41,6 +93,7 @@ export default function PlantAuditDrawer({
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
+  const [refCode, setRefCode] = useState("");
   const captcha = useCaptcha();
 
   // Smooth enter & exit animation state
@@ -65,11 +118,22 @@ export default function PlantAuditDrawer({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    if (initialService) {
-      setFormData((prev) => ({ ...prev, service: initialService }));
-    }
-  }, [initialService]);
+  // Re-apply pre-selections when the drawer is opened from a different card
+  const [lastInitial, setLastInitial] = useState({ initialService, initialIndustry });
+  if (
+    lastInitial.initialService !== initialService ||
+    lastInitial.initialIndustry !== initialIndustry
+  ) {
+    setLastInitial({ initialService, initialIndustry });
+    setFormData((prev) => ({ ...prev, service: initialService, industry: initialIndustry }));
+  }
+
+  // Fall back to the first available option until the visitor picks one
+  const selectedService = formData.service || serviceOptions[0];
+  const selectedIndustry = formData.industry || industryOptions[0];
+  const selectedServiceInfo = plantServices.find(
+    (sv) => (sv?.title ?? "").trim() === selectedService,
+  );
 
   // Close on Escape & lock body scroll
   useEffect(() => {
@@ -100,15 +164,16 @@ export default function PlantAuditDrawer({
       phone: formData.phone,
       company: formData.company,
       location: formData.city,
-      industry: formData.industry,
-      service: formData.service,
+      industry: selectedIndustry,
+      service: selectedService,
       timeframe: formData.timeframe,
-      product: formData.service,
-      message: `Industry: ${formData.industry}, City: ${formData.city}, Timeframe: ${formData.timeframe}, Notes: ${formData.notes}`,
+      product: selectedService,
+      message: `Industry: ${selectedIndustry}, City: ${formData.city}, Timeframe: ${formData.timeframe}, Notes: ${formData.notes}`,
       ...captcha.payload,
     });
     setIsSubmitting(false);
     if (!handleCaptchaResult(captcha, result, setFormError)) return;
+    setRefCode(enquiryRefCode(result.data?.id));
     setSubmitted(true);
   };
 
@@ -122,7 +187,7 @@ export default function PlantAuditDrawer({
       email: "",
       phone: "",
       city: "",
-      industry: "Plastic Injection Molding",
+      industry: initialIndustry,
       service: initialService,
       timeframe: "Within 2 Weeks",
       notes: "",
@@ -177,9 +242,11 @@ export default function PlantAuditDrawer({
                 <CheckCircle2 size={36} className="stroke-[2.5]" />
               </div>
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
-                  Audit Ref: LUB-AUD-{Math.floor(10000 + Math.random() * 90000)}
-                </span>
+                {refCode && (
+                  <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">
+                    Audit Ref: LUB-AUD-{refCode}
+                  </span>
+                )}
                 <h3 className="text-2xl font-black text-black tracking-tight mt-1">
                   Plant Audit Confirmed!
                 </h3>
@@ -197,12 +264,12 @@ export default function PlantAuditDrawer({
               <div className="bg-zinc-50 border border-zinc-200 rounded-2xl p-4 text-left text-xs space-y-2 max-w-sm mx-auto mt-4">
                 <div className="flex justify-between">
                   <span className="text-zinc-500 font-semibold">Service Focus:</span>
-                  <span className="font-extrabold text-black">{formData.service}</span>
+                  <span className="font-extrabold text-black">{selectedService}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-500 font-semibold">Facility / Location:</span>
                   <span className="font-extrabold text-black">
-                    {formData.industry}
+                    {selectedIndustry}
                     {formData.city ? ` • ${formData.city}` : ""}
                   </span>
                 </div>
@@ -233,28 +300,47 @@ export default function PlantAuditDrawer({
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Selected Service Card matching user reference */}
               <div className="rounded-2xl bg-zinc-50/80 border border-zinc-200/90 p-4">
-                <div className="text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5">
-                  SELECTED SERVICE
-                </div>
-                <div className="text-base font-black text-zinc-950 tracking-tight mb-3">
-                  {formData.service}
-                </div>
-                <div className="grid grid-cols-2 gap-4 text-xs pt-2 border-t border-zinc-200/70">
-                  <div>
-                    <span className="text-zinc-500 block text-[11px] mb-0.5">
-                      Engineering Spec:
-                    </span>
-                    <span className="font-extrabold text-zinc-900">
-                      Australian Tribology Standard
-                    </span>
+                <label
+                  htmlFor="plant-audit-service"
+                  className="block text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5"
+                >
+                  SELECT SERVICE *
+                </label>
+                <select
+                  id="plant-audit-service"
+                  value={selectedService}
+                  onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                  required
+                  className="w-full mb-3 px-3.5 py-2.5 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-sm font-black text-zinc-950 tracking-tight transition cursor-pointer"
+                >
+                  {serviceOptions.map((title) => (
+                    <option key={title} value={title}>
+                      {title}
+                    </option>
+                  ))}
+                </select>
+                {(selectedServiceInfo?.tag || selectedServiceInfo?.deliverable) && (
+                  <div className="grid grid-cols-2 gap-4 text-xs pt-2 border-t border-zinc-200/70">
+                    {selectedServiceInfo?.tag && (
+                      <div>
+                        <span className="text-zinc-500 block text-[11px] mb-0.5">Category:</span>
+                        <span className="font-extrabold text-zinc-900">
+                          {selectedServiceInfo.tag}
+                        </span>
+                      </div>
+                    )}
+                    {selectedServiceInfo?.deliverable && (
+                      <div>
+                        <span className="text-zinc-500 block text-[11px] mb-0.5">
+                          Deliverable:
+                        </span>
+                        <span className="font-extrabold text-zinc-900">
+                          {selectedServiceInfo.deliverable}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <span className="text-zinc-500 block text-[11px] mb-0.5">Format:</span>
-                    <span className="font-extrabold text-zinc-900">
-                      On-Site Field Engineer Survey
-                    </span>
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Your Name */}
@@ -361,22 +447,16 @@ export default function PlantAuditDrawer({
                   Primary Manufacturing Sector *
                 </label>
                 <select
-                  value={formData.industry}
+                  value={selectedIndustry}
                   onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
                   className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium text-zinc-900 transition"
                   required
                 >
-                  <option value="Plastic Injection Molding">Plastic Injection Molding</option>
-                  <option value="Steel Mills & Metal Forming">
-                    Steel Mills &amp; Metal Forming
-                  </option>
-                  <option value="Pulp & Paper Manufacturing">Pulp &amp; Paper Manufacturing</option>
-                  <option value="Automotive & Fleet Transport">
-                    Automotive &amp; Fleet Transport
-                  </option>
-                  <option value="Precision CNC & Machining">Precision CNC &amp; Machining</option>
-                  <option value="Mining & Heavy Earthmoving">Mining &amp; Heavy Earthmoving</option>
-                  <option value="Cement & Power Plants">Cement &amp; Power Plants</option>
+                  {industryOptions.map((name) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
                 </select>
               </div>
 

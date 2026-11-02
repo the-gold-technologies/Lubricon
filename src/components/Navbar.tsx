@@ -154,6 +154,22 @@ export default function Navbar() {
   const helpline = globalConfig?.socialLinks?.tollFree ?? globalConfig?.phone;
   const logo = globalConfig?.logo;
 
+  // Same logo in the header and the mobile menu. Falls back to a text wordmark when no logo
+  // is set in the CMS (there is no bundled /public logo file).
+  const renderLogo = (size: "header" | "drawer") =>
+    logo ? (
+      <Image
+        src={logo}
+        alt="Lubricon Specialities India"
+        width={size === "header" ? 220 : 170}
+        height={size === "header" ? 44 : 34}
+        className={`${size === "header" ? "h-10" : "h-9"} w-auto object-contain`}
+        priority={size === "header"}
+      />
+    ) : (
+      <span className="text-2xl font-black tracking-tight text-black">LUBRICON</span>
+    );
+
   useEffect(() => {
     setMobileOpen(false);
     setProductsOpen(false);
@@ -411,25 +427,7 @@ export default function Navbar() {
       <div className="w-full bg-white border-b border-zinc-200 py-3.5 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center flex-shrink-0">
-            {logo ? (
-              <Image
-                src={logo}
-                alt="Lubricon Specialities India"
-                width={220}
-                height={44}
-                className="h-10 w-auto object-contain"
-                priority
-              />
-            ) : (
-              <Image
-                src="/images/logo.png"
-                alt="Lubricon Specialities India"
-                width={220}
-                height={44}
-                className="h-10 w-auto object-contain"
-                priority
-              />
-            )}
+            {renderLogo("header")}
           </Link>
 
           {/* Desktop Navigation */}
@@ -621,14 +619,8 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50 bg-white flex flex-col overflow-y-auto animate-fade-in">
           <div className="flex items-center justify-between p-4 border-b border-zinc-200">
-            <Link href="/" onClick={() => setMobileOpen(false)}>
-              <Image
-                src="/images/logo.png"
-                alt="Lubricon"
-                width={170}
-                height={34}
-                className="h-9 w-auto object-contain"
-              />
+            <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center">
+              {renderLogo("drawer")}
             </Link>
             <button
               onClick={() => setMobileOpen(false)}
