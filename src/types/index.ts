@@ -12,6 +12,10 @@ export interface Product {
     grade?: string;
     standard?: string;
     packaging?: string[];
+    /** Custom display labels for the core fields, editable in the CMS */
+    labels?: Partial<Record<"viscosity" | "grade" | "standard" | "packaging", string>>;
+    /** Additional admin-defined parameters */
+    extra?: { label: string; value: string }[];
   };
   badge?: string;
   featured?: boolean;

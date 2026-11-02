@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Product } from "@/types";
 import { useCMSStore } from "@/store/useCMSStore";
+import CaptchaField, { useCaptcha, handleCaptchaResult } from "@/components/CaptchaField";
 import {
   X,
   User,
@@ -40,6 +41,8 @@ export default function ProductPriceListDrawer({
 
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+  const captcha = useCaptcha();
 
   // Smooth enter & exit animation state
   const [shouldRender, setShouldRender] = useState(isOpen);
@@ -82,8 +85,9 @@ export default function ProductPriceListDrawer({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError("");
     setIsSubmitting(true);
-    await useCMSStore.getState().submitEnquiry({
+    const result = await useCMSStore.getState().submitEnquiry({
       type: "Price List Request",
       name: formData.name,
       email: formData.email,
@@ -92,13 +96,17 @@ export default function ProductPriceListDrawer({
       location: formData.city,
       product: product.name,
       message: `Buyer Type: ${formData.buyerType}, City: ${formData.city}, Include TDS: ${formData.includeTds}`,
+      ...captcha.payload,
     });
     setIsSubmitting(false);
+    if (!handleCaptchaResult(captcha, result, setFormError)) return;
     setSubmitted(true);
   };
 
   const handleReset = () => {
     setSubmitted(false);
+    setFormError("");
+    captcha.refresh();
     setFormData({
       name: "",
       company: "",
@@ -368,6 +376,14 @@ export default function ProductPriceListDrawer({
                   <span>Include Technical Data Sheet (TDS) and OEM Compliance Certificate</span>
                 </label>
               </div>
+
+              <CaptchaField captcha={captcha} />
+
+              {formError && (
+                <p className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
+                  {formError}
+                </p>
+              )}
 
               {/* Trust Badge */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 py-1">

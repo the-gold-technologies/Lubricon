@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useCMSStore } from "@/store/useCMSStore";
+import CaptchaField, { useCaptcha, handleCaptchaResult } from "@/components/CaptchaField";
 import {
   X,
   User,
@@ -36,6 +37,8 @@ export default function CallbackModal({
 
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+  const captcha = useCaptcha();
 
   // Smooth enter & exit animation state — same as PlantAuditDrawer
   const [shouldRender, setShouldRender] = useState(isOpen);
@@ -85,8 +88,9 @@ export default function CallbackModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError("");
     setIsSubmitting(true);
-    await useCMSStore.getState().submitEnquiry({
+    const result = await useCMSStore.getState().submitEnquiry({
       type: "Callback Request",
       name: formData.username,
       email: formData.email,
@@ -95,13 +99,17 @@ export default function CallbackModal({
       industry: formData.industry,
       product: formData.requirement,
       message: `Location: ${formData.location}, Industry: ${formData.industry}, Requirement: ${formData.requirement}`,
+      ...captcha.payload,
     });
     setIsSubmitting(false);
+    if (!handleCaptchaResult(captcha, result, setFormError)) return;
     setSubmitted(true);
   };
 
   const handleReset = () => {
     setSubmitted(false);
+    setFormError("");
+    captcha.refresh();
     setFormData({
       username: "",
       mobile: "",
@@ -322,6 +330,14 @@ export default function CallbackModal({
                   className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition resize-none"
                 />
               </div>
+
+              <CaptchaField captcha={captcha} />
+
+              {formError && (
+                <p className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
+                  {formError}
+                </p>
+              )}
 
               {/* Trust Badge */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 py-1">

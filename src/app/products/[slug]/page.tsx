@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, Zap, CheckCircle2, ArrowLeft, Wrench, Cpu, Check } from "lucide-react";
+import { ChevronRight, Zap, CheckCircle2, ArrowLeft, Wrench, Cpu } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductCtaButtons from "./components/ProductCtaButtons";
+import ProductDatasheetButton from "./components/ProductDatasheetButton";
 import JsonLd from "@/components/JsonLd";
 import { normalizeProduct, ExtendedProduct, getApiBaseUrl } from "@/store/useCMSStore";
+import { normalizePropertiesTable, getSpecificationRows } from "@/lib/productDetail";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -111,6 +113,9 @@ export default async function ProductDetailPage({ params }: Props) {
   }
 
   const imgSrc = product.raw?.containerImage;
+  const specRows = getSpecificationRows(product.specifications);
+  const propertiesTable = normalizePropertiesTable(product.propertiesTable, product.tableHeaders);
+  const hasDatasheet = Boolean(product.pdfUrl && product.pdfUrl !== "#");
 
   return (
     <main className="bg-[#f8f9fa] text-zinc-900 min-h-screen">
@@ -195,11 +200,7 @@ export default async function ProductDetailPage({ params }: Props) {
               </div>
 
               {/* Bottom Card: Engineering Standards */}
-              {(product.specifications?.grade ||
-                product.specifications?.viscosity ||
-                product.specifications?.standard ||
-                (product.specifications?.packaging &&
-                  product.specifications.packaging.length > 0)) && (
+              {specRows.length > 0 && (
                 <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7">
                   <div className="flex items-center gap-2 text-sm font-black text-black mb-5 pb-3 border-b border-zinc-100">
                     <Zap size={16} className="text-[#ffe000] fill-black" />
@@ -207,44 +208,19 @@ export default async function ProductDetailPage({ params }: Props) {
                   </div>
 
                   <div className="divide-y divide-zinc-100 text-xs sm:text-sm">
-                    {product.specifications?.grade && (
-                      <div className="py-3 flex items-center justify-between">
-                        <span className="text-zinc-500 font-medium">Performance Grade</span>
-                        <span className="text-black font-extrabold text-right">
-                          {product.specifications.grade}
-                        </span>
+                    {specRows.map((row, i) => (
+                      <div key={i} className="py-3 flex items-center justify-between gap-4">
+                        <span className="text-zinc-500 font-medium">{row.label}</span>
+                        <span className="text-black font-extrabold text-right">{row.value}</span>
                       </div>
-                    )}
-
-                    {product.specifications?.viscosity && (
-                      <div className="py-3 flex items-center justify-between">
-                        <span className="text-zinc-500 font-medium">Viscosity Rating</span>
-                        <span className="text-black font-extrabold text-right">
-                          {product.specifications.viscosity}
-                        </span>
-                      </div>
-                    )}
-
-                    {product.specifications?.standard && (
-                      <div className="py-3 flex items-center justify-between">
-                        <span className="text-zinc-500 font-medium">Testing Standard</span>
-                        <span className="text-black font-extrabold text-right">
-                          {product.specifications.standard}
-                        </span>
-                      </div>
-                    )}
-
-                    {product.specifications?.packaging &&
-                      product.specifications.packaging.length > 0 && (
-                        <div className="py-3 flex items-center justify-between">
-                          <span className="text-zinc-500 font-medium">Standard Packaging</span>
-                          <span className="text-black font-extrabold text-right">
-                            {product.specifications.packaging.join(", ")}
-                          </span>
-                        </div>
-                      )}
+                    ))}
                   </div>
                 </div>
+              )}
+
+              {/* Datasheet Download Card */}
+              {hasDatasheet && (
+                <ProductDatasheetButton productName={product.name} productSlug={product.slug} />
               )}
             </div>
 
@@ -258,9 +234,6 @@ export default async function ProductDetailPage({ params }: Props) {
                       {product.subcategory}
                     </span>
                   )}
-                  <span className="bg-zinc-100 text-zinc-700 text-[11px] font-bold px-3 py-1 rounded-full uppercase">
-                    Commercial Supply
-                  </span>
                 </div>
 
                 {(() => {
@@ -342,7 +315,7 @@ export default async function ProductDetailPage({ params }: Props) {
               )}
 
               {/* Physico-Chemical Properties Table (from CMS) */}
-              {product.propertiesTable && product.propertiesTable.length > 0 && (
+              {propertiesTable.rows.length > 0 && (
                 <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-9 overflow-x-auto">
                   <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-zinc-100">
                     <div className="w-8 h-8 rounded-lg bg-[#ffe000] text-black flex items-center justify-center font-bold text-xs">
@@ -354,39 +327,36 @@ export default async function ProductDetailPage({ params }: Props) {
                   <table className="w-full text-left border-collapse text-xs sm:text-sm">
                     <thead>
                       <tr className="border-b border-zinc-200 text-zinc-500 font-extrabold uppercase text-[11px]">
-                        <th className="py-2.5 px-3">Property</th>
-                        <th className="py-2.5 px-3">Test Method</th>
-                        <th className="py-2.5 px-3">Typical Value</th>
+                        {propertiesTable.headers.map((header, cIdx) => (
+                          <th key={cIdx} className="py-2.5 px-3 whitespace-nowrap">
+                            {header}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-zinc-100 font-medium">
-                      {product.propertiesTable.map((row: any, rIdx: number) => {
-                        const property =
-                          typeof row?.property === "string"
-                            ? row.property
-                            : Array.isArray(row)
-                              ? row[0]
-                              : "";
-                        const testMethod =
-                          typeof row?.testMethod === "string"
-                            ? row.testMethod
-                            : Array.isArray(row) && row.length > 2
-                              ? row[1]
-                              : "-";
-                        const value =
-                          typeof row?.value === "string"
-                            ? row.value
-                            : Array.isArray(row)
-                              ? row[row.length - 1]
-                              : "";
-                        return (
-                          <tr key={rIdx} className="hover:bg-zinc-50 transition-colors">
-                            <td className="py-2.5 px-3 font-bold text-black">{property}</td>
-                            <td className="py-2.5 px-3 text-zinc-500">{testMethod}</td>
-                            <td className="py-2.5 px-3 font-extrabold text-black">{value}</td>
-                          </tr>
-                        );
-                      })}
+                      {propertiesTable.rows.map((row, rIdx) => (
+                        <tr key={rIdx} className="hover:bg-zinc-50 transition-colors">
+                          {row.map((cell, cIdx) => {
+                            const isFirst = cIdx === 0;
+                            const isLast = cIdx === row.length - 1 && row.length > 1;
+                            return (
+                              <td
+                                key={cIdx}
+                                className={`py-2.5 px-3 ${
+                                  isFirst
+                                    ? "font-bold text-black"
+                                    : isLast
+                                      ? "font-extrabold text-black"
+                                      : "text-zinc-500"
+                                }`}
+                              >
+                                {cell}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>

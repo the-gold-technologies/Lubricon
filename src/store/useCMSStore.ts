@@ -351,7 +351,15 @@ interface CMSStoreActions {
     message?: string;
     type?: string;
     [key: string]: any;
-  }) => Promise<{ success: boolean; data?: any; error?: string }>;
+  }) => Promise<{
+    success: boolean;
+    data?: any;
+    error?: string;
+    /** "CAPTCHA_INVALID" when the security code was wrong or expired */
+    code?: string;
+    /** Absolute, time-limited datasheet download URL (datasheet requests only) */
+    downloadUrl?: string | null;
+  }>;
 }
 
 export const useCMSStore = create<CMSStoreState & CMSStoreActions>((set, get) => ({
@@ -632,6 +640,8 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>((set, get) =>
         success: json.success ?? res.ok,
         data: json.data,
         error: json.error,
+        code: json.code,
+        downloadUrl: json.downloadUrl ? `${baseUrl}${json.downloadUrl}` : null,
       };
     } catch (err: any) {
       console.error("Failed to submit enquiry to CMS:", err);

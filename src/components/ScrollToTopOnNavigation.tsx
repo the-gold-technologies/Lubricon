@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
+import { useEffect, useRef, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 function ScrollHandler() {
@@ -13,7 +13,16 @@ function ScrollHandler() {
     }
   }, []);
 
+  // useSearchParams() returns a new object on every router refresh / HMR update even when the
+  // URL is unchanged, so compare the actual URL to avoid yanking the user back to the top.
+  const search = searchParams?.toString() ?? "";
+  const routeKey = `${pathname}?${search}`;
+  const lastRouteKey = useRef<string | null>(null);
+
   useEffect(() => {
+    if (lastRouteKey.current === routeKey) return;
+    lastRouteKey.current = routeKey;
+
     // Only scroll to top if there is no anchor hash target
     if (!window.location.hash) {
       window.scrollTo({
@@ -35,7 +44,7 @@ function ScrollHandler() {
 
       return () => clearTimeout(timer);
     }
-  }, [pathname, searchParams]);
+  }, [routeKey]);
 
   return null;
 }

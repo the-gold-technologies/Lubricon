@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Product } from "@/types";
 import { useCMSStore } from "@/store/useCMSStore";
+import CaptchaField, { useCaptcha, handleCaptchaResult } from "@/components/CaptchaField";
 import {
   X,
   User,
@@ -40,6 +41,8 @@ export default function ProductQuoteDrawer({ isOpen, onClose, product }: Product
 
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState("");
+  const captcha = useCaptcha();
 
   // Smooth enter & exit animation state
   const [shouldRender, setShouldRender] = useState(isOpen);
@@ -83,8 +86,9 @@ export default function ProductQuoteDrawer({ isOpen, onClose, product }: Product
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError("");
     setIsSubmitting(true);
-    await useCMSStore.getState().submitEnquiry({
+    const result = await useCMSStore.getState().submitEnquiry({
       type: "Product Quote Request",
       name: formData.name,
       email: formData.email,
@@ -94,13 +98,17 @@ export default function ProductQuoteDrawer({ isOpen, onClose, product }: Product
       product: product.name,
       packaging: formData.packaging,
       message: `Volume: ${formData.volume}, Destination: ${formData.destination}, Specs: ${formData.specs}`,
+      ...captcha.payload,
     });
     setIsSubmitting(false);
+    if (!handleCaptchaResult(captcha, result, setFormError)) return;
     setSubmitted(true);
   };
 
   const handleReset = () => {
     setSubmitted(false);
+    setFormError("");
+    captcha.refresh();
     setFormData({
       name: "",
       company: "",
@@ -372,6 +380,14 @@ export default function ProductQuoteDrawer({ isOpen, onClose, product }: Product
                   className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:border-black focus:ring-1 focus:ring-black bg-white text-xs sm:text-sm font-medium placeholder:text-zinc-400 transition resize-none"
                 />
               </div>
+
+              <CaptchaField captcha={captcha} />
+
+              {formError && (
+                <p className="text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-xl px-3 py-2">
+                  {formError}
+                </p>
+              )}
 
               {/* Trust Badge */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 py-1">
