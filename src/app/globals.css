@@ -663,3 +663,108 @@ html.translating-hi::before {
 body {
   transition: opacity 0.2s ease-in-out;
 }
+
+/* =========================================================================
+   RICH TEXT & POLICY CONTENT STYLES
+   Ensures CMS HTML or plain text renders with clean typography,
+   proper paragraph margins, bold headings, styled lists, and zero overflow.
+   ========================================================================= */
+.policy-content {
+  color: #3f3f46;
+  font-size: 1.0625rem;
+  line-height: 1.85;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.policy-content p {
+  margin-top: 0.875rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.85;
+  color: #3f3f46;
+}
+
+.policy-content h1,
+.policy-content h2,
+.policy-content h3,
+.policy-content h4 {
+  color: #09090b;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+.policy-content h2 {
+  font-size: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 2px solid #f4f4f5;
+  position: relative;
+}
+
+.policy-content h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 52px;
+  height: 2px;
+  background: #ffe000;
+}
+
+.policy-content h3 {
+  font-size: 1.25rem;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.policy-content ul,
+.policy-content ol {
+  margin-top: 0.875rem;
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.policy-content ul {
+  list-style-type: disc;
+}
+
+.policy-content ol {
+  list-style-type: decimal;
+}
+
+.policy-content li {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.75;
+  color: #3f3f46;
+}
+
+.policy-content strong,
+.policy-content b {
+  color: #09090b;
+  font-weight: 700;
+}
+
+.policy-content a {
+  color: #09090b;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.policy-content a:hover {
+  color: #ca8a04;
+}
+
+.policy-content blockquote {
+  margin: 1.75rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 4px solid #ffe000;
+  background: #fafafa;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-style: italic;
+  color: #52525b;
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useContactInfo } from "@/hooks/useContactInfo";
 import { useState, useEffect } from "react";
 import { useCMSStore } from "@/store/useCMSStore";
 import CaptchaField, { useCaptcha, handleCaptchaResult } from "@/components/CaptchaField";
@@ -27,6 +28,7 @@ export default function CallbackModal({
   onClose,
   defaultIndustry = "Paper Mills",
 }: CallbackModalProps) {
+  const contact = useContactInfo();
   const [formData, setFormData] = useState({
     username: "",
     mobile: "",
@@ -211,11 +213,11 @@ export default function CallbackModal({
                   Done
                 </button>
                 <a
-                  href="tel:18005696363"
+                  href={contact.phoneHref}
                   className="w-full py-3 rounded-xl bg-black text-white hover:bg-zinc-800 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2"
                 >
                   <Phone size={14} className="text-[#ffe000]" />
-                  <span>Call 1800 569 6363 (Immediate Support)</span>
+                  <span>Call {contact.phone} (Immediate Support)</span>
                 </a>
               </div>
             </div>
@@ -347,7 +349,7 @@ export default function CallbackModal({
               {/* Trust Badge */}
               <div className="flex items-center gap-2 text-[11px] text-zinc-500 py-1">
                 <ShieldCheck size={14} className="text-emerald-600 shrink-0 stroke-[2.5]" />
-                <span>Pan-India technical assistance • Toll-Free: 1800 569 6363</span>
+                <span>Pan-India technical assistance • Toll-Free: {contact.phone}</span>
               </div>
 
               {/* Submit Button — matches PlantAuditDrawer */}

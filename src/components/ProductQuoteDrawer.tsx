@@ -1,5 +1,6 @@
 "use client";
 
+import { useContactInfo } from "@/hooks/useContactInfo";
 import { useState, useEffect } from "react";
 import { Product } from "@/types";
 import { useCMSStore } from "@/store/useCMSStore";
@@ -24,6 +25,7 @@ interface ProductQuoteDrawerProps {
 }
 
 export default function ProductQuoteDrawer({ isOpen, onClose, product }: ProductQuoteDrawerProps) {
+  const contact = useContactInfo();
   const defaultPackaging =
     product.specifications.packaging && product.specifications.packaging.length > 0
       ? product.specifications.packaging[0]
@@ -212,11 +214,11 @@ export default function ProductQuoteDrawer({ isOpen, onClose, product }: Product
                   Done
                 </button>
                 <a
-                  href="tel:18005696363"
+                  href={contact.phoneHref}
                   className="w-full py-3 rounded-xl bg-black text-white hover:bg-zinc-800 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2"
                 >
                   <Phone size={14} className="text-[#ffe000]" />
-                  <span>Call 1800 569 6363 (Direct Support)</span>
+                  <span>Call {contact.phone} (Direct Support)</span>
                 </a>
               </div>
             </div>

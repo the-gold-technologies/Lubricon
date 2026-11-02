@@ -3,20 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types";
-import { ChevronRight, Star } from "lucide-react";
+import { ChevronRight, Package, Star } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
   onClick?: (product: Product) => void;
 }
-
-const categoryImageMap: Record<string, string> = {
-  "engine-oil": "/images/lubricon-can-5l.jpg",
-  "gear-oil": "/images/lubricon-drum-clean.jpg",
-  atf: "/images/lubricon-can-5l.jpg",
-  industrial: "/images/lubricon-pail-20l.jpg",
-  fluids: "/images/lubricon-can-5l.jpg",
-};
 
 const badgeClassMap: Record<string | "default", string> = {
   "Latest Grade": "badge-amber",
@@ -31,11 +23,7 @@ const badgeClassMap: Record<string | "default", string> = {
 };
 
 export default function ProductCard({ product, onClick }: ProductCardProps) {
-  const imgSrc =
-    (product as any).containerImage ??
-    (product as any).raw?.containerImage ??
-    categoryImageMap[product.category] ??
-    "";
+  const imgSrc = (product as any).containerImage ?? (product as any).raw?.containerImage ?? "";
   const badgeClass = product.badge ? (badgeClassMap[product.badge] ?? badgeClassMap.default) : "";
 
   const cardClassName =
@@ -46,13 +34,23 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
       <div>
         {/* Crisp White Studio Packshot Bay */}
         <div className="relative h-52 w-full bg-white overflow-hidden border-b border-zinc-800/80 flex items-center justify-center p-3">
-          <Image
-            src={imgSrc}
-            alt={product.name}
-            fill
-            className="object-contain p-3 group-hover:scale-108 transition-transform duration-500"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          />
+          {imgSrc ? (
+            <Image
+              src={imgSrc}
+              alt={product.name}
+              fill
+              className="object-contain p-3 group-hover:scale-108 transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+            />
+          ) : (
+            // No packshot uploaded in the CMS yet
+            <div className="flex flex-col items-center gap-2 text-zinc-300" aria-hidden="true">
+              <Package size={44} strokeWidth={1.5} />
+              <span className="text-[10px] font-bold uppercase tracking-wider">
+                Image coming soon
+              </span>
+            </div>
+          )}
 
           {product.featured && (
             <div className="absolute top-3 left-3 z-10 bg-black text-[#ffe000] px-2.5 py-1 rounded-full flex items-center gap-1.5 shadow-md">

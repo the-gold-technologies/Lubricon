@@ -1,5 +1,6 @@
 "use client";
 
+import { useContactInfo } from "@/hooks/useContactInfo";
 import { useState, useEffect } from "react";
 import { Product } from "@/types";
 import { useCMSStore } from "@/store/useCMSStore";
@@ -30,6 +31,7 @@ export default function ProductPriceListDrawer({
   onClose,
   product,
 }: ProductPriceListDrawerProps) {
+  const contact = useContactInfo();
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -212,11 +214,11 @@ export default function ProductPriceListDrawer({
                   Done
                 </button>
                 <a
-                  href="tel:18005696363"
+                  href={contact.phoneHref}
                   className="w-full py-3 rounded-xl bg-black text-white hover:bg-zinc-800 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2"
                 >
                   <Phone size={14} className="text-[#ffe000]" />
-                  <span>Call 1800 569 6363 (Immediate)</span>
+                  <span>Call {contact.phone} (Immediate)</span>
                 </a>
               </div>
             </div>

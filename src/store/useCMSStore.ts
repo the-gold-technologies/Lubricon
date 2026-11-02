@@ -303,7 +303,7 @@ export function getHeadingTag(
   return (validTags.includes(tag) ? tag : defaultTag) as ElementType;
 }
 
-// In-flight promise cache to prevent duplicate simultaneous API calls (from Jai-deva)
+// In-flight promise cache to prevent duplicate simultaneous API calls
 const inFlightRequests = new Map<string, Promise<any>>();
 
 export const getApiBaseUrl = (): string => {

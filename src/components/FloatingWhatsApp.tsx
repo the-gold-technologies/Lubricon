@@ -1,9 +1,11 @@
 "use client";
 
+import { useContactInfo } from "@/hooks/useContactInfo";
 import { useState, useEffect } from "react";
 import { MessageCircle, X, Phone, Mail } from "lucide-react";
 
 export default function FloatingWhatsApp() {
+  const contact = useContactInfo();
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -67,19 +69,19 @@ export default function FloatingWhatsApp() {
             </a>
 
             <a
-              href="tel:18005696363"
+              href={contact.phoneHref}
               className="flex items-center justify-center gap-2 bg-[#ffe000] hover:bg-[#fff04d] text-black text-xs uppercase font-black py-3 rounded-xl transition-all shadow-sm hover:scale-[1.02]"
             >
               <Phone size={15} />
-              <span>Call Toll Free: 1800 569 6363</span>
+              <span>Call Toll Free: {contact.phone}</span>
             </a>
 
             <a
-              href="mailto:info@lubriconindia.com"
+              href={`mailto:${contact.email}`}
               className="flex items-center justify-center gap-1.5 text-zinc-500 hover:text-black text-xs font-semibold py-1.5 transition-colors"
             >
               <Mail size={13} />
-              <span>info@lubriconindia.com</span>
+              <span>{contact.email}</span>
             </a>
           </div>
         </div>

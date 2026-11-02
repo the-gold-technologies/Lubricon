@@ -1,5 +1,6 @@
 "use client";
 
+import { useContactInfo } from "@/hooks/useContactInfo";
 import { useState, useEffect } from "react";
 import { useCMSStore } from "@/store/useCMSStore";
 import CaptchaField, { useCaptcha, handleCaptchaResult } from "@/components/CaptchaField";
@@ -51,6 +52,7 @@ export default function PlantAuditDrawer({
   initialService = "",
   initialIndustry = "",
 }: PlantAuditDrawerProps) {
+  const contact = useContactInfo();
   const industriesData = useCMSStore((s) => s.industriesData);
   const cmsIndustries = useCMSStore((s) => s.industries);
 
@@ -68,13 +70,14 @@ export default function PlantAuditDrawer({
     ? industriesData.IndustriesPlantSupport.services
     : [];
   const cmsServiceTitles = uniq(plantServices.map((sv) => (sv?.title ?? "").trim()));
-  const serviceOptions = uniq([initialService, ...cmsServiceTitles]);
+  // Keep the CMS card order; a pre-selected title not in the list is appended
+  const serviceOptions = uniq([...cmsServiceTitles, initialService]);
   if (serviceOptions.length === 0) serviceOptions.push(FALLBACK_SERVICE);
 
   const cmsIndustryNames = uniq(cmsIndustries.map((ind) => (ind?.name ?? "").trim()));
   const industryOptions = uniq([
-    initialIndustry,
     ...(cmsIndustryNames.length ? cmsIndustryNames : FALLBACK_INDUSTRIES),
+    initialIndustry,
     "Other",
   ]);
 
@@ -288,11 +291,11 @@ export default function PlantAuditDrawer({
                   Done
                 </button>
                 <a
-                  href="tel:18005696363"
+                  href={contact.phoneHref}
                   className="w-full py-3 rounded-xl bg-black text-white hover:bg-zinc-800 font-bold text-xs uppercase tracking-wider transition flex items-center justify-center gap-2"
                 >
                   <Phone size={14} className="text-[#ffe000]" />
-                  <span>Call 1800 569 6363 (Immediate Support)</span>
+                  <span>Call {contact.phone} (Immediate Support)</span>
                 </a>
               </div>
             </div>
@@ -331,9 +334,7 @@ export default function PlantAuditDrawer({
                     )}
                     {selectedServiceInfo?.deliverable && (
                       <div>
-                        <span className="text-zinc-500 block text-[11px] mb-0.5">
-                          Deliverable:
-                        </span>
+                        <span className="text-zinc-500 block text-[11px] mb-0.5">Deliverable:</span>
                         <span className="font-extrabold text-zinc-900">
                           {selectedServiceInfo.deliverable}
                         </span>
