@@ -110,10 +110,11 @@ export default function IndustriesList() {
                   </button>
 
                   <Link
-                    href="/products"
-                    className="border-2 border-zinc-200 hover:border-black font-extrabold text-black text-xs px-5 py-2.5 rounded-full uppercase tracking-wider transition-all"
+                    href={`/products?industry=${encodeURIComponent(industry.id)}`}
+                    className="border-2 border-zinc-200 hover:border-black font-extrabold text-black text-xs px-5 py-2.5 rounded-full uppercase tracking-wider transition-all flex items-center gap-2"
                   >
-                    View Matching Formulations
+                    <span>View Products</span>
+                    <ArrowRight size={13} />
                   </Link>
                 </div>
               </div>

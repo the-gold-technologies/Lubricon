@@ -20,22 +20,17 @@ interface ProductCategoryItem {
   subcategories?: SubCategory[];
 }
 
-const industryLinks = [
-  {
-    href: "/industries#plastic-injection-molding",
-    label: "Plastic Injection Molding",
-  },
-  { href: "/industries#paper-mills", label: "Paper Mills" },
-  { href: "/industries#steel-plants", label: "Steel Plants" },
-  { href: "/industries#automotive-fleet", label: "Automotive & Fleet" },
-  { href: "/industries", label: "All Industries →" },
-];
+/** Desktop dropdown height: 6 rows (matches the Industries menu); longer lists scroll. */
+const MENU_MAX_HEIGHT = 256;
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [industriesOpen, setIndustriesOpen] = useState(false);
+  const [hoveredIndustry, setHoveredIndustry] = useState<string | null>(null);
+  // Vertical offset of the hovered row, so its flyout opens level with that row
+  const [flyoutTop, setFlyoutTop] = useState(0);
   const [searchVal, setSearchVal] = useState("");
 
   const [currentFontSize, setCurrentFontSize] = useState<number>(16);
@@ -97,12 +92,21 @@ export default function Navbar() {
   const router = useRouter();
   const navRef = useRef<HTMLDivElement>(null);
   const flyoutTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const industriesTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const searchDropdownRef = useRef<HTMLDivElement>(null);
   const mobileSearchDropdownRef = useRef<HTMLDivElement>(null);
 
-  const { globalConfig, fetchGlobalConfig, products, fetchProducts, categories } = useCMSStore();
+  const {
+    globalConfig,
+    fetchGlobalConfig,
+    products,
+    fetchProducts,
+    categories,
+    industries,
+    fetchIndustries,
+  } = useCMSStore();
 
   const productHierarchy: ProductCategoryItem[] = useMemo(() => {
     if (!categories || categories.length === 0) return [];
@@ -146,10 +150,25 @@ export default function Navbar() {
       });
   }, [categories, products]);
 
+  // Industries from the CMS (same order as the Industries page), each with the products
+  // tagged for it in the CMS product form. Industries with no tagged products have no flyout.
+  const industryHierarchy: ProductCategoryItem[] = useMemo(() => {
+    if (!industries || industries.length === 0) return [];
+    return industries.map((ind) => ({
+      id: ind.id,
+      label: ind.name,
+      href: `/industries#${ind.id}`,
+      subcategories: products
+        .filter((p) => p.industrySlugs.includes(ind.id))
+        .map((p) => ({ label: p.name, href: `/products/${p.slug}` })),
+    }));
+  }, [industries, products]);
+
   useEffect(() => {
     fetchGlobalConfig();
     fetchProducts();
-  }, [fetchGlobalConfig, fetchProducts]);
+    fetchIndustries();
+  }, [fetchGlobalConfig, fetchProducts, fetchIndustries]);
 
   const helpline = globalConfig?.socialLinks?.tollFree ?? globalConfig?.phone;
   const logo = globalConfig?.logo;
@@ -175,6 +194,7 @@ export default function Navbar() {
     setProductsOpen(false);
     setHoveredCategory(null);
     setIndustriesOpen(false);
+    setHoveredIndustry(null);
     setIsSearchDropdownOpen(false);
   }, [pathname]);
 
@@ -226,6 +246,7 @@ export default function Navbar() {
         setProductsOpen(false);
         setHoveredCategory(null);
         setIndustriesOpen(false);
+        setHoveredIndustry(null);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -253,9 +274,118 @@ export default function Navbar() {
     }, 150);
   };
 
+  const handleIndustriesMouseEnter = () => {
+    if (industriesTimerRef.current) clearTimeout(industriesTimerRef.current);
+    setIndustriesOpen(true);
+  };
+
+  const handleIndustriesMouseLeave = () => {
+    industriesTimerRef.current = setTimeout(() => {
+      setIndustriesOpen(false);
+      setHoveredIndustry(null);
+    }, 150);
+  };
+
   const hoveredCategoryData = hoveredCategory
     ? productHierarchy.find((p) => p.id === hoveredCategory)
     : null;
+
+  // Desktop Industries mega-menu. The first-level list is capped at MENU_MAX_HEIGHT and
+  // scrolls; the flyout sits beside the list (outside the scroll box so it isn't clipped),
+  // level with the hovered row, with the same max height.
+  const renderMegaMenu = ({
+    items,
+    hovered,
+    setHovered,
+    close,
+    footer,
+  }: {
+    items: ProductCategoryItem[];
+    hovered: string | null;
+    setHovered: (id: string | null) => void;
+    close: () => void;
+    footer?: { label: string; href: string };
+  }) => {
+    const hoveredItem = items.find((i) => i.id === hovered);
+    const flyout = hoveredItem?.subcategories?.length ? hoveredItem.subcategories : null;
+
+    return (
+      <div className="absolute top-full left-0 mt-0 z-50 animate-fade-in">
+        <div className="relative">
+          <div
+            className="w-60 bg-white shadow-xl rounded-sm border border-zinc-200 overflow-y-auto overscroll-contain [scrollbar-width:thin]"
+            style={{ maxHeight: MENU_MAX_HEIGHT }}
+            onScroll={() => setHovered(null)}
+          >
+            {items.map((item) => {
+              const hasSub = Boolean(item.subcategories && item.subcategories.length > 0);
+              const isHovered = hovered === item.id;
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={close}
+                  onMouseEnter={(e) => {
+                    const row = e.currentTarget;
+                    // offsetTop is relative to the menu wrapper; subtract the list's scroll
+                    setFlyoutTop(row.offsetTop - (row.parentElement?.scrollTop ?? 0));
+                    setHovered(item.id);
+                  }}
+                  className={`flex items-center justify-between px-4 py-2.5 text-[13px] border-b border-zinc-100 transition-none ${
+                    isHovered
+                      ? "bg-[#ffe000] text-black font-extrabold"
+                      : "text-zinc-800 hover:bg-zinc-50"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {hasSub && (
+                    <span
+                      className={`text-[11px] font-bold ${isHovered ? "text-black" : "text-zinc-400"}`}
+                    >
+                      ›
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+            {footer && (
+              <Link
+                href={footer.href}
+                onClick={close}
+                onMouseEnter={() => setHovered(null)}
+                className="block px-4 py-2.5 text-[13px] text-zinc-700 hover:bg-[#ffe000] hover:text-black font-semibold transition-colors"
+              >
+                {footer.label}
+              </Link>
+            )}
+          </div>
+
+          {flyout && (
+            <div
+              className="absolute left-full ml-1.5 w-72 bg-white shadow-2xl rounded-md border border-zinc-200 z-50 animate-fade-in before:absolute before:-left-2 before:top-0 before:w-2 before:h-full before:content-['']"
+              style={{ top: flyoutTop, maxHeight: MENU_MAX_HEIGHT }}
+            >
+              <div
+                className="overflow-y-auto overscroll-contain"
+                style={{ maxHeight: MENU_MAX_HEIGHT - 2 }}
+              >
+                {flyout.map((sub, idx) => (
+                  <Link
+                    key={idx}
+                    href={sub.href}
+                    onClick={close}
+                    className="block px-5 py-2.5 text-[13px] text-zinc-800 hover:bg-[#ffe000] hover:text-black font-medium border-b border-zinc-100 last:border-b-0 transition-colors"
+                  >
+                    {sub.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full font-sans shadow-md">
@@ -537,8 +667,8 @@ export default function Navbar() {
             {/* ── INDUSTRIES DROPDOWN ── */}
             <div
               className="relative py-2"
-              onMouseEnter={() => setIndustriesOpen(true)}
-              onMouseLeave={() => setIndustriesOpen(false)}
+              onMouseEnter={handleIndustriesMouseEnter}
+              onMouseLeave={handleIndustriesMouseLeave}
             >
               <Link
                 href="/industries"
@@ -556,19 +686,15 @@ export default function Navbar() {
                 />
               </Link>
 
-              {industriesOpen && (
-                <div className="absolute top-full left-0 mt-0 w-60 bg-white border border-zinc-200 rounded-sm shadow-xl py-1 z-50 animate-fade-in">
-                  {industryLinks.map((item) => (
-                    <Link
-                      key={item.label}
-                      href={item.href}
-                      className="block px-4 py-2 text-[13px] text-zinc-700 hover:bg-[#ffe000] hover:text-black font-medium transition-colors"
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
+              {/* Dynamic Industries Dropdown — hover an industry to see its products */}
+              {industriesOpen &&
+                renderMegaMenu({
+                  items: industryHierarchy,
+                  hovered: hoveredIndustry,
+                  setHovered: setHoveredIndustry,
+                  close: () => setIndustriesOpen(false),
+                  footer: { label: "All Industries →", href: "/industries" },
+                })}
             </div>
 
             <Link
@@ -831,13 +957,42 @@ export default function Navbar() {
               </div>
             </div>
 
-            <Link
-              href="/industries"
-              onClick={() => setMobileOpen(false)}
-              className="text-base font-semibold text-zinc-900 border-b border-zinc-100 pb-2"
-            >
-              Industries We Serve
-            </Link>
+            <div className="border-b border-zinc-100 pb-2">
+              <Link
+                href="/industries"
+                onClick={() => setMobileOpen(false)}
+                className="text-base font-semibold text-zinc-900 mb-1 block hover:text-black"
+              >
+                Industries We Serve
+              </Link>
+              <div className="pl-3 flex flex-col gap-1.5">
+                {industryHierarchy.map((item) => (
+                  <div key={item.id}>
+                    <Link
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="text-xs font-semibold text-zinc-800 block py-1"
+                    >
+                      {item.label}
+                    </Link>
+                    {item.subcategories && item.subcategories.length > 0 && (
+                      <div className="pl-3 flex flex-col gap-1 border-l border-zinc-200">
+                        {item.subcategories.map((sub, idx) => (
+                          <Link
+                            key={idx}
+                            href={sub.href}
+                            onClick={() => setMobileOpen(false)}
+                            className="text-xs text-zinc-500 hover:text-[#c85a17] py-0.5"
+                          >
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <Link
               href="/contact"

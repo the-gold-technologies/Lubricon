@@ -1,11 +1,15 @@
-import { Search, X, SlidersHorizontal } from "lucide-react";
-import { useCMSStore } from "@/store/useCMSStore";
+import { Search, X, SlidersHorizontal, ChevronDown, Factory } from "lucide-react";
+import { useCMSStore, type ExtendedProduct } from "@/store/useCMSStore";
 
 interface ProductsFilterBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   activeCategory: string;
   setActiveCategory: (category: string) => void;
+  activeIndustry: string;
+  setActiveIndustry: (industry: string) => void;
+  /** Products the category counts are computed from (already filtered by industry) */
+  countBase: ExtendedProduct[];
 }
 
 export default function ProductsFilterBar({
@@ -13,8 +17,11 @@ export default function ProductsFilterBar({
   setSearchQuery,
   activeCategory,
   setActiveCategory,
+  activeIndustry,
+  setActiveIndustry,
+  countBase,
 }: ProductsFilterBarProps) {
-  const { categories, products } = useCMSStore();
+  const { categories, products, industries } = useCMSStore();
 
   const allCategoryTabs = [
     { id: "all", label: "All Products" },
@@ -23,7 +30,9 @@ export default function ProductsFilterBar({
 
   // Dynamically compute item count per category from live CMS products
   const getCategoryCount = (catId: string) => {
-    if (catId === "all") return products.length;
+    // "All Products" counts what is currently shown (all, or the selected industry's products);
+    // each category shows its full count, since picking it resets the industry filter.
+    if (catId === "all") return countBase.length;
     return products.filter((p) => p.category === catId).length;
   };
 
@@ -63,6 +72,37 @@ export default function ProductsFilterBar({
               <SlidersHorizontal size={13} className="text-black" />
               <span className="text-zinc-600">Filter:</span>
             </div>
+
+            {/* Industry filter (products tagged for an industry in the CMS) */}
+            {industries.length > 0 && (
+              <div className="relative shrink-0">
+                <Factory
+                  size={13}
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-black pointer-events-none"
+                />
+                <select
+                  value={activeIndustry}
+                  onChange={(e) => setActiveIndustry(e.target.value)}
+                  aria-label="Filter by industry"
+                  className={`appearance-none max-w-[240px] truncate pl-9 pr-8 py-2 rounded-full text-xs font-black uppercase tracking-wider cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-[#ffe000]/40 ${
+                    activeIndustry !== "all"
+                      ? "bg-[#ffe000] text-black border-2 border-black shadow-sm"
+                      : "bg-white hover:bg-zinc-50 text-zinc-700 border-2 border-zinc-200 hover:border-zinc-400 shadow-xs"
+                  }`}
+                >
+                  <option value="all">All Industries</option>
+                  {industries.map((ind) => (
+                    <option key={ind.id} value={ind.id}>
+                      {ind.name} ({products.filter((p) => p.industrySlugs.includes(ind.id)).length})
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={13}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none"
+                />
+              </div>
+            )}
 
             {allCategoryTabs.map((cat) => {
               const count = getCategoryCount(cat.id);

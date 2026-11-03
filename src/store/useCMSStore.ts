@@ -223,6 +223,8 @@ export interface ExtendedProduct extends Product {
   tableHeaders?: string[];
   pdfUrl?: string | null;
   msdsUrl?: string | null;
+  /** Slugs of the industries this product is tagged for in the CMS (may be empty) */
+  industrySlugs: string[];
   raw?: any;
 }
 
@@ -274,6 +276,9 @@ export function normalizeProduct(p: any): ExtendedProduct {
     tableHeaders: Array.isArray(p.tableHeaders) ? p.tableHeaders : [],
     pdfUrl: p.pdfUrl ?? null,
     msdsUrl: p.msdsUrl ?? null,
+    industrySlugs: Array.isArray(p.industrySlugs)
+      ? p.industrySlugs.filter((s: unknown): s is string => typeof s === "string")
+      : [],
     raw: p,
   };
 }

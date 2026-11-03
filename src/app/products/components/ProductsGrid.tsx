@@ -7,6 +7,8 @@ interface ProductsGridProps {
   products: Product[];
   activeCategory: string;
   searchQuery: string;
+  /** Name of the selected industry, or "" when not filtering by industry */
+  activeIndustryLabel?: string;
   isLoading?: boolean;
   onSelectProduct: (product: Product) => void;
   onReset: () => void;
@@ -16,6 +18,7 @@ export default function ProductsGrid({
   products,
   activeCategory,
   searchQuery,
+  activeIndustryLabel = "",
   isLoading = false,
   onSelectProduct,
   onReset,
@@ -38,6 +41,12 @@ export default function ProductsGrid({
                 in <span className="font-bold text-black">{activeCategoryLabel}</span>
               </>
             )}
+            {activeIndustryLabel && (
+              <>
+                {" "}
+                for <span className="font-bold text-black">{activeIndustryLabel}</span>
+              </>
+            )}
             {searchQuery && (
               <>
                 {" "}
@@ -47,7 +56,7 @@ export default function ProductsGrid({
               </>
             )}
           </p>
-          {(activeCategory !== "all" || searchQuery) && (
+          {(activeCategory !== "all" || searchQuery || activeIndustryLabel) && (
             <button
               onClick={onReset}
               className="text-xs font-bold text-black hover:text-[#d4af37] underline transition-colors"
