@@ -42,7 +42,7 @@ export default function CallbackModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [refCode, setRefCode] = useState("");
-  const captcha = useCaptcha();
+  const captcha = useCaptcha(isOpen);
 
   // Smooth enter & exit animation state — same as PlantAuditDrawer
   const [shouldRender, setShouldRender] = useState(isOpen);

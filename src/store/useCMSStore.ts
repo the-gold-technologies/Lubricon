@@ -442,7 +442,9 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>((set, get) =>
               },
             });
           } else if (normalizedSlug === "industries") {
-            const rawInd = Array.isArray(json.industries) ? json.industries : [];
+            const rawInd: any[] =
+              [json.data?.industries, pageData?.industries, json.industries].find(Array.isArray) ??
+              [];
             set({
               industriesData: { ...pageData, seo },
               industries: rawInd.length > 0 ? rawInd.map(normalizeIndustry) : get().industries,
@@ -567,13 +569,8 @@ export const useCMSStore = create<CMSStoreState & CMSStoreActions>((set, get) =>
       if (!res.ok) throw new Error("Failed to fetch industries from CMS");
       const json = await res.json();
       if (json.success && json.data) {
-        const rawList = Array.isArray(json.data.industries)
-          ? json.data.industries
-          : Array.isArray(json.industries)
-            ? json.industries
-            : Array.isArray(json.data)
-              ? json.data
-              : [];
+        const rawList: any[] =
+          [json.data?.industries, json.industries, json.data].find(Array.isArray) ?? [];
         const normalized = rawList.map(normalizeIndustry);
         set({ industries: normalized, isIndustriesLoading: false });
         return normalized;

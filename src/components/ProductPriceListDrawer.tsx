@@ -46,7 +46,7 @@ export default function ProductPriceListDrawer({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [refCode, setRefCode] = useState("");
-  const captcha = useCaptcha();
+  const captcha = useCaptcha(isOpen);
 
   // Smooth enter & exit animation state
   const [shouldRender, setShouldRender] = useState(isOpen);

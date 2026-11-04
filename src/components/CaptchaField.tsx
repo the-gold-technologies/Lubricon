@@ -20,12 +20,12 @@ async function fetchCaptcha(): Promise<CaptchaResponse | null> {
  * Server-verified captcha. The CMS issues an SVG image + signed token; the answer is only
  * checked by the CMS when the enquiry is submitted, so it can't be bypassed in the browser.
  */
-export function useCaptcha() {
+export function useCaptcha(enabled = true) {
   const [token, setToken] = useState("");
   const [svg, setSvg] = useState("");
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(enabled);
   const [spinning, setSpinning] = useState(false);
 
   // Applies a fetched code (called from promise callbacks only)
@@ -33,6 +33,7 @@ export function useCaptcha() {
     if (result) {
       setToken(result.token);
       setSvg(result.svg);
+      setError("");
     } else {
       setError("Could not load the security code. Please refresh it.");
     }
@@ -52,14 +53,22 @@ export function useCaptcha() {
   );
 
   useEffect(() => {
+    if (!enabled) {
+      setLoading(false);
+      return;
+    }
+    // Don't refetch if we already have a valid token
+    if (token) return;
+
     let active = true;
+    setLoading(true);
     fetchCaptcha().then((result) => {
       if (active) apply(result);
     });
     return () => {
       active = false;
     };
-  }, [apply]);
+  }, [enabled, token, apply]);
 
   return {
     token,
