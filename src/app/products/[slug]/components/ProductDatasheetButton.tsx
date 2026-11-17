@@ -7,11 +7,14 @@ import ProductDatasheetDrawer from "@/components/ProductDatasheetDrawer";
 interface ProductDatasheetButtonProps {
   productName: string;
   productSlug: string;
+  /** Card heading, editable per product in the CMS */
+  title?: string;
 }
 
 export default function ProductDatasheetButton({
   productName,
   productSlug,
+  title = "Product Datasheet",
 }: ProductDatasheetButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const close = useCallback(() => setIsOpen(false), []);
@@ -28,7 +31,7 @@ export default function ProductDatasheetButton({
             <FileText size={20} />
           </div>
           <div className="min-w-0">
-            <div className="text-sm font-black">Product Datasheet</div>
+            <div className="text-sm font-black">{title}</div>
             <div className="text-xs text-zinc-400 truncate">
               Download the technical PDF for {productName}
             </div>

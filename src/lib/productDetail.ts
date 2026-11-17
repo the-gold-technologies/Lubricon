@@ -72,3 +72,74 @@ export function getSpecificationRows(
 
   return rows;
 }
+
+const DEFAULT_SECTION_TITLES = {
+  performanceBenefits: "Key Performance Features & Benefits",
+  applicationAreas: "Recommended Application Areas",
+  specifications: "Engineering Standards",
+  propertiesTable: "Physico-Chemical Properties",
+  datasheet: "Product Datasheet",
+  originBadge: "Australian Tech",
+};
+
+export type ProductSectionTitles = typeof DEFAULT_SECTION_TITLES;
+
+/**
+ * Product detail page headings/labels as set in the CMS, falling back to the defaults.
+ * A blank origin badge stays blank (the page hides it); blank headings use the default.
+ */
+export function getSectionTitles(raw: Record<string, unknown> | undefined): ProductSectionTitles {
+  const text = (key: string) => (typeof raw?.[key] === "string" ? (raw[key] as string).trim() : "");
+  const origin = raw?.originBadge;
+
+  return {
+    performanceBenefits:
+      text("performanceBenefitsTitle") || DEFAULT_SECTION_TITLES.performanceBenefits,
+    applicationAreas: text("applicationAreasTitle") || DEFAULT_SECTION_TITLES.applicationAreas,
+    specifications: text("specificationsTitle") || DEFAULT_SECTION_TITLES.specifications,
+    propertiesTable: text("propertiesTableTitle") || DEFAULT_SECTION_TITLES.propertiesTable,
+    datasheet: text("datasheetTitle") || DEFAULT_SECTION_TITLES.datasheet,
+    // Older CMS APIs don't send the field at all → keep the default badge
+    originBadge: typeof origin === "string" ? origin.trim() : DEFAULT_SECTION_TITLES.originBadge,
+  };
+}
+
+export type ProductCustomSection =
+  | { id: string; type: "text"; title: string; text: string }
+  | { id: string; type: "list"; title: string; items: string[] }
+  | { id: string; type: "table"; title: string; headers: string[]; rows: string[][] };
+
+const str = (v: unknown) => (typeof v === "string" ? v : v == null ? "" : String(v));
+
+/**
+ * Visible, non-empty extra sections from the CMS (Product.customSections), in admin order.
+ * Keep in sync with src/lib/productSections.ts in the CMS.
+ */
+export function normalizeCustomSections(raw: unknown): ProductCustomSection[] {
+  if (!Array.isArray(raw)) return [];
+  const out: ProductCustomSection[] = [];
+
+  raw.forEach((s, i) => {
+    if (!s || typeof s !== "object") return;
+    const o = s as Record<string, unknown>;
+    if (o.hidden) return;
+    const id = str(o.id) || `section-${i}`;
+    const title = str(o.title).trim();
+
+    if (o.type === "text") {
+      const text = str(o.text).trim();
+      if (text) out.push({ id, type: "text", title, text });
+    } else if (o.type === "list") {
+      const items = (Array.isArray(o.items) ? o.items : [])
+        .map(str)
+        .map((t) => t.trim())
+        .filter(Boolean);
+      if (items.length) out.push({ id, type: "list", title, items });
+    } else if (o.type === "table") {
+      const table = normalizePropertiesTable(o.rows, o.headers);
+      if (table.rows.length) out.push({ id, type: "table", title, ...table });
+    }
+  });
+
+  return out;
+}

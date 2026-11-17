@@ -1,13 +1,20 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, Zap, CheckCircle2, ArrowLeft, Wrench, Cpu } from "lucide-react";
+import { ChevronRight, Zap, CheckCircle2, ArrowLeft, Wrench, Cpu, BadgeCheck } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import ProductCtaButtons from "./components/ProductCtaButtons";
 import ProductDatasheetButton from "./components/ProductDatasheetButton";
+import SpecTable from "./components/SpecTable";
+import ProductCustomSections from "./components/ProductCustomSections";
 import JsonLd from "@/components/JsonLd";
 import { normalizeProduct, ExtendedProduct, getApiBaseUrl } from "@/store/useCMSStore";
-import { normalizePropertiesTable, getSpecificationRows } from "@/lib/productDetail";
+import {
+  normalizePropertiesTable,
+  getSpecificationRows,
+  getSectionTitles,
+  normalizeCustomSections,
+} from "@/lib/productDetail";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -31,6 +38,7 @@ export async function generateStaticParams() {
 }
 
 import { Metadata } from "next";
+import type { Product } from "@/types";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -116,6 +124,25 @@ export default async function ProductDetailPage({ params }: Props) {
   const specRows = getSpecificationRows(product.specifications);
   const propertiesTable = normalizePropertiesTable(product.propertiesTable, product.tableHeaders);
   const hasDatasheet = Boolean(product.pdfUrl && product.pdfUrl !== "#");
+  const titles = getSectionTitles(product.raw);
+  const customSections = normalizeCustomSections(product.raw?.customSections);
+  // Client components get only the public card fields — never `raw`, which holds the full
+  // CMS record (including hidden sections) and would otherwise be embedded in the page source.
+  const ctaProduct: Product = {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    category: product.category,
+    subcategory: product.subcategory,
+    description: product.description,
+    features: product.features,
+    applications: product.applications,
+    specifications: product.specifications,
+    badge: product.badge,
+    featured: product.featured,
+  };
+  const subtitle = typeof product.raw?.subtitle === "string" ? product.raw.subtitle.trim() : "";
+  const specsText = typeof product.raw?.specsText === "string" ? product.raw.specsText.trim() : "";
 
   return (
     <main className="bg-[#f8f9fa] text-zinc-900 min-h-screen">
@@ -171,13 +198,15 @@ export default async function ProductDetailPage({ params }: Props) {
                     />
                   )}
 
-                  {/* Top-Left: Australian Tech Badge */}
-                  <div className="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow">
-                    <span className="text-xs">🇦🇺</span>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-white">
-                      Australian Tech
-                    </span>
-                  </div>
+                  {/* Top-Left: Origin Badge (CMS-editable; blank hides it) */}
+                  {titles.originBadge && (
+                    <div className="absolute top-3 left-3 bg-black/85 backdrop-blur-md px-3 py-1 rounded-full border border-white/20 flex items-center gap-1.5 shadow">
+                      <span className="text-xs">🇦🇺</span>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-white">
+                        {titles.originBadge}
+                      </span>
+                    </div>
+                  )}
 
                   {/* Top-Right Optional Badge */}
                   {product.badge && (
@@ -204,7 +233,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-7">
                   <div className="flex items-center gap-2 text-sm font-black text-black mb-5 pb-3 border-b border-zinc-100">
                     <Zap size={16} className="text-[#ffe000] fill-black" />
-                    <span>Engineering Standards</span>
+                    <span>{titles.specifications}</span>
                   </div>
 
                   <div className="divide-y divide-zinc-100 text-xs sm:text-sm">
@@ -220,7 +249,11 @@ export default async function ProductDetailPage({ params }: Props) {
 
               {/* Datasheet Download Card */}
               {hasDatasheet && (
-                <ProductDatasheetButton productName={product.name} productSlug={product.slug} />
+                <ProductDatasheetButton
+                  productName={product.name}
+                  productSlug={product.slug}
+                  title={titles.datasheet}
+                />
               )}
             </div>
 
@@ -245,18 +278,43 @@ export default async function ProductDetailPage({ params }: Props) {
                   const Tag = (validTags.includes(clean) ? clean : "h1") as
                     "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
                   return (
-                    <Tag className="text-2xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight leading-[1.15] mb-4">
+                    <Tag
+                      className={`text-2xl sm:text-4xl lg:text-5xl font-black text-black tracking-tight leading-[1.15] ${subtitle ? "mb-2" : "mb-4"}`}
+                    >
                       {product.name}
                     </Tag>
                   );
                 })()}
 
+                {subtitle && (
+                  <p className="text-base sm:text-lg font-bold text-zinc-500 leading-snug mb-4">
+                    {subtitle}
+                  </p>
+                )}
+
                 <p className="text-zinc-600 text-sm sm:text-base leading-relaxed mb-6 font-normal">
                   {product.description}
                 </p>
 
+                {/* Meets Specifications (only when set in the CMS) */}
+                {specsText && (
+                  <div className="flex items-start gap-3 mb-6 p-4 rounded-2xl bg-[#fffbd6] border border-[#ffe000]/70">
+                    <div className="w-8 h-8 rounded-lg bg-black text-[#ffe000] flex items-center justify-center shrink-0">
+                      <BadgeCheck size={16} />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[11px] font-black uppercase tracking-wider text-zinc-500 mb-0.5">
+                        Meets Specifications
+                      </div>
+                      <p className="text-sm font-extrabold text-black leading-snug whitespace-pre-line">
+                        {specsText}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Interactive Action Buttons */}
-                <ProductCtaButtons product={product as any} />
+                <ProductCtaButtons product={ctaProduct} />
               </div>
 
               {/* Performance Benefits Card */}
@@ -266,9 +324,7 @@ export default async function ProductDetailPage({ params }: Props) {
                     <div className="w-8 h-8 rounded-lg bg-[#ffe000] text-black flex items-center justify-center font-bold text-xs">
                       <CheckCircle2 size={16} />
                     </div>
-                    <h2 className="text-lg font-black text-black">
-                      Key Performance Features &amp; Benefits
-                    </h2>
+                    <h2 className="text-lg font-black text-black">{titles.performanceBenefits}</h2>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -297,7 +353,7 @@ export default async function ProductDetailPage({ params }: Props) {
                     <div className="w-8 h-8 rounded-lg bg-black text-[#ffe000] flex items-center justify-center font-bold text-xs">
                       <Wrench size={16} />
                     </div>
-                    <h2 className="text-lg font-black text-black">Recommended Application Areas</h2>
+                    <h2 className="text-lg font-black text-black">{titles.applicationAreas}</h2>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -313,56 +369,31 @@ export default async function ProductDetailPage({ params }: Props) {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
 
+          {/* ── FULL-WIDTH: PROPERTIES TABLE & ADDITIONAL SECTIONS ──
+              Kept outside the two columns so long content doesn't leave the left side empty */}
+          {(propertiesTable.rows.length > 0 || customSections.length > 0) && (
+            <div className="mt-6 lg:mt-8 space-y-6">
               {/* Physico-Chemical Properties Table (from CMS) */}
               {propertiesTable.rows.length > 0 && (
-                <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-9 overflow-x-auto">
+                <div className="rounded-[28px] bg-white border border-zinc-200/90 shadow-sm p-6 sm:p-9">
                   <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-zinc-100">
                     <div className="w-8 h-8 rounded-lg bg-[#ffe000] text-black flex items-center justify-center font-bold text-xs">
                       <Cpu size={16} />
                     </div>
-                    <h2 className="text-lg font-black text-black">Physico-Chemical Properties</h2>
+                    <h2 className="text-lg font-black text-black">{titles.propertiesTable}</h2>
                   </div>
 
-                  <table className="w-full text-left border-collapse text-xs sm:text-sm">
-                    <thead>
-                      <tr className="border-b border-zinc-200 text-zinc-500 font-extrabold uppercase text-[11px]">
-                        {propertiesTable.headers.map((header, cIdx) => (
-                          <th key={cIdx} className="py-2.5 px-3 whitespace-nowrap">
-                            {header}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-100 font-medium">
-                      {propertiesTable.rows.map((row, rIdx) => (
-                        <tr key={rIdx} className="hover:bg-zinc-50 transition-colors">
-                          {row.map((cell, cIdx) => {
-                            const isFirst = cIdx === 0;
-                            const isLast = cIdx === row.length - 1 && row.length > 1;
-                            return (
-                              <td
-                                key={cIdx}
-                                className={`py-2.5 px-3 ${
-                                  isFirst
-                                    ? "font-bold text-black"
-                                    : isLast
-                                      ? "font-extrabold text-black"
-                                      : "text-zinc-500"
-                                }`}
-                              >
-                                {cell}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                  <SpecTable headers={propertiesTable.headers} rows={propertiesTable.rows} />
                 </div>
               )}
+
+              {/* Additional sections defined in the CMS */}
+              {customSections.length > 0 && <ProductCustomSections sections={customSections} />}
             </div>
-          </div>
+          )}
         </div>
       </div>
 
